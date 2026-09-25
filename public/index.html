@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-xpTaaB7r09T5BuqKkfM3jYCf1+5NwzhZWRsKeqkZRjU='; style-src 'unsafe-inline'; img-src data:; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-cVqaLl3KNZ6yWVidBUReDCFXRhphQmqHb0tE/mP03SM='; style-src 'unsafe-inline'; img-src data:; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>BAO &mdash; symptom &amp; wellbeing tracker</title>
 <style>:root{
@@ -410,12 +410,34 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
 .how-card .fact-list li{font-size:16px;line-height:1.6;margin:0 0 14px}
 .how-card .callout{font-size:14.5px;padding:16px 18px}
 .how-card .btn{font-size:14.5px;padding:13px 20px}
-.pet-card .pet-studio{grid-template-columns:150px minmax(0,1fr) minmax(0,1fr);gap:26px}
-@media(max-width:1100px){.pet-card .pet-studio{grid-template-columns:150px minmax(0,1fr)}.pet-card .pet-studio>.pet-controls:last-child{grid-column:2}}
-@media(max-width:680px){.pet-card .pet-studio{grid-template-columns:1fr}.pet-card .pet-studio>.pet-controls:last-child{grid-column:auto}}
+.pet-card{padding:34px 36px 38px}
+.pet-card .card-head h2{font-size:26px;letter-spacing:-.02em}
+.pet-card .card-head .muted{font-size:15px;margin-top:4px}
+.pet-card .pet-studio{grid-template-columns:230px minmax(0,1fr) minmax(0,1fr);gap:28px;margin-top:10px}
+.pet-card .pet-stage{padding:18px;border-radius:26px;position:sticky;top:96px}
+.pet-card .pet-preview,.pet-card .pet-preview .pet-img{width:194px;height:194px}
+.pet-card .form-label{font-size:15px;margin-bottom:4px}
+.pet-card .chip-row{gap:9px}
+.pet-card .chip.thumb{min-width:78px;padding:9px 10px 7px;border-radius:14px}
+.pet-card .chip.thumb .pet-img{width:60px;height:60px}
+.pet-card .chip.thumb .lbl{font-size:12.5px}
+.pet-card .chip-row.grid7{gap:9px}
+.pet-card .chip-row.grid7 .chip.thumb{min-width:0;padding:8px 0 7px}
+.pet-card .chip-row.grid7 .chip.thumb .pet-img{width:min(56px,100%);height:auto}
+.pet-card .chip-row.grid7 .chip.thumb .lbl{font-size:10.5px;letter-spacing:-.02em}
+.pet-card .chip-row.grid6{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px}
+.pet-card .chip-row.grid6 .chip.thumb{min-width:0;padding:9px 0 7px}
+.pet-card .chip-row.grid6 .chip.thumb .pet-img{width:min(60px,100%);height:auto;aspect-ratio:1}
+.pet-card .chip.swatch2{padding:11px 2px 9px;gap:6px;border-radius:14px}
+.pet-card .chip.swatch2 .sw{width:32px;height:32px}
+.pet-card .chip.swatch2 .lbl{font-size:11.5px}
+.pet-card .input{font-size:16px;padding:14px 16px}
+.pet-card .btn{font-size:15px;padding:14px 22px}
+@media(max-width:1100px){.pet-card .pet-studio{grid-template-columns:minmax(0,1fr);max-width:620px;margin-left:auto;margin-right:auto}.pet-card .pet-stage{grid-column:1/-1;justify-self:center;position:static}.pet-card .pet-studio>.pet-controls:last-child{grid-column:auto}}
+@media(max-width:680px){.pet-card{padding:24px 20px}.pet-card .pet-stage{position:static;justify-self:center}.pet-card .pet-studio{grid-template-columns:1fr}.pet-card .pet-studio>.pet-controls:last-child{grid-column:auto}}
 .chip-row.grid7{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
 .chip-row.grid7 .chip.thumb .pet-img{width:min(42px,100%);height:auto;aspect-ratio:1}
-@container (max-width:340px){.chip-row.grid7{grid-template-columns:repeat(auto-fill,minmax(60px,1fr))}}
+@container (max-width:250px){.chip-row.grid7{grid-template-columns:repeat(auto-fill,minmax(60px,1fr))}}
 .chip-row.grid7 .chip.thumb{min-width:0;padding:6px 0 5px}
 .chip-row.grid7 .chip.thumb .lbl{font-size:10px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;display:block}
 .chip-row.grid7 .chip.thumb .dot{display:none}
@@ -884,7 +906,7 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
 
               <div class="pet-controls">
                 <div class="form-label" data-i18n="pet.animal">Animal</div>
-                <div class="chip-row" id="petSpecies"></div>
+                <div class="chip-row grid6" id="petSpecies"></div>
 
                 <div class="form-label" style="margin-top:14px" data-i18n="pet.colour">Colour</div>
                 <div class="chip-row grid7" id="petColour"></div>
@@ -900,7 +922,7 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
 
               <div class="pet-controls">
                 <div class="form-label" data-i18n="pet.accessory">Accessory</div>
-                <div class="chip-row" id="petAcc"></div>
+                <div class="chip-row grid6" id="petAcc"></div>
 
                 <div id="petAccColourWrap">
                 <div class="form-label" style="margin-top:14px" data-i18n="pet.accColour">Accessory colour</div>
@@ -3021,19 +3043,19 @@ const PET_SPECIES = [
 // Colore e accessorio sono indipendenti: il corpo si ricolora, l'accessorio sta sopra.
 const PET_COLOURS = [
   { id:'natural',   label:'Natural',   de:'Natur',     dot:'#efe7dc' },
-  { id:'caramel',   label:'Caramel',   de:'Karamell',  dot:'#e0a86e' },
+  { id:'caramel',   label:'Sand',      de:'Sand',      dot:'#e0a86e' },
   { id:'chocolate', label:'Cocoa',     de:'Kakao',     dot:'#9a6446' },
   { id:'honey',     label:'Honey',     de:'Honig',     dot:'#f2cc62' },
   { id:'peach',     label:'Peach',     de:'Pfirsich',  dot:'#f6ad88' },
   { id:'rose',      label:'Rose',      de:'Rosa',      dot:'#f29aa6' },
   { id:'berry',     label:'Berry',     de:'Beere',     dot:'#c9658f' },
-  { id:'lavender',  label:'Lavender',  de:'Lavendel',  dot:'#b39be6' },
+  { id:'lavender',  label:'Lilac',     de:'Flieder',   dot:'#b39be6' },
   { id:'sky',       label:'Sky',       de:'Himmel',    dot:'#96c6f0' },
   { id:'ocean',     label:'Ocean',     de:'Ozean',     dot:'#6f8fd6' },
   { id:'mint',      label:'Mint',      de:'Minze',     dot:'#94dfc0' },
   { id:'sage',      label:'Sage',      de:'Salbei',    dot:'#aecd8e' },
   { id:'grey',      label:'Grey',      de:'Grau',      dot:'#c3c8cd' },
-  { id:'charcoal',  label:'Charcoal',  de:'Anthrazit', dot:'#6e7277' }
+  { id:'charcoal',  label:'Slate',     de:'Grafit',    dot:'#6e7277' }
 ];
 // Colori degli accessori: il disegno resta quello, cambia solo la tinta (ombre e luci restano).
 const ACC_COLOURS = [
