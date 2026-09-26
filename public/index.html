@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-0uSpqS8kQpl64dyx46Sm2I2zkaNl8uNXYldkmG7LPFQ='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-auoVoAMOESGtNd7JK7rGvIm9CwxW77rwnIrim/xarNg='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>BAO &mdash; symptom &amp; wellbeing tracker</title>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -241,9 +241,9 @@ body.chat-mode::-webkit-scrollbar{width:0;height:0}
 .bao-corner{animation:cornerSway 6s ease-in-out infinite}
 @keyframes cornerSway{0%,100%{transform:rotate(-3deg) translateY(0)}50%{transform:rotate(3deg) translateY(-5px)}}
 
-.sleepy{position:relative;display:block;width:66px;height:71px;flex:0 0 auto}
-.sleepy-img{position:absolute;inset:0}
-.sleepy-img .bao{position:absolute;inset:0;width:66px;height:71px;
+.sleepy{position:relative;display:block;width:72px;height:72px;flex:0 0 auto}
+.sleepy-img{position:absolute;inset:0;border-radius:50%;overflow:hidden;background:#d5d7c1}.bao-resting-round{background-image:url(data:image/png;base64,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)}
+.sleepy-img .bao{position:absolute;left:5px;top:3px;width:62px;height:67px;
   animation:iconBreathe 4.4s ease-in-out infinite}
 .sleepy .zzz{position:absolute;right:12px;top:8px;font-style:normal;font-weight:800;color:var(--teal);
   font-size:13px;opacity:0;animation:zfloat 3.6s ease-in-out infinite}
@@ -886,7 +886,7 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
           </div>
           <div class="bao-inline">
             <span class="sleepy">
-              <span class="sleepy-img"><span class="bao bao-resting" role="img" aria-label="Bao the panda, sleeping" data-i18n-attr="aria-label|aria.sleeping"></span></span>
+              <span class="sleepy-img"><span class="bao bao-resting bao-resting-round" role="img" aria-label="Bao the panda, sleeping" data-i18n-attr="aria-label|aria.sleeping"></span></span>
               <i class="zzz">z</i><i class="zzz">z</i><i class="zzz">z</i>
             </span>
             <span class="bao-line" data-i18n="set.line"><b>Bao rests here too.</b>Nothing leaves your device on its own.</span>
@@ -923,7 +923,7 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
 
             <button class="linklike danger" id="delOpen" type="button" data-i18n="acc.delete">Delete my account</button>
             <div class="del-box" id="delBox" hidden>
-              <p data-i18n="acc.deleteWarn">This removes your account, every check-in and your companion. It cannot be undone.</p>
+              <p data-i18n="acc.deleteWarn">This removes your account, every check-in and your avatar. It cannot be undone.</p>
               <label class="form-label" for="delPass" data-i18n="acc.deletePw">Type your password to confirm</label>
               <div class="inline-form small">
                 <input class="input" id="delPass" type="password" autocomplete="current-password">
@@ -954,8 +954,8 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
           </div>
         </div>
         <div class="card pet-card">
-            <div class="card-head"><div><h2 data-i18n="set.companion">Your companion</h2>
-              <div class="muted" data-i18n="set.companionSub">Build a little friend. It will sit next to your messages in the chat.</div></div></div>
+            <div class="card-head"><div><h2 data-i18n="set.companion">Your avatar</h2>
+              <div class="muted" data-i18n="set.companionSub">Design the little animal that represents you. It appears next to your messages in the chat.</div></div></div>
 
             <div class="pet-studio">
               <div class="pet-stage"><div class="pet-preview" id="petPreview"></div></div>
@@ -971,7 +971,7 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
                 <input class="input" id="petName" maxlength="18" placeholder="e.g. Tim" data-i18n-attr="placeholder|pet.ph">
 
                 <div style="display:flex;gap:9px;margin-top:16px;flex-wrap:wrap">
-                  <button class="btn primary" id="petSave" data-i18n="pet.save">Save my companion</button>
+                  <button class="btn primary" id="petSave" data-i18n="pet.save">Save my avatar</button>
                   <button class="btn outline" id="petClear" data-i18n="pet.remove">Remove</button>
                 </div>
               </div>
@@ -1217,10 +1217,10 @@ const I18N = {
     'set.confirmClear': 'Delete every check-in? This cannot be undone.',
     'set.cleared':  'All check-ins deleted.',
 
-    'pet.your':    'your companion',
-    'pet.Your':    'Your companion',
+    'pet.your':    'your avatar',
+    'pet.Your':    'Your avatar',
     'pet.saved':   n => n + ' will sit next to your messages now.',
-    'pet.removed': 'Companion removed.',
+    'pet.removed': 'Avatar removed.',
 
     'login.forgot':      'Forgot your password?',
     'login.back':        'Back to sign in',
@@ -1413,10 +1413,10 @@ const I18N = {
     'set.confirmClear': 'Alle Check-ins löschen? Das kann nicht rückgängig gemacht werden.',
     'set.cleared':  'Alle Check-ins gelöscht.',
 
-    'pet.your':    'dein Begleiter',
-    'pet.Your':    'Dein Begleiter',
+    'pet.your':    'dein Avatar',
+    'pet.Your':    'Dein Avatar',
     'pet.saved':   n => n + ' sitzt jetzt neben deinen Nachrichten.',
-    'pet.removed': 'Begleiter entfernt.',
+    'pet.removed': 'Avatar entfernt.',
 
     'login.forgot':      'Passwort vergessen?',
     'login.back':        'Zurück zur Anmeldung',
@@ -1528,8 +1528,8 @@ Object.assign(I18N.de, {
   "home.ctaSub": "Eine Minute mit Bao. Nichts wird gespeichert, bis du auf Speichern drückst.",
   "home.reflectHint": "Es gibt keine richtige Antwort. Bao fragt, du antwortest nur, worauf du Lust hast.",
   "set.clear": "Alle meine Check-ins löschen",
-  "set.companion": "Dein Begleiter",
-  "set.companionSub": "Bau dir einen kleinen Freund. Er sitzt im Chat neben deinen Nachrichten.",
+  "set.companion": "Dein Avatar",
+  "set.companionSub": "Gestalte das kleine Tier, das dich darstellt. Es erscheint im Chat neben deinen Nachrichten.",
   "pet.animal": "Tier",
   "pet.colour": "Farbe",
   "pet.accessory": "Accessoire",
@@ -1537,7 +1537,7 @@ Object.assign(I18N.de, {
   "pet.accent": "Akzentfarbe",
   "pet.look": "Stil",
   "pet.ph": "z. B. Tim",
-  "pet.save": "Begleiter speichern",
+  "pet.save": "Avatar speichern",
   "pet.remove": "Entfernen",
   "set.checkins": "Deine Check-ins",
   "set.checkinsSub": "Alle Einträge, neueste zuerst. Du kannst jeden davon entfernen.",
@@ -1954,7 +1954,7 @@ const auth = {
   async register(u, p, name){
     if (!cryptoReady()) throw new Error(t('err.noCrypto'));
     if (MODE === 'server'){
-      const r = await jpost('/api/auth/register', { username:u, password:p, name });
+      const r = await jpost('/api/auth/register', { username:u, password:p, name, lang: LANG });
       USER_NAME = r.name || name;
       const made = await upgradeAccount(r.user, p, USER_NAME);
       startSession(r.user, made.raw, made.key);
@@ -2469,6 +2469,7 @@ async function baoConversation(){
 async function runConversation(){
   convo = 'running';
   entry = freshEntry();
+  feltNow = new Set();
 
   entry.name = displayName();
 
@@ -2503,45 +2504,12 @@ async function runConversation(){
           resolveAnswer = value => { say(value, 'me'); resolveAnswer = null; resolve(value); };
           if (pending !== null){ const p = pending; pending = null; resolveAnswer(p); }
         });
+        await feelCheck(detail);
       }
 
-      await inlineStep($('bodyCapture'), {
-        marker : t('body.marker'),
-        title  : t('body.title'),
-        confirm: t('body.confirm'),
-        back   : true,
-        onShow : async box => {
-          const counter = box.querySelector('.widget-count');
-          const refresh = () => { if (counter) counter.textContent = t('body.count', selectedParts().length); };
-          $$('.body-part').forEach(b => b.addEventListener('click', refresh));
-          refresh();
-          if (!zone) return;
-          const btn = $$('.body-part').find(b => b.dataset.zone === zone);
-          if (!btn) return;
-          if (btn.classList.contains('back-only')){
-            document.querySelector('.body-view-toggle button[data-side="back"]').click();
-            await wait(180);
-          }
-          btn.classList.add('selected');
-          refresh();
-          openPrecision(btn, zone);
-          say(t('body.highlighted', partName(zone)), 'bao', 'reflect', 'checkin');
-        }
-      });
-      const parts = selectedParts();
-      if (parts.length) say(t('recap.parts') + parts.map(partName).join(', '), 'bao', 'recap', 'checkin');
-      resetBody();
+      const { parts, rating } = await captureBodyRating(zone);
 
-      const rateBox = ratingWidget();
-      await inlineStep(rateBox, {
-        marker : t('rate.marker'),
-        title  : t('rate.title'),
-        confirm: t('rate.confirm')
-      });
-      const rating = rateBox.querySelector('input').value;
-      say(t('recap.rating') + rating + ' / 10', 'bao', 'recap', 'checkin');
-
-      const where     = await ask(t('q.situation'), 'thinking');
+      const where     = await askFeel(t('q.situation'), 'thinking');
       const repeated  = await askYesNo(t('q.repeated'), 'thinking');
       const situation = repeated === 'yes'
         ? where + t('chat.multi')
@@ -2554,11 +2522,11 @@ async function runConversation(){
     }
   }
 
-  entry.day    = await ask(t('q.day'), 'happy');
-  entry.emotions = await ask(t('q.emotions'), 'listening');
+  entry.day    = await askFeel(t('q.day'), 'happy');
+  entry.emotions = await askFeel(t('q.emotions'), 'listening');
 
   await baoSay(t('chat.almost'), '', 'cheer', 700);
-  entry.personal = await ask(t('q.personal'), 'cheer');
+  entry.personal = await askFeel(t('q.personal'), 'cheer');
 
   await showRecap();
 }
@@ -2569,7 +2537,7 @@ function buildRecap(e){
     if (s.reflection) b += '\n*' + s.reflection + '*';
     if (s.detail)     b += '\n' + s.detail;
     if (s.parts && s.parts.length) b += '\n' + t('recap.parts') + s.parts.map(partName).join(', ');
-    if (s.rating)                  b += '\n' + t('recap.rating') + s.rating + ' / 10';
+    if (s.rating)                  b += '\n' + t(s.kind === 'feeling' ? 'recap.intensity' : 'recap.rating') + s.rating + ' / 10';
     b += '\n' + t('recap.situations') + s.situation;
     return b;
   });
@@ -3071,8 +3039,8 @@ function renderDayPanel(){
       if (x.parts && x.parts.length)
         html += '<div class="chiprow" style="margin-top:8px">' + x.parts.map(pt => '<span>' + esc(partName(pt)) + '</span>').join('') + '</div>';
       if (said(x.detail))     html += qa(t('day.added'), x.detail);
-      if (said(x.situation))  html += qa(t('q.situation'), x.situation);
-      if (x.repeated)         html += qa(t('q.repeated'), x.repeated === 'yes' ? t('day.yes') : t('day.no'));
+      if (said(x.situation))  html += qa(t(x.kind === 'feeling' ? 'q.feelSituation' : 'q.situation'), x.situation);
+      if (x.repeated)         html += qa(t(x.kind === 'feeling' ? 'q.feelRepeated' : 'q.repeated'), x.repeated === 'yes' ? t('day.yes') : t('day.no'));
       if (said(x.reflection)) html += '<div class="sym-reflect">' + para(x.reflection) + '</div>';
       html += '</div>';
     });
@@ -3713,12 +3681,22 @@ Object.assign(I18N.de, {
   'rem.sub':       'Ein sanfter Anstoß jeden Abend für deinen Check-in.',
   'rem.at':        'Erinnere mich um',
   'acc.delete':    'Mein Konto löschen',
-  'acc.deleteWarn':'Das entfernt dein Konto, alle Check-ins und deinen Begleiter. Es lässt sich nicht rückgängig machen.',
+  'acc.deleteWarn':'Das entfernt dein Konto, alle Check-ins und deinen Avatar. Es lässt sich nicht rückgängig machen.',
   'acc.deletePw':  'Gib zur Bestätigung dein Passwort ein',
   'acc.deleteGo':  'Endgültig löschen',
   'acc.deleteCancel': 'Konto behalten',
   'login.whereServer': 'Dein Tagebuch liegt auf dem BAO-Server, nur für dich.'
 });
+
+/* nell'app per iPhone i link "in una nuova scheda" non si aprono: li si apre nella stessa */
+document.addEventListener('click', e => {
+  const cap = window.Capacitor;
+  if (!cap || !cap.isNativePlatform || !cap.isNativePlatform()) return;
+  const a = e.target.closest && e.target.closest('a[target="_blank"]');
+  if (!a) return;
+  e.preventDefault();
+  location.href = a.href;
+}, true);
 
 
 /* ============================================================================
@@ -3757,12 +3735,14 @@ function recoverFields(){
   $('emailField').hidden = reset;
   $('passField').hidden  = forgot;
   $('pass2Field').hidden = !reset;
-  $('loginForgot').hidden = loginMode !== 'signin' || MODE !== 'server';
+  $('loginForgot').hidden = loginMode !== 'signin';
   $('loginOk').hidden = true;
   if (reset) $('loginPass').setAttribute('autocomplete', 'new-password');
   recoverText();
 }
 $('loginForgot').addEventListener('click', () => {
+  // senza server nessuno puo' spedire la mail: meglio dirlo che nascondere il pulsante
+  if (MODE !== 'server') return loginErr(t('forgot.needServer'));
   loginMode = 'forgot';
   paintLogin();
 });
@@ -3804,7 +3784,8 @@ Object.assign(I18N.en, {
   'reset.new':      'New password',
   'reset.mismatch': 'The two passwords are not the same.',
   'reset.fail':     'This link has expired or was already used. Ask for a new one.',
-  'reset.done':     'Your password is changed. Sign in with the new one.'
+  'reset.done':     'Your password is changed. Sign in with the new one.',
+  'forgot.needServer': 'Password reset works on the BAO website and in the app. This page was opened as a file, so it cannot send emails.'
 });
 Object.assign(I18N.de, {
   'forgot.link':    'Passwort vergessen?',
@@ -3819,7 +3800,133 @@ Object.assign(I18N.de, {
   'reset.again':    'Noch einmal eingeben',
   'reset.mismatch': 'Die beiden Passwörter sind nicht gleich.',
   'reset.fail':     'Dieser Link ist abgelaufen oder wurde schon benutzt. Fordere einen neuen an.',
-  'reset.done':     'Dein Passwort ist geändert. Melde dich mit dem neuen an.'
+  'reset.done':     'Dein Passwort ist geändert. Melde dich mit dem neuen an.',
+  'forgot.needServer': 'Das Zurücksetzen funktioniert auf der BAO-Website und in der App. Diese Seite wurde als Datei geöffnet und kann keine E-Mails senden.'
+});
+
+
+async function captureBodyRating(zone, label){
+  await inlineStep($('bodyCapture'), {
+    marker : t('body.marker'),
+    title  : t('body.title'),
+    confirm: t('body.confirm'),
+    back   : true,
+    onShow : async box => {
+      const counter = box.querySelector('.widget-count');
+      const refresh = () => { if (counter) counter.textContent = t('body.count', selectedParts().length); };
+      $$('.body-part').forEach(b => b.addEventListener('click', refresh));
+      refresh();
+      if (!zone) return;
+      const btn = $$('.body-part').find(b => b.dataset.zone === zone);
+      if (!btn) return;
+      if (btn.classList.contains('back-only')){
+        document.querySelector('.body-view-toggle button[data-side="back"]').click();
+        await wait(180);
+      }
+      btn.classList.add('selected');
+      refresh();
+      openPrecision(btn, zone);
+      say(t('body.highlighted', partName(zone)), 'bao', 'reflect', 'checkin');
+    }
+  });
+  const parts = selectedParts();
+  if (parts.length) say(t('recap.parts') + parts.map(partName).join(', '), 'bao', 'recap', 'checkin');
+  resetBody();
+
+  const rateBox = ratingWidget();
+  await inlineStep(rateBox, {
+    marker : t('rate.marker'),
+    title  : t('rate.title'),
+    confirm: t('rate.confirm')
+  });
+  const rating = rateBox.querySelector('input').value;
+  say(t(label || 'recap.rating') + rating + ' / 10', 'bao', 'recap', 'checkin');
+  return { parts, rating };
+}
+
+let feltNow = new Set();
+const FEEL_WORDS = {
+  sad:   /(?<!\p{L})(sad|sadder|saddest|sadness|unhappy|depressed|miserable|heartbroken|hopeless|lonely|tearful|cried|cry|crying|tears|upset(?!\s+(?:stomach|tummy|belly))|gloomy|feel(?:ing|s|t)?\s+(?:so\s+|really\s+|very\s+|a\s+bit\s+)?(?:down|low|blue)|traurig\p{L}*|traurigkeit|niedergeschlagen|bedrückt|deprimiert|geweint|weinen|weinte|einsam|unglücklich|hoffnungslos)(?!\p{L})/iu,
+  angry: /(?<!\p{L})(angry|angrier|anger|mad|furious|annoyed|irritated|frustrated|frustration|pissed|rage|livid|resentful|wütend|wut|sauer|verärgert|genervt|gereizt|frustriert|ärgerlich|geärgert|zornig|aufgebracht)(?!\p{L})/iu
+};
+const CRISIS_WORDS = /(suicid|kill myself|end my life|want to die|wanna die|don['’]?t want to live|self[- ]?harm|hurt myself|cut myself|suizid|selbstmord|mich umbringen|nicht mehr leben|sterben will|mir etwas antun|mir was antun|ritzen|selbstverletz)/i;
+const NEGATION = /(\bnot\b|n't\b|n’t\b|\bnever\b|\bno\b|\bnicht\b|\bnie\b|(?<!\p{L})kein\p{L}*)/iu;
+
+function feelingsIn(text){
+  const found = [];
+  for (const kind of ['sad', 'angry']){
+    const m = FEEL_WORDS[kind].exec(text);
+    if (!m) continue;
+    const before = text.slice(0, m.index).split(/[.!?;,]/).pop().trim().split(/\s+/).slice(-3).join(' ');
+    if (NEGATION.test(before)) continue;
+    found.push(kind);
+  }
+  return found;
+}
+
+async function askFeel(question, mood){
+  const v = await ask(question, mood);
+  await feelCheck(v);
+  return v;
+}
+
+async function feelCheck(text){
+  text = String(text || '');
+  if (!text) return;
+  if (CRISIS_WORDS.test(text)){
+    if (feltNow.has('crisis')) return;
+    feltNow.add('crisis');
+    await baoSay(t('feel.crisis'), '', 'listening', 900);
+    return;
+  }
+  for (const kind of feelingsIn(text)){
+    if (feltNow.has(kind)) continue;
+    feltNow.add(kind);
+    await feelingDetour(kind);
+  }
+}
+
+async function feelingDetour(kind){
+  const more = await ask(t('feel.notice.' + kind), 'listening');
+  if (CRISIS_WORDS.test(more) && !feltNow.has('crisis')){
+    feltNow.add('crisis');
+    await baoSay(t('feel.crisis'), '', 'listening', 900);
+  }
+  await baoSay(t('feel.body'), '', 'thinking');
+  const { parts, rating } = await captureBodyRating(null, 'recap.intensity');
+  const where    = await ask(t('q.feelSituation'), 'thinking');
+  const repeated = await askYesNo(t('q.feelRepeated'), 'thinking');
+  const situation = repeated === 'yes' ? where + t('chat.multi') : where;
+  entry.symptoms.push({ name: t('feel.name.' + kind), kind: 'feeling', reflection: '', detail: more, parts, rating, situation, repeated });
+  await baoSay(t('feel.back'), '', 'cheer');
+}
+
+Object.assign(I18N.en, {
+  'set.companion':    'Your avatar',
+  'set.companionSub': 'Design the little animal that represents you. It appears next to your messages in the chat.',
+  'pet.save':         'Save my avatar',
+  'feel.notice.sad':   'It sounds like you felt sad. That matters too. Can you tell me a bit more about it?',
+  'feel.notice.angry': 'It sounds like something made you angry. Can you tell me a bit more about what happened?',
+  'feel.body':         'Thank you for telling me. Feelings often sit somewhere in the body too.',
+  'feel.back':         'Noted! Let’s go back to where we were.',
+  'feel.name.sad':     'Feeling sad',
+  'recap.intensity':   '* INTENSITY * --> ',
+  'feel.name.angry':   'Feeling angry',
+  'q.feelSituation':   'In what situation did you feel this way?',
+  'q.feelRepeated':    'Did you feel this way more than once since your last check in?',
+  'feel.crisis':       'Thank you for trusting me with this. I’m a little panda and I can’t help in an emergency, but you don’t have to carry it alone. If you are in danger or might hurt yourself, please call 112 now. In Germany you can talk to TelefonSeelsorge any time, for free: 0800 111 0 111. Is there someone you trust you could reach out to today?'
+});
+Object.assign(I18N.de, {
+  'feel.notice.sad':   'Es klingt, als wärst du traurig gewesen. Das zählt auch. Magst du mir ein bisschen mehr darüber erzählen?',
+  'feel.notice.angry': 'Es klingt, als hätte dich etwas wütend gemacht. Magst du mir ein bisschen mehr erzählen, was passiert ist?',
+  'feel.body':         'Danke, dass du es mir erzählst. Gefühle sitzen oft auch irgendwo im Körper.',
+  'feel.back':         'Notiert! Lass uns dort weitermachen, wo wir waren.',
+  'feel.name.sad':     'Traurigkeit',
+  'recap.intensity':   '* INTENSITÄT * --> ',
+  'feel.name.angry':   'Wut',
+  'q.feelSituation':   'In welcher Situation hast du dich so gefühlt?',
+  'q.feelRepeated':    'Hast du dich seit deinem letzten Check-in mehrmals so gefühlt?',
+  'feel.crisis':       'Danke, dass du mir das anvertraust. Ich bin nur ein kleiner Panda und kann in einem Notfall nicht helfen, aber du musst das nicht allein tragen. Wenn du in Gefahr bist oder befürchtest, dir etwas anzutun, ruf bitte jetzt die 112 an. Die TelefonSeelsorge ist rund um die Uhr kostenlos erreichbar: 0800 111 0 111. Gibt es jemanden, dem du vertraust und bei dem du dich heute melden kannst?'
 });
 
 (async function boot(){
