@@ -1,0 +1,13 @@
+{
+  "appId": "com.sofiasirad.bao",
+  "appName": "BAO",
+  "webDir": "www",
+  "server": {
+    "url": "https://bao-web.pages.dev",
+    "cleartext": false
+  },
+  "ios": {
+    "contentInset": "always",
+    "backgroundColor": "#f7faf8"
+  }
+}

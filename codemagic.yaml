@@ -1,0 +1,53 @@
+# Codemagic costruisce l'app per iPhone su un Mac nel cloud e la manda su TestFlight.
+# Prima di usarlo cambia le tre righe segnate con  <-- CAMBIA
+workflows:
+  bao-ios:
+    name: BAO iPhone
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    integrations:
+      app_store_connect: bao-key              # <-- CAMBIA: il nome dato alla chiave API in Codemagic
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.sofiasirad.bao # <-- CAMBIA: uguale ad appId in app-ios/capacitor.config.json
+      vars:
+        APP_STORE_APPLE_ID: 0000000000        # <-- CAMBIA: App Store Connect > la tua app > App Information > Apple ID
+      node: 20
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Install Capacitor
+        script: |
+          cd app-ios
+          npm install
+      - name: Create the iOS project
+        script: |
+          cd app-ios
+          if [ ! -d ios ]; then npx cap add ios; fi
+          npx cap sync ios
+      - name: BAO name, icon and export compliance
+        script: |
+          cd app-ios
+          bash scripts/prepare-ios.sh
+      - name: Code signing
+        script: |
+          xcode-project use-profiles --project "app-ios/ios/App/App.xcodeproj"
+      - name: Build number
+        script: |
+          cd $CM_BUILD_DIR/app-ios/ios/App
+          LATEST=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID" 2>/dev/null || echo 0)
+          case "$LATEST" in ''|*[!0-9]*) LATEST=0 ;; esac
+          agvtool new-version -all $((LATEST + 1))
+      - name: Build the app
+        script: |
+          cd $CM_BUILD_DIR/app-ios/ios/App
+          xcode-project build-ipa --workspace App.xcworkspace --scheme App
+    artifacts:
+      - app-ios/ios/App/build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        submit_to_app_store: false

@@ -1,0 +1,3 @@
+node_modules/
+# il progetto Xcode lo genera Codemagic a ogni build
+ios/

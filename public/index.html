@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-0uSpqS8kQpl64dyx46Sm2I2zkaNl8uNXYldkmG7LPFQ='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-93bnIO8ncy/ADWjCsrkj0GgPiggh+8cPoicYrZL6bAw='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>BAO &mdash; symptom &amp; wellbeing tracker</title>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -3720,6 +3720,16 @@ Object.assign(I18N.de, {
   'login.whereServer': 'Dein Tagebuch liegt auf dem BAO-Server, nur für dich.'
 });
 
+/* nell'app per iPhone i link "in una nuova scheda" non si aprono: li si apre nella stessa */
+document.addEventListener('click', e => {
+  const cap = window.Capacitor;
+  if (!cap || !cap.isNativePlatform || !cap.isNativePlatform()) return;
+  const a = e.target.closest && e.target.closest('a[target="_blank"]');
+  if (!a) return;
+  e.preventDefault();
+  location.href = a.href;
+}, true);
+
 
 /* ============================================================================
    PASSWORD DIMENTICATA
@@ -3757,12 +3767,14 @@ function recoverFields(){
   $('emailField').hidden = reset;
   $('passField').hidden  = forgot;
   $('pass2Field').hidden = !reset;
-  $('loginForgot').hidden = loginMode !== 'signin' || MODE !== 'server';
+  $('loginForgot').hidden = loginMode !== 'signin';
   $('loginOk').hidden = true;
   if (reset) $('loginPass').setAttribute('autocomplete', 'new-password');
   recoverText();
 }
 $('loginForgot').addEventListener('click', () => {
+  // senza server nessuno puo' spedire la mail: meglio dirlo che nascondere il pulsante
+  if (MODE !== 'server') return loginErr(t('forgot.needServer'));
   loginMode = 'forgot';
   paintLogin();
 });
@@ -3804,7 +3816,8 @@ Object.assign(I18N.en, {
   'reset.new':      'New password',
   'reset.mismatch': 'The two passwords are not the same.',
   'reset.fail':     'This link has expired or was already used. Ask for a new one.',
-  'reset.done':     'Your password is changed. Sign in with the new one.'
+  'reset.done':     'Your password is changed. Sign in with the new one.',
+  'forgot.needServer': 'Password reset works on the BAO website and in the app. This page was opened as a file, so it cannot send emails.'
 });
 Object.assign(I18N.de, {
   'forgot.link':    'Passwort vergessen?',
@@ -3819,7 +3832,8 @@ Object.assign(I18N.de, {
   'reset.again':    'Noch einmal eingeben',
   'reset.mismatch': 'Die beiden Passwörter sind nicht gleich.',
   'reset.fail':     'Dieser Link ist abgelaufen oder wurde schon benutzt. Fordere einen neuen an.',
-  'reset.done':     'Dein Passwort ist geändert. Melde dich mit dem neuen an.'
+  'reset.done':     'Dein Passwort ist geändert. Melde dich mit dem neuen an.',
+  'forgot.needServer': 'Das Zurücksetzen funktioniert auf der BAO-Website und in der App. Diese Seite wurde als Datei geöffnet und kann keine E-Mails senden.'
 });
 
 (async function boot(){
