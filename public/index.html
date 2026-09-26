@@ -5,9 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-cVqaLl3KNZ6yWVidBUReDCFXRhphQmqHb0tE/mP03SM='; style-src 'unsafe-inline'; img-src data:; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-0uSpqS8kQpl64dyx46Sm2I2zkaNl8uNXYldkmG7LPFQ='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>BAO &mdash; symptom &amp; wellbeing tracker</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icons/favicon-64.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="theme-color" content="#187d78">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="BAO">
 <style>:root{
     --ink:#24333b; --muted:#718087; --line:#dfe7e6; --paper:#f7faf8; --card:#ffffff;
     --teal:#187d78; --teal-dark:#0d5e5b; --mint:#dff1ec; --coral:#e98772; --coral-soft:#fbe9e4;
@@ -563,6 +569,33 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
 .chip.thumb .lbl{font-size:11px;font-weight:700;display:flex;align-items:center;gap:4px}
 .chip.thumb .dot{width:7px;height:7px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
 .chip.thumb.on{background:var(--mint);border-color:var(--teal);color:var(--teal-dark);box-shadow:0 0 0 2px rgba(24,125,120,.18)}
+.consent{display:flex;gap:9px;align-items:flex-start;text-align:left;margin-top:14px;
+  font-size:12.5px;line-height:1.45;color:var(--muted);cursor:pointer}
+.consent input{margin-top:2px;width:17px;height:17px;flex:0 0 auto;accent-color:var(--teal)}
+.consent a{color:var(--teal)}
+.legal-links{display:flex;justify-content:center;gap:16px;margin:10px 0 0;font-size:12px}
+.legal-links a{color:var(--muted);text-decoration:none}
+.legal-links a:hover{color:var(--teal);text-decoration:underline}
+.set-legal{margin-top:26px}
+.linklike.danger{color:#b4573f;margin-top:14px;display:inline-block}
+.linklike[hidden]{display:none}
+.del-box{margin-top:10px;padding:12px 14px;border-radius:12px;background:#fdf1ee;border:1px solid #f3d6ce}
+.del-box[hidden]{display:none}
+.del-box p{margin:0 0 10px;font-size:12.5px;color:#7d3b2c;line-height:1.45}
+.del-box .form-label{color:#7d3b2c}
+.btn.danger-btn{background:#b4573f;color:#fff;border:0}
+.btn.danger-btn:disabled{opacity:.6}
+.reminder-card .card-head{align-items:center}
+.reminder-card .toggle{flex:0 0 auto}
+.rem-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.rem-row .form-label{margin:0}
+.rem-time{width:auto;max-width:130px;padding:7px 10px;font-size:14px;border-radius:9px}
+.reminder-card.is-off .rem-row{opacity:.45;pointer-events:none}
+.rem-note{margin:10px 0 0}
+.login-ok{margin-top:12px;background:var(--mint);color:var(--teal-dark);border-radius:11px;
+  padding:10px 12px;font-size:13px;text-align:left;line-height:1.45}
+.login-ok[hidden],#emailField[hidden],#passField[hidden],#pass2Field[hidden],#loginForgot[hidden]{display:none}
+#loginForgot{display:block;margin:6px auto 0}
 </style>
 <script>
 /* ---------------------------------------------------------------------------
@@ -888,6 +921,29 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
               <button class="btn primary" id="nameSave" type="button" data-i18n="acc.saveName">Save name</button>
             </div>
 
+            <button class="linklike danger" id="delOpen" type="button" data-i18n="acc.delete">Delete my account</button>
+            <div class="del-box" id="delBox" hidden>
+              <p data-i18n="acc.deleteWarn">This removes your account, every check-in and your companion. It cannot be undone.</p>
+              <label class="form-label" for="delPass" data-i18n="acc.deletePw">Type your password to confirm</label>
+              <div class="inline-form small">
+                <input class="input" id="delPass" type="password" autocomplete="current-password">
+                <button class="btn danger-btn" id="delGo" type="button" data-i18n="acc.deleteGo">Delete forever</button>
+              </div>
+              <button class="linklike" id="delCancel" type="button" data-i18n="acc.deleteCancel">Keep my account</button>
+            </div>
+
+          </div>
+
+          <div class="card compact reminder-card">
+            <div class="card-head">
+              <div><h2 data-i18n="rem.title">Daily reminder</h2><div class="muted" data-i18n="rem.sub">A gentle nudge each evening to check in.</div></div>
+              <button class="toggle" id="remToggle" type="button" aria-pressed="true" aria-label="Daily reminder"></button>
+            </div>
+            <div class="rem-row">
+              <label class="form-label" for="remTime" data-i18n="rem.at">Remind me at</label>
+              <input class="input rem-time" id="remTime" type="time" value="20:30" step="300">
+            </div>
+            <p class="tiny rem-note" id="remNote"></p>
           </div>
 
           <div class="card">
@@ -931,6 +987,7 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
               </div>
             </div>
           </div>
+        <p class="legal-links set-legal"><a href="/privacy.html" target="_blank" rel="noopener" data-i18n="legal.privacy">Privacy</a><a href="/terms.html" target="_blank" rel="noopener" data-i18n="legal.terms">Terms</a><a href="/support.html" target="_blank" rel="noopener" data-i18n="legal.support">Support</a></p>
       </section>
 
     </div>
@@ -953,22 +1010,38 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
     <div class="brand-name login-brand">BAO <svg viewBox="0 0 24 24" class="heart-mark"><path d="M12 20.7S3.6 15.6 3.6 9.9c0-2.6 2-4.6 4.5-4.6 1.6 0 3 .8 3.9 2.1.9-1.3 2.3-2.1 3.9-2.1 2.5 0 4.5 2 4.5 4.6 0 5.7-8.4 10.8-8.4 10.8z"/></svg></div>
     <p class="muted" id="loginLede">Sign in to find your check-ins where you left them.</p>
 
-    <label class="form-label" for="loginUser" data-i18n="login.email">Email</label>
-    <input class="input" id="loginUser" type="email" autocomplete="email" data-i18n-attr="placeholder|login.emailPh" placeholder="you@example.com">
+    <div id="emailField">
+      <label class="form-label" for="loginUser" data-i18n="login.email">Email</label>
+      <input class="input" id="loginUser" type="email" autocomplete="email" data-i18n-attr="placeholder|login.emailPh" placeholder="you@example.com">
+    </div>
 
-    <label class="form-label" for="loginPass" style="margin-top:12px" id="loginPassLabel">Password</label>
-    <input class="input" id="loginPass" type="password" autocomplete="current-password">
+    <div id="passField">
+      <label class="form-label" for="loginPass" style="margin-top:12px" id="loginPassLabel">Password</label>
+      <input class="input" id="loginPass" type="password" autocomplete="current-password">
+    </div>
+
+    <div id="pass2Field" hidden>
+      <label class="form-label" for="loginPass2" style="margin-top:12px" data-i18n="reset.again">Type it again</label>
+      <input class="input" id="loginPass2" type="password" autocomplete="new-password">
+    </div>
 
     <div id="nameField" hidden>
       <label class="form-label" for="loginName" style="margin-top:12px" data-i18n="login.name">What should Bao call you?</label>
       <input class="input" id="loginName" maxlength="24" autocomplete="given-name" placeholder="Name">
+      <label class="consent">
+        <input type="checkbox" id="loginConsent">
+        <span data-i18n="login.consent">I agree that BAO stores the health information I write, to keep my diary. I have read the <a href="/privacy.html" target="_blank" rel="noopener">Privacy Policy</a> and the <a href="/terms.html" target="_blank" rel="noopener">Terms</a>.</span>
+      </label>
     </div>
 
     <div class="login-error" id="loginError" hidden></div>
+    <div class="login-ok" id="loginOk" hidden></div>
 
     <button class="btn primary" id="loginSubmit" type="submit" style="width:100%;margin-top:16px">Sign in</button>
+    <button class="linklike" id="loginForgot" type="button" data-i18n="forgot.link">Forgot your password?</button>
     <button class="linklike" id="loginSwitch" type="button">No account yet? Create one</button>
     <p class="tiny" id="loginWhere"></p>
+    <p class="legal-links"><a href="/privacy.html" target="_blank" rel="noopener" data-i18n="legal.privacy">Privacy</a><a href="/terms.html" target="_blank" rel="noopener" data-i18n="legal.terms">Terms</a><a href="/support.html" target="_blank" rel="noopener" data-i18n="legal.support">Support</a></p>
   </form>
 </div>
 
@@ -2849,6 +2922,7 @@ function fmt(d){
 }
 
 function renderSettings(){
+  paintReminder();
   $('storageCard').innerHTML = MODE === 'server' ? t('set.storageServer', esc(USER)) : t('set.storageBrowser', esc(USER));
 
   const list = sorted(DATA);
@@ -3354,11 +3428,13 @@ function paintLoginText(){
   $('loginPassLabel').textContent = t('login.pwLabel');
   $('loginPass').placeholder      = creating ? t('login.pwPh') : '';
   $('loginWhere').textContent     = MODE === 'server' ? t('login.whereServer') : t('login.whereBrowser');
+  recoverText();
 }
 function paintLogin(){
   paintLoginText();
   $('loginPass').setAttribute('autocomplete', loginMode === 'create' ? 'new-password' : 'current-password');
   $('nameField').hidden = loginMode !== 'create';
+  recoverFields();
   $('loginError').hidden = true;
   setTimeout(() => $('loginUser').focus(), 60);
 }
@@ -3381,6 +3457,7 @@ async function enterApp(){
   await loadPet();
   renderAll();
   go('home');
+  applyReminder();
 }
 const loginErr = m => { $('loginError').textContent = m; $('loginError').hidden = false; };
 
@@ -3393,6 +3470,8 @@ $('loginForm').addEventListener('submit', async e => {
   e.preventDefault();
   $('loginSubmit').disabled = true;
   try{
+    if (loginMode === 'forgot') return await sendResetLink();
+    if (loginMode === 'reset')  return await saveNewPassword();
     const u = $('loginUser').value.trim().toLowerCase();
     const p = $('loginPass').value;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(u)) return loginErr(t('err.email'));
@@ -3403,6 +3482,7 @@ $('loginForm').addEventListener('submit', async e => {
     if (loginMode === 'create'){
       const nick = $('loginName').value.trim().slice(0, 24);
       if (nick.length < 1) return loginErr(t('err.name'));
+      if (!$('loginConsent').checked) return loginErr(t('err.consent'));
       USER = await auth.register(u, p, nick);
     } else {
       USER = await auth.login(u, p);
@@ -3431,6 +3511,7 @@ $('nameInput').addEventListener('keydown', e => { if (e.key === 'Enter'){ e.prev
 
 
 $('signOutBtn').addEventListener('click', async () => {
+  await cancelReminder();
   await auth.logout();
   DATA = [];
   PET = null;
@@ -3456,6 +3537,291 @@ function setLang(lang){
 }
 $$('[data-lang]').forEach(b => b.addEventListener('click', () => setLang(b.dataset.lang)));
 
+/* ============================================================================
+   PROMEMORIA SERALE
+   La preferenza (acceso/spento e l'ora) resta su questo dispositivo, perche'
+   la notifica la manda il telefono stesso. Dentro l'app iOS (Capacitor, con il
+   plugin @capacitor/local-notifications) viene programmata ogni giorno alla
+   stessa ora. Sul sito la preferenza si salva e basta: il sito non puo'
+   mandare notifiche a pagina chiusa.
+   ========================================================================== */
+const REM_ID = 7301;
+const REM_DEFAULT = { on:true, time:'20:30' };
+function remKey(u = USER){ return 'bao.reminder.v1::' + (u || 'guest'); }
+function readReminder(){
+  try{
+    const v = JSON.parse(localStorage.getItem(remKey()) || 'null');
+    if (v && typeof v.on === 'boolean' && /^\d{2}:\d{2}$/.test(v.time)) return v;
+  }catch(e){}
+  return Object.assign({}, REM_DEFAULT);
+}
+function writeReminder(v){ try{ localStorage.setItem(remKey(), JSON.stringify(v)); }catch(e){} }
+function nativeNotifications(){
+  const cap = window.Capacitor;
+  if (!cap || !cap.isNativePlatform || !cap.isNativePlatform()) return null;
+  return (cap.Plugins && cap.Plugins.LocalNotifications) || null;
+}
+let remStatus = 'web';
+async function applyReminder(){
+  const LN = nativeNotifications();
+  if (!LN){ remStatus = 'web'; paintReminder(); return; }
+  const pref = readReminder();
+  try{
+    await LN.cancel({ notifications:[{ id: REM_ID }] });
+    if (!pref.on || !USER){ remStatus = 'off'; paintReminder(); return; }
+    let perm = await LN.checkPermissions();
+    if (perm.display !== 'granted') perm = await LN.requestPermissions();
+    if (perm.display !== 'granted'){ remStatus = 'denied'; paintReminder(); return; }
+    const [hour, minute] = pref.time.split(':').map(Number);
+    await LN.schedule({ notifications:[{
+      id: REM_ID,
+      title: t('rem.pushTitle'),
+      body: t('rem.pushBody', displayName()),
+      schedule: { on: { hour, minute }, allowWhileIdle: true }
+    }]});
+    remStatus = 'scheduled';
+  }catch(e){ remStatus = 'error'; }
+  paintReminder();
+}
+async function cancelReminder(){
+  const LN = nativeNotifications();
+  if (LN){ try{ await LN.cancel({ notifications:[{ id: REM_ID }] }); }catch(e){} }
+}
+function paintReminder(){
+  if (!$('remToggle')) return;
+  const pref = readReminder();
+  $('remToggle').classList.toggle('off', !pref.on);
+  $('remToggle').setAttribute('aria-pressed', String(pref.on));
+  $('remToggle').setAttribute('aria-label', t('rem.title'));
+  if (document.activeElement !== $('remTime')) $('remTime').value = pref.time;
+  document.querySelector('.reminder-card').classList.toggle('is-off', !pref.on);
+  $('remNote').textContent = !pref.on ? t('rem.noteOff')
+    : remStatus === 'scheduled' ? t('rem.noteOn', pref.time)
+    : remStatus === 'denied'    ? t('rem.noteDenied')
+    : remStatus === 'error'     ? t('rem.noteError')
+    : t('rem.noteWeb');
+}
+$('remToggle').addEventListener('click', () => {
+  const pref = readReminder();
+  pref.on = !pref.on;
+  writeReminder(pref);
+  applyReminder();
+});
+$('remTime').addEventListener('change', () => {
+  const v = $('remTime').value;
+  if (!/^\d{2}:\d{2}$/.test(v)) return;
+  const pref = readReminder();
+  pref.time = v;
+  writeReminder(pref);
+  applyReminder();
+  showToast(t('rem.saved', v));
+});
+(function(){
+  const LN = nativeNotifications();
+  if (LN && LN.addListener) LN.addListener('localNotificationActionPerformed', () => { if (USER) go('checkin'); });
+})();
+
+/* ============================================================================
+   CANCELLARE L'ACCOUNT (Apple lo richiede per le app con registrazione)
+   ========================================================================== */
+async function deleteAccount(pw){
+  const u = USER;
+  if (MODE === 'server'){
+    await jpost('/api/auth/delete', { password: pw });
+  } else {
+    const rec = own(localUsers(), u) ? localUsers()[u] : null;
+    const ok = rec && (rec.v === 3 || rec.v === 4) ? await openRecord(rec, pw) : null;
+    if (!ok) throw new Error(t('err.badLogin'));
+  }
+  const users = localUsers();
+  delete users[u];
+  saveUsers(users);
+  try{
+    localStorage.removeItem(dataKey(u));
+    localStorage.removeItem(petKey(u));
+    localStorage.removeItem(remKey(u));
+    const th = JSON.parse(localStorage.getItem(LS_THROTTLE) || '{}');
+    delete th[u];
+    localStorage.setItem(LS_THROTTLE, JSON.stringify(th));
+  }catch(e){}
+  await cancelReminder();
+  await auth.logout();
+}
+$('delOpen').addEventListener('click', () => {
+  $('delBox').hidden = false;
+  $('delOpen').hidden = true;
+  setTimeout(() => $('delPass').focus(), 60);
+});
+$('delCancel').addEventListener('click', () => {
+  $('delBox').hidden = true;
+  $('delOpen').hidden = false;
+  $('delPass').value = '';
+});
+$('delGo').addEventListener('click', async () => {
+  const pw = $('delPass').value;
+  if (!pw) return $('delPass').focus();
+  $('delGo').disabled = true;
+  try{
+    await deleteAccount(pw);
+    $('delPass').value = '';
+    $('delBox').hidden = true;
+    $('delOpen').hidden = false;
+    DATA = [];
+    PET = null;
+    resetChat();
+    renderAll();
+    showLogin();
+    showToast(t('acc.deleted'));
+  }catch(ex){
+    showToast(ex.message || t('err.generic'));
+  }finally{
+    $('delGo').disabled = false;
+  }
+});
+
+/* testi nuovi, in inglese e tedesco */
+Object.assign(I18N.en, {
+  'err.consent':   'Please tick the box to agree to how BAO stores your diary.',
+  'rem.title':     'Daily reminder',
+  'rem.pushTitle': 'BAO',
+  'rem.pushBody':  n => 'Hi ' + n + ', how did your body feel today? A one-minute check-in with Bao.',
+  'rem.saved':     v => 'Reminder set for ' + v + '.',
+  'rem.noteOn':    v => 'Bao will remind you every day at ' + v + '.',
+  'rem.noteOff':   'The reminder is off.',
+  'rem.noteDenied':'Notifications are blocked. Allow them in your phone settings for BAO.',
+  'rem.noteError': 'The reminder could not be set. Try again in a moment.',
+  'rem.noteWeb':   'Saved. Reminders arrive in the BAO app for iPhone.',
+  'acc.deleted':   'Your account and all your check-ins were deleted.',
+  'login.whereServer': 'Your diary is kept on the BAO server, only for you.'
+});
+Object.assign(I18N.de, {
+  'err.consent':   'Bitte hake das Kästchen an, um der Speicherung deines Tagebuchs zuzustimmen.',
+  'rem.title':     'Tägliche Erinnerung',
+  'rem.pushTitle': 'BAO',
+  'rem.pushBody':  n => 'Hallo ' + n + ', wie hat sich dein Körper heute angefühlt? Eine Minute mit Bao.',
+  'rem.saved':     v => 'Erinnerung für ' + v + ' Uhr gestellt.',
+  'rem.noteOn':    v => 'Bao erinnert dich jeden Tag um ' + v + ' Uhr.',
+  'rem.noteOff':   'Die Erinnerung ist ausgeschaltet.',
+  'rem.noteDenied':'Mitteilungen sind blockiert. Erlaube sie für BAO in den Einstellungen deines Telefons.',
+  'rem.noteError': 'Die Erinnerung konnte nicht gestellt werden. Versuch es gleich noch einmal.',
+  'rem.noteWeb':   'Gespeichert. Erinnerungen kommen in der BAO-App fürs iPhone an.',
+  'acc.deleted':   'Dein Konto und alle Check-ins wurden gelöscht.',
+  'login.consent': 'Ich bin einverstanden, dass BAO die Gesundheitsangaben speichert, die ich schreibe, um mein Tagebuch zu führen. Ich habe die <a href="/privacy.html#de" target="_blank" rel="noopener">Datenschutzerklärung</a> und die <a href="/terms.html#de" target="_blank" rel="noopener">Nutzungsbedingungen</a> gelesen.',
+  'legal.privacy': 'Datenschutz',
+  'legal.terms':   'Nutzungsbedingungen',
+  'legal.support': 'Hilfe',
+  'rem.sub':       'Ein sanfter Anstoß jeden Abend für deinen Check-in.',
+  'rem.at':        'Erinnere mich um',
+  'acc.delete':    'Mein Konto löschen',
+  'acc.deleteWarn':'Das entfernt dein Konto, alle Check-ins und deinen Begleiter. Es lässt sich nicht rückgängig machen.',
+  'acc.deletePw':  'Gib zur Bestätigung dein Passwort ein',
+  'acc.deleteGo':  'Endgültig löschen',
+  'acc.deleteCancel': 'Konto behalten',
+  'login.whereServer': 'Dein Tagebuch liegt auf dem BAO-Server, nur für dich.'
+});
+
+
+/* ============================================================================
+   PASSWORD DIMENTICATA
+   1. "Forgot your password?" chiede l'email e la manda al server.
+   2. Il server manda una mail con un link /?reset=CODICE, valido 30 minuti, una volta.
+   3. Aprendo il link, BAO mostra "Choose a new password" e la manda al server
+      insieme al codice. Il codice sparisce subito dalla barra degli indirizzi.
+   Funziona solo con un server: senza, nessuno potrebbe mandare la mail.
+   ========================================================================== */
+const RESET_TOKEN = (() => {
+  try{
+    const code = new URLSearchParams(location.search).get('reset');
+    if (code) history.replaceState(null, '', location.pathname);
+    return code && /^[A-Za-z0-9_-]{20,200}$/.test(code) ? code : null;
+  }catch(e){ return null; }
+})();
+
+function loginOk(m){ $('loginOk').textContent = m; $('loginOk').hidden = false; $('loginError').hidden = true; }
+
+function recoverText(){
+  if (loginMode === 'forgot'){
+    $('loginLede').textContent   = t('forgot.lede');
+    $('loginSubmit').textContent = t('forgot.send');
+    $('loginSwitch').textContent = t('forgot.back');
+  } else if (loginMode === 'reset'){
+    $('loginLede').textContent      = t('reset.lede');
+    $('loginSubmit').textContent    = t('reset.save');
+    $('loginSwitch').textContent    = t('forgot.back');
+    $('loginPassLabel').textContent = t('reset.new');
+    $('loginPass').placeholder      = t('login.pwPh');
+  }
+}
+function recoverFields(){
+  const forgot = loginMode === 'forgot', reset = loginMode === 'reset';
+  $('emailField').hidden = reset;
+  $('passField').hidden  = forgot;
+  $('pass2Field').hidden = !reset;
+  $('loginForgot').hidden = loginMode !== 'signin' || MODE !== 'server';
+  $('loginOk').hidden = true;
+  if (reset) $('loginPass').setAttribute('autocomplete', 'new-password');
+  recoverText();
+}
+$('loginForgot').addEventListener('click', () => {
+  loginMode = 'forgot';
+  paintLogin();
+});
+
+async function sendResetLink(){
+  const u = $('loginUser').value.trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(u)) return loginErr(t('err.email'));
+  try{
+    await jpost('/api/auth/forgot', { email: u, lang: LANG });
+  }catch(ex){
+    return loginErr(ex.message && ex.message.indexOf('/api/') !== 0 ? ex.message : t('forgot.fail'));
+  }
+  loginOk(t('forgot.sent'));
+}
+
+async function saveNewPassword(){
+  const p = $('loginPass').value, p2 = $('loginPass2').value;
+  if (p.length < 8) return loginErr(t('err.pwLen'));
+  if (p !== p2)     return loginErr(t('reset.mismatch'));
+  try{
+    await jpost('/api/auth/reset', { token: RESET_TOKEN, password: p });
+  }catch(ex){
+    return loginErr(ex.message && ex.message.indexOf('/api/') !== 0 ? ex.message : t('reset.fail'));
+  }
+  $('loginPass').value = ''; $('loginPass2').value = '';
+  loginMode = 'signin';
+  paintLogin();
+  loginOk(t('reset.done'));
+}
+
+Object.assign(I18N.en, {
+  'forgot.lede':    'Write the email you signed up with. We will send you a link to choose a new password.',
+  'forgot.send':    'Send me a link',
+  'forgot.back':    'Back to sign in',
+  'forgot.sent':    'If this email has a BAO account, a link is on its way. It works for 30 minutes. Check the spam folder too.',
+  'forgot.fail':    'The email could not be sent right now. Try again in a few minutes.',
+  'reset.lede':     'Choose a new password for your BAO account.',
+  'reset.save':     'Save new password',
+  'reset.new':      'New password',
+  'reset.mismatch': 'The two passwords are not the same.',
+  'reset.fail':     'This link has expired or was already used. Ask for a new one.',
+  'reset.done':     'Your password is changed. Sign in with the new one.'
+});
+Object.assign(I18N.de, {
+  'forgot.link':    'Passwort vergessen?',
+  'forgot.lede':    'Gib die E-Mail ein, mit der du dich angemeldet hast. Wir schicken dir einen Link für ein neues Passwort.',
+  'forgot.send':    'Link schicken',
+  'forgot.back':    'Zurück zur Anmeldung',
+  'forgot.sent':    'Wenn es zu dieser E-Mail ein BAO-Konto gibt, ist ein Link unterwegs. Er gilt 30 Minuten. Schau auch im Spam-Ordner nach.',
+  'forgot.fail':    'Die E-Mail konnte gerade nicht gesendet werden. Versuch es in ein paar Minuten noch einmal.',
+  'reset.lede':     'Wähle ein neues Passwort für dein BAO-Konto.',
+  'reset.save':     'Neues Passwort speichern',
+  'reset.new':      'Neues Passwort',
+  'reset.again':    'Noch einmal eingeben',
+  'reset.mismatch': 'Die beiden Passwörter sind nicht gleich.',
+  'reset.fail':     'Dieser Link ist abgelaufen oder wurde schon benutzt. Fordere einen neuen an.',
+  'reset.done':     'Dein Passwort ist geändert. Melde dich mit dem neuen an.'
+});
+
 (async function boot(){
   try{
     applyLang();
@@ -3465,7 +3831,8 @@ $$('[data-lang]').forEach(b => b.addEventListener('click', () => setLang(b.datas
   try{ await jget('/api/auth/me'); MODE = 'server'; }catch(e){ MODE = 'browser'; }
 
     USER = await auth.me();
-    if (USER) await enterApp();
+    if (RESET_TOKEN){ showLogin(); loginMode = 'reset'; paintLogin(); }
+    else if (USER) await enterApp();
     else showLogin();
   }catch(ex){
     // l'app non parte: meglio il login con un messaggio che una pagina ferma
