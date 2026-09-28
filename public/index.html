@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-tzywM94doo9reEop4Q19xVPttT7WjBsaGaeGXfsTc8c='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-516EmoIAOD9zfNgr7ACQPL6nosU2eumuCp7yl9E909k='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>BAO &mdash; symptom &amp; wellbeing tracker</title>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -282,7 +282,7 @@ body.chat-mode::-webkit-scrollbar{width:0;height:0}
 .lang-switch button.on{background:var(--teal);color:#fff}
 .login-card{position:relative}
 .login-card .lang-switch{position:absolute;top:14px;right:14px}
-html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinein, um ihn zu verfeinern"}html[lang="it"] .bodymap:before{content:"Tocca una zona, poi ingrandisci per essere più precisa"}.lang-switch button[hidden]{display:none}
+html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinein, um ihn zu verfeinern"}html[lang="it"] .bodymap:before{content:"Tocca una zona, poi ingrandisci per essere più precisa"}.lang-switch button[hidden]{display:none}html[lang="fr"] .bodymap:before{content:"Touche une zone, puis zoome pour être plus précis·e"}html[lang="es"] .bodymap:before{content:"Toca una zona y luego amplía para ser más precisa"}.checkins-card{display:none!important}.lang-add{border:1px dashed #b9d3cd;background:#f7fbfa;color:var(--teal-dark);border-radius:12px;padding:10px 12px;font-weight:750;font-size:13px}
 @media print{.lang-switch{display:none!important}}
 .toast{z-index:950}
 .login-card h2{margin:4px 0 6px;color:var(--teal-dark)}
@@ -699,7 +699,7 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
         <div><div id="pageTitle" style="font-weight:800">Overview</div><div class="tiny" id="pageSub">A calm place to notice what your body is telling you</div></div>
       </div>
       <div class="top-actions">
-        <div class="lang-switch" role="group" aria-label="Language / Sprache"><button type="button" data-lang="en" aria-label="English">EN</button><button type="button" data-lang="de" aria-label="Deutsch">DE</button><button type="button" data-lang="it" aria-label="Italiano" hidden>IT</button></div>
+        <div class="lang-switch" role="group" aria-label="Language / Sprache"><button type="button" data-lang="en" aria-label="English">EN</button><button type="button" data-lang="de" aria-label="Deutsch">DE</button><button type="button" data-lang="it" aria-label="Italiano" hidden>IT</button><button type="button" data-lang="fr" aria-label="Français" hidden>FR</button><button type="button" data-lang="es" aria-label="Español" hidden>ES</button></div>
         <button class="btn primary" id="newCheckinBtn" data-i18n="top.new">+ New check-in</button>
       </div>
     </header>
@@ -1056,7 +1056,7 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
 
 <div class="login-screen" id="loginScreen" hidden>
   <form class="login-card" id="loginForm">
-    <div class="lang-switch" role="group" aria-label="Language / Sprache"><button type="button" data-lang="en" aria-label="English">EN</button><button type="button" data-lang="de" aria-label="Deutsch">DE</button><button type="button" data-lang="it" aria-label="Italiano" hidden>IT</button></div>
+    <div class="lang-switch" role="group" aria-label="Language / Sprache"><button type="button" data-lang="en" aria-label="English">EN</button><button type="button" data-lang="de" aria-label="Deutsch">DE</button><button type="button" data-lang="it" aria-label="Italiano" hidden>IT</button><button type="button" data-lang="fr" aria-label="Français" hidden>FR</button><button type="button" data-lang="es" aria-label="Español" hidden>ES</button></div>
     <div class="login-art"><span class="bao bao-checkin" role="img" aria-label="Bao the panda" data-i18n-attr="aria-label|aria.bao"></span></div>
     <div class="brand-name login-brand">BAO <svg viewBox="0 0 24 24" class="heart-mark"><path d="M12 20.7S3.6 15.6 3.6 9.9c0-2.6 2-4.6 4.5-4.6 1.6 0 3 .8 3.9 2.1.9-1.3 2.3-2.1 3.9-2.1 2.5 0 4.5 2 4.5 4.6 0 5.7-8.4 10.8-8.4 10.8z"/></svg></div>
     <p class="muted" id="loginLede">Sign in to find your check-ins where you left them.</p>
@@ -1104,7 +1104,8 @@ const $  = id => document.getElementById(id);
 const $$ = sel => [...document.querySelectorAll(sel)];
 const wait = ms => new Promise(r => setTimeout(r, ms));
 
-const LANGS = ['en', 'de', 'it'];
+const LANGS = ['en', 'de', 'it', 'fr', 'es'];
+const EXTRA_LANGS = ['fr', 'es'];
 const ITALIAN_USERS = ['sofia.sirad@gmail.com'];
 let LANG = (() => {
   try{ const s = localStorage.getItem('bao.lang'); if (LANGS.includes(s)) return s; }catch(e){}
@@ -2129,8 +2130,850 @@ const BUILTIN_IT = {
   ]
 };
 
+I18N.fr = {
+  'locale': 'fr-FR',
+  'doc.title': 'BAO — journal des symptômes et du bien-être',
+  'days': ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
+  'title.home': ['Aperçu', 'Un endroit calme pour écouter ce que dit ton corps'],
+  'title.checkin': ['Check-in du jour', 'Une minute pour remarquer ce qui est là'],
+  'title.patterns': ['Tendances', 'Des liens, pas des conclusions'],
+  'title.report': ['Mon rapport', 'Reconstruit à partir de tes vrais check-ins'],
+  'title.settings': ['Réglages', 'Tes données, tes règles'],
+  'title.calendar': ['Calendrier', 'Chaque check-in, jour après jour'],
+  'nav.calendar': 'Calendrier',
+  'cal.logged': n => n + (n === 1 ? ' jour noté ce mois-ci' : ' jours notés ce mois-ci'),
+  'cal.loggedNone': 'rien de noté ce mois-ci pour l’instant',
+  'cal.aria': n => n + (n === 1 ? ' symptôme noté' : ' symptômes notés'),
+  'cal.ariaRep': n => n + (n === 1 ? ' est revenu plusieurs fois' : ' sont revenus plusieurs fois'),
+  'cal.ariaEmpty': 'aucun check-in',
+  'day.nothing': 'Rien de noté ici',
+  'day.nothingSub': 'Ce n’est pas grave. Tu peux l’ajouter quand cela te semble utile.',
+  'day.start': 'Commencer un check-in',
+  'day.meta': n => n + ' check-in' + (n === 1 ? '' : 's') + ' · tout ce que tu as écrit, avec tes mots',
+  'day.peak': 'Intensité maximale',
+  'day.avg': 'Moyenne',
+  'day.count': 'Symptômes notés',
+  'day.areas': 'Zones du corps',
+  'day.nth': n => 'Check-in ' + n,
+  'day.added': 'Tu as ajouté',
+  'day.yes': 'Oui — c’est revenu plusieurs fois',
+  'day.no': 'Non',
+  'day.thoughts': 'Pensées',
+  'day.feelings': 'Émotions',
+  'day.personal': 'Espace personnel',
+  'day.kept': 'Bao l’a gardé pour toi. Personne d’autre ne le voit.',
+  'day.addToday': 'Ajouter à aujourd’hui',
+  'aria.phone': 'Bao avec un téléphone',
+  'err.badLogin': 'E-mail ou mot de passe incorrect.',
+  'err.locked': s => 'Trop d’essais incorrects. Attends ' + s + ' secondes et réessaie.',
+  'err.noCrypto': 'Ce navigateur ne peut pas chiffrer tes données ici. Ouvre Bao via https:// ou localhost.',
+  'err.exists': 'Cet e-mail est déjà inscrit. Connecte-toi.',
+  'err.email': 'Écris une adresse e-mail valide.',
+  'err.pwLen': 'Le mot de passe doit contenir au moins 8 caractères.',
+  'err.name': 'Écris un prénom.',
+  'err.generic': 'Cela n’a pas marché.',
+  'login.ledeCreate': 'Ton e-mail et un mot de passe. Bao y gardera tes check-ins.',
+  'login.ledeSignin': 'Connecte-toi pour retrouver tes check-ins là où tu les as laissés.',
+  'login.create': 'Créer mon compte',
+  'login.signin': 'Se connecter',
+  'login.toSignin': 'J’ai déjà un compte',
+  'login.toCreate': 'Pas encore de compte ? Crée-en un',
+  'login.whereServer': 'Ton journal est gardé sur le serveur de BAO, rien que pour toi.',
+  'login.whereBrowser': 'Les comptes sont enregistrés dans ce navigateur. Lance server.py pour les garder dans un fichier.',
+  'login.welcome': n => 'Bienvenue, ' + n + '.',
+  'q.log': 'As-tu eu des symptômes aujourd’hui ?',
+  'q.symptoms': 'De quel symptôme veux-tu parler aujourd’hui ?',
+  'q.situation': 'Dans quelle situation le symptôme est-il apparu ?',
+  'q.repeated': 'As-tu eu ce symptôme plusieurs fois depuis ton dernier check-in ?',
+  'q.another': 'D’accord. C’est noté ! Veux-tu ajouter un autre symptôme ?',
+  'q.day': 'Comment s’est passée ta journée ? :)',
+  'q.memory': 'Autre chose que tu veux que je retienne ?',
+  'q.emotions': 'Quelque chose t’a fait sourire aujourd’hui ?',
+  'q.personal': 'Si tu veux ajouter quelque chose, une pensée ou une note rien que pour toi, tu peux l’écrire ici :',
+  'ans.yes': 'oui',
+  'ans.no': 'non',
+  'chat.hi': n => 'Coucou ' + n + ', je m’appelle BAO.',
+  'chat.intro': 'Je serai ton assistant personnel dans cette application :),\nremplissons ensemble ce dont j’ai besoin pour suivre tes symptômes...\nJe vais te poser quelques questions simples.',
+  'chat.almost': 'Presque fini :)',
+  'chat.multi': '\n- C’est arrivé plusieurs fois dans la journée -',
+  'chat.thanks': n => 'Merci pour cette minute, ' + n + '. Enregistre-la quand tu es prêt·e.',
+  'chat.friend': 'ami·e',
+  'body.marker': '- ZONES DU CORPS -',
+  'body.title': 'Où le ressens-tu ? Touche une ou plusieurs zones.',
+  'body.confirm': 'C’est là que je le ressens',
+  'body.count': n => n + (n === 1 ? ' sélectionnée' : ' sélectionnées'),
+  'body.highlighted': z => 'J’ai mis en évidence cette zone : ' + z.toLowerCase() + '. Déplace le point si je me suis trompé.',
+  'body.aria': side => 'Carte du corps interactive, vue ' + (side === 'back' ? 'de dos' : 'de face'),
+  'rate.marker': '- INTENSITÉ -',
+  'rate.title': 'C’était fort à quel point ?',
+  'rate.confirm': 'Enregistrer cette valeur',
+  'rate.aria': 'Intensité du symptôme',
+  'rate.low': 'Imperceptible',
+  'rate.high': 'Insupportable',
+  'recap.title': '* RÉCAPITULATIF *',
+  'recap.symptoms': '* SYMPTÔMES * --> ',
+  'recap.parts': '* ZONES DU CORPS * --> ',
+  'recap.rating': '* INTENSITÉ DE LA DOULEUR * --> ',
+  'recap.situations': '* SITUATIONS * --> ',
+  'recap.thoughts': '* PENSÉES * --> ',
+  'recap.feelings': '* ÉMOTIONS * --> ',
+  'recap.personal': '* ESPACE PERSONNEL * --> ',
+  'recap.intensity': '* INTENSITÉ * --> ',
+  'save.btn': 'Enregistrer ce check-in',
+  'save.again': 'En commencer un autre',
+  'save.done': 'Enregistré ✓',
+  'save.toastServer': n => 'Enregistré dans ton compte — ' + n + ' check-in(s) jusqu’ici.',
+  'save.toastBrowser': n => 'Enregistré dans ce navigateur — ' + n + ' check-in(s) jusqu’ici.',
+  'chart.aria': 'L’intensité de tes symptômes dans le temps',
+  'chart.empty': 'Aucune intensité notée sur cette période.',
+  'home.fromLastWeek': ' par rapport à la semaine dernière',
+  'home.checkins': 'Check-ins',
+  'home.last7': n => '7 derniers jours : ' + n,
+  'home.noneYet': 'aucun pour l’instant — commence quand tu veux',
+  'home.signal': 'Signal du corps',
+  'home.avgAll': 'moyenne de tous les symptômes',
+  'home.noIntensity': 'aucune intensité notée pour l’instant',
+  'home.topArea': 'Zone la plus signalée',
+  'home.times': n => (n === 1 ? 'notée 1 fois' : 'notée ' + n + ' fois'),
+  'home.mapFills': 'la carte du corps la remplit',
+  'home.reflectionOnly': 'Réflexions seulement',
+  'home.noRecent': 'Pas encore de check-in. Bao t’attend sur la page du check-in.',
+  'insight.emptyTitle': 'Rien à observer pour l’instant.',
+  'insight.emptyText': 'Après quelques check-ins, Bao commencera à te montrer quelles zones reviennent le plus souvent. Les tendances sont des indices, jamais des diagnostics.',
+  'insight.title': area => area + ' : c’est la zone qui revient le plus.',
+  'insight.text': (n, area, times, multi) => 'Sur ' + n + ' check-in(s), tu as noté cette zone (' + area.toLowerCase() + ') ' +
+      times + ' fois' + (multi ? ', et ' + multi + ' symptôme(s) sont apparus plusieurs fois dans une journée' : '') +
+      '. C’est quelque chose à explorer, pas une conclusion.',
+  'prompts': ['Qu’est-ce qui a été différent aujourd’hui, même un petit détail ?', 'Où ton corps a-t-il demandé ton attention en premier ?',
+              'Qu’as-tu porté aujourd’hui que tu pourrais poser demain ?', 'Y a-t-il eu un moment où tu t’es senti·e bien ?'],
+  'pat.count': (c, s) => c + ' check-in(s) · ' + s + ' symptôme(s) noté(s)',
+  'pat.head': ['Zone du corps', 'Fois', 'Intensité moyenne', 'Dernière fois'],
+  'pat.empty': 'Rien de noté sur cette période.',
+  'pat.noWords': 'Rien ne se répète encore. Les mots apparaissent ici dès qu’ils reviennent dans au moins deux situations.',
+  'rep.empty': 'Ton rapport se construit à partir de tes check-ins. Tu n’en as pas encore.',
+  'rep.me': 'Moi',
+  'rep.title': 'Mon rapport de symptômes et de bien-être',
+  'rep.draft': 'Brouillon privé',
+  'rep.summary': 'Résumé',
+  'rep.summaryText': (c, s, a) => c + ' check-in(s). ' + s + ' symptôme(s) noté(s). Intensité moyenne : <strong>' + a + '</strong>.',
+  'rep.notRecorded': 'non notée',
+  'rep.symptoms': 'Symptômes notés',
+  'rep.checkins': 'Check-ins',
+  'rep.day': 'Journée : ',
+  'rep.feeling': 'Émotions : ',
+  'rep.personal': 'Espace personnel',
+  'set.storageServer': u => '<p class="signed-in">Tu es connecté·e en tant que <strong>' + u + '</strong></p>',
+  'set.storageBrowser': u => '<p class="signed-in">Tu es connecté·e en tant que <strong>' + u + '</strong></p><p class="storage-warn">Enregistré seulement sur cet appareil, pas sur le serveur de BAO.</p>',
+  'set.saved': n => n + (n === 1 ? ' enregistré' : ' enregistrés'),
+  'set.symptoms': n => n + (n === 1 ? ' symptôme' : ' symptômes'),
+  'set.delete': 'Supprimer',
+  'set.empty': 'Rien d’enregistré pour l’instant.',
+  'set.deleted': 'Check-in supprimé.',
+  'set.noteServer': 'Enregistré dans ton compte, protégé par ton mot de passe.',
+  'set.noteBrowser': 'Enregistré seulement dans ce navigateur. Lance server.py pour le garder dans un fichier.',
+  'set.confirmClear': 'Supprimer tous les check-ins ? C’est définitif.',
+  'set.cleared': 'Tous les check-ins ont été supprimés.',
+  'pet.your': 'ton avatar',
+  'pet.Your': 'Ton avatar',
+  'pet.saved': n => n + ' sera maintenant à côté de tes messages.',
+  'pet.removed': 'Avatar supprimé.',
+  'login.forgot': 'Mot de passe oublié ?',
+  'login.back': 'Retour à la connexion',
+  'login.ledeRecover': 'Saisis ton code de récupération et choisis un nouveau mot de passe. Tes check-ins restent tels quels.',
+  'login.recover': 'Définir un nouveau mot de passe',
+  'login.pwLabel': 'Mot de passe',
+  'login.pwPh': 'au moins 8 caractères',
+  'err.pwMissing': 'Saisis ton mot de passe.',
+  'login.newPw': 'Nouveau mot de passe',
+  'err.code': 'Saisis ton code de récupération.',
+  'err.badRecovery': 'E-mail ou code de récupération incorrect.',
+  'rc.new': 'Garde ce code en lieu sûr. C’est le seul moyen de revenir dans ton compte si tu oublies ton mot de passe.',
+  'rc.upgrade': 'Bao peut maintenant t’aider si tu oublies ton mot de passe. Garde ce code : avec lui, tu peux en choisir un nouveau.',
+  'rc.renewed': 'Voici ton nouveau code de récupération. L’ancien ne marche plus.',
+  'rc.copied': 'Code copié.',
+  'rc.changed': 'Ton mot de passe a été changé.',
+  'acc.nameSaved': n => 'Bao t’appellera maintenant ' + n + '.',
+  'acc.noCode': 'Un code de récupération n’existe que pour les comptes enregistrés dans ce navigateur.',
+  'acc.confirmCode': 'Créer un nouveau code de récupération ? L’ancien ne marchera plus.',
+  'err.consent': 'Coche la case pour accepter la façon dont BAO garde ton journal.',
+  'rem.title': 'Rappel quotidien',
+  'rem.pushTitle': 'BAO',
+  'rem.pushBody': n => 'Coucou ' + n + ', comment ton corps s’est-il senti aujourd’hui ? Un check-in d’une minute avec Bao.',
+  'rem.saved': v => 'Rappel réglé à ' + v + '.',
+  'rem.noteOn': v => 'Bao te le rappellera chaque jour à ' + v + '.',
+  'rem.noteOff': 'Le rappel est désactivé.',
+  'rem.noteDenied': 'Les notifications sont bloquées. Autorise-les pour BAO dans les réglages du téléphone.',
+  'rem.noteError': 'Le rappel n’a pas pu être réglé. Réessaie dans un instant.',
+  'rem.noteWeb': 'Enregistré. Les rappels arrivent dans l’app BAO pour iPhone.',
+  'acc.deleted': 'Ton compte et tous tes check-ins ont été supprimés.',
+  'forgot.lede': 'Écris l’e-mail avec lequel tu t’es inscrit·e. Nous t’enverrons un lien pour choisir un nouveau mot de passe.',
+  'forgot.send': 'Envoie-moi le lien',
+  'forgot.back': 'Retour à la connexion',
+  'forgot.sent': 'Si cet e-mail a un compte BAO, un lien est en route. Il marche pendant 30 minutes. Regarde aussi dans les spams.',
+  'forgot.fail': 'L’e-mail n’a pas pu être envoyé pour le moment. Réessaie dans quelques minutes.',
+  'reset.lede': 'Choisis un nouveau mot de passe pour ton compte BAO.',
+  'reset.save': 'Enregistrer le nouveau mot de passe',
+  'reset.new': 'Nouveau mot de passe',
+  'reset.mismatch': 'Les deux mots de passe ne sont pas identiques.',
+  'reset.fail': 'Ce lien a expiré ou a déjà été utilisé. Demandes-en un nouveau.',
+  'reset.done': 'Ton mot de passe a été changé. Connecte-toi avec le nouveau.',
+  'forgot.needServer': 'La réinitialisation du mot de passe marche sur le site de BAO et dans l’app. Cette page est ouverte comme fichier, elle ne peut donc pas envoyer d’e-mails.',
+  'set.companion': 'Ton avatar',
+  'set.companionSub': 'Dessine le petit animal qui te représente. Il apparaît à côté de tes messages dans le chat.',
+  'pet.save': 'Enregistrer mon avatar',
+  'feel.notice.sad': 'On dirait que tu t’es senti·e triste. Ça compte aussi. Tu veux m’en dire un peu plus ?',
+  'feel.notice.angry': 'On dirait que quelque chose t’a mis·e en colère. Tu veux m’en dire un peu plus sur ce qui s’est passé ?',
+  'feel.body': 'Merci de me l’avoir dit. Les émotions se logent souvent aussi quelque part dans le corps.',
+  'feel.back': 'C’est noté, je l’ai ajouté aux symptômes du jour. Revenons là où nous en étions.',
+  'feel.name.sad': 'Tristesse',
+  'feel.name.angry': 'Colère',
+  'q.feelSituation': 'Dans quelle situation t’es-tu senti·e comme ça ?',
+  'q.feelRepeated': 'T’es-tu senti·e comme ça plusieurs fois depuis ton dernier check-in ?',
+  'feel.crisis': 'Merci de me confier cela. Je ne suis qu’un petit panda et je ne peux pas aider en cas d’urgence, mais tu n’as pas à porter ça seul·e. Si tu es en danger ou si tu risques de te faire du mal, appelle tout de suite le 112. En France, tu peux aussi appeler le 3114, gratuit et disponible jour et nuit. Y a-t-il une personne de confiance à qui tu pourrais écrire aujourd’hui ?',
+  'past.btn': 'Noter ce jour',
+  'past.add': 'Ajouter à ce jour',
+  'past.future': 'Ce jour n’est pas encore arrivé.',
+  'past.intro': d => 'Ce check-in est pour ' + d + '. Repense à cette journée.',
+  'past.log': d => 'As-tu eu des symptômes ' + d + ' ?',
+  'past.symptoms': 'De quel symptôme veux-tu parler ?',
+  'past.day': 'Comment s’est passée cette journée ?',
+  'past.emotions': 'Quelque chose t’a fait sourire ce jour-là ?',
+  'del.sym': 'Supprimer ce symptôme',
+  'del.sure': 'Supprimer ?',
+  'del.symDone': 'Symptôme supprimé.',
+  'del.entry': 'Supprimer ce check-in',
+  'del.entryN': 'Supprimer ce check-in',
+  'del.sureEntry': 'Touche encore pour supprimer tout le check-in',
+  'del.entryDone': 'Check-in supprimé.',
+  'set.facts': '\n              <li><b>Rien n’est un diagnostic.</b> Bao compte ce que tu écris et te le montre. Lire une tendance, c’est ton rôle et celui de ton médecin.</li>\n              <li><b>Pas de pub, pas de pistage, pas de partage.</b> Tes check-ins ne sont jamais envoyés nulle part tout seuls.</li>\n              <li><b>Tu peux laisser n’importe quelle question vide.</b> Un check-in court compte aussi.</li>\n              <li><b>Supprimer veut dire supprimer.</b> Ce que tu enlèves ici disparaît pour de bon.</li>\n            ',
+  'cal.eyebrow': 'Ta chronologie',
+  'cal.h': 'Chaque jour noté,<br><em>au même endroit.</em>',
+  'cal.lede': 'Touche un jour pour voir ce que contenait ce check-in : symptômes, intensité, zones du corps, situation et tes propres mots.',
+  'cal.side': '<b>Les trous, c’est normal.</b>Les jours manqués ne sont pas des échecs.',
+  'cal.add': '+ Ajouter un check-in',
+  'cal.today': 'Aujourd’hui',
+  'cal.prev': 'Mois précédent',
+  'cal.next': 'Mois suivant',
+  'cal.lgIntensity': 'Intensité des symptômes',
+  'cal.lgCount': 'Un point par symptôme',
+  'cal.lgNote': 'Revenu plusieurs fois',
+  'cal.lgBar': 'Hauteur de la barre = intensité 0–10',
+  'cal.foot': 'Cette vue vient seulement de tes check-ins. Rien ici n’est un diagnostic.',
+  'acc.title': 'Ton compte',
+  'acc.sub': 'Le prénom que Bao utilise pour te saluer.',
+  'acc.name': 'Prénom',
+  'acc.saveName': 'Enregistrer le prénom',
+  'brand.sub': 'remarque la tendance',
+  'nav.aria': 'Navigation principale',
+  'side.signout': 'Se déconnecter',
+  'top.menu': 'Ouvrir le menu',
+  'home.eyebrow': 'Ton aperçu',
+  'home.h': 'Écoute ce que ton corps<br><em>essaie de te dire.</em>',
+  'home.lede': 'Un endroit calme pour relier symptômes, émotions et contexte, sans transformer ta vie en tableur.',
+  'aria.waving': 'Bao le panda qui fait coucou',
+  'home.last7h': 'Tes 7 derniers jours',
+  'home.last7sub': 'Intensité moyenne des symptômes par jour, d’après tes check-ins.',
+  'home.details': 'Voir les détails →',
+  'home.obs': 'Une observation en douceur',
+  'home.recent': 'Check-ins récents',
+  'home.recentSub': 'Tes notes, avec tes mots.',
+  'home.moment': 'Prends un moment',
+  'home.momentSub': 'Pas besoin de trouver la réponse parfaite.',
+  'aria.thinking': 'Bao le panda qui réfléchit',
+  'aria.bao': 'Bao le panda',
+  'chat.h': 'Bao t’écoute,<br><em>prends ton temps.</em>',
+  'chat.lede': 'Écris-lui comme un message. Rien n’est enregistré tant que tu n’appuies pas sur enregistrer.',
+  'chat.label': 'Ta réponse',
+  'chat.ph': 'Écris à Bao…',
+  'chat.send': 'Envoyer',
+  'chat.yes': 'Oui',
+  'chat.no': 'Non',
+  'body.front': 'Face',
+  'body.back': 'Dos',
+  'prec.close': 'Fermer',
+  'prec.help': 'Touche exactement là où tu le ressens. Tu peux déplacer le repère pour ajuster.',
+  'pat.eyebrow': 'Explorer les tendances',
+  'pat.h': 'Des liens,<br><em>pas des conclusions.</em>',
+  'pat.lede': 'Des relations qui se répètent entre ton contexte et tes symptômes. Plus tu les suis longtemps, plus l’image peut devenir claire.',
+  'aria.listening': 'Bao le panda qui écoute',
+  'pat.line': '<b>Bao lit avec toi.</b>Les tendances sont des indices, pas des verdicts.',
+  'pat.add': '+ Ajouter un check-in',
+  'pat.show': 'Afficher',
+  'opt.7': '7 derniers jours',
+  'opt.30': '30 derniers jours',
+  'opt.90': '3 derniers mois',
+  'opt.all': 'Tout',
+  'lg.loggedDay': 'Symptômes notés ce jour-là',
+  'pat.where': 'Où cela se manifeste',
+  'pat.whereSub': 'Compté à partir de tes check-ins, pas d’une règle médicale.',
+  'rep.eyebrow': 'Partage à tes conditions',
+  'rep.h': 'Un rapport qui rend<br><em>l’invisible visible.</em>',
+  'rep.lede': 'Donne à ton médecin un point de départ clair : tes observations, tes mots et le contexte autour.',
+  'aria.team': 'Bao le panda à tes côtés',
+  'rep.line': '<b>C’est toi qui décides.</b>Tu choisis ce que tu partages.',
+  'rep.print': 'Imprimer / enregistrer en PDF',
+  'rep.before': 'Avant de partager',
+  'rep.beforeSub': 'Choisis exactement ce qui entre dans le rapport. Il est reconstruit à partir de tes vrais check-ins.',
+  'rep.optSummary': 'Résumé des symptômes',
+  'rep.optSummarySub': 'Zones, intensité, fréquence',
+  'rep.optNotes': 'Notes du jour',
+  'rep.optNotesSub': 'Tes réflexions libres',
+  'rep.optPersonal': 'Espace personnel',
+  'rep.optPersonalSub': 'La ligne privée à la fin de chaque check-in',
+  'rep.incSummary': 'Inclure le résumé des symptômes',
+  'rep.incNotes': 'Inclure les notes du jour',
+  'rep.incPersonal': 'Inclure l’espace personnel',
+  'rep.nothingSent': '<span class="privacy-dot"></span>Rien n’est envoyé nulle part. L’impression se fait sur ton appareil.',
+  'set.eyebrow': 'Ton espace',
+  'set.h': 'La vie privée est une<br><em>fonction, pas une note de bas de page.</em>',
+  'set.lede': 'Tes check-ins sont personnels. Tu décides ce qui est enregistré, analysé et partagé.',
+  'aria.sleeping': 'Bao le panda qui dort',
+  'set.line': '<b>Bao se repose ici aussi.</b>Rien ne quitte ton appareil tout seul.',
+  'set.where': 'Comment marche Bao',
+  'set.whereSub': 'Ce que fait l’app, et ce qu’elle ne fait jamais.',
+  'home.ctaTitle': 'Commencer le check-in du jour',
+  'home.ctaSub': 'Une minute avec Bao. Rien n’est enregistré tant que tu n’appuies pas sur enregistrer.',
+  'home.reflectHint': 'Il n’y a pas de bonne réponse. Bao demande, tu réponds seulement à ce que tu veux.',
+  'set.clear': 'Supprimer tous mes check-ins',
+  'pet.animal': 'Animal',
+  'pet.colour': 'Couleur',
+  'pet.accessory': 'Accessoire',
+  'pet.accColour': 'Couleur de l’accessoire',
+  'pet.ph': 'ex. Tim',
+  'pet.remove': 'Retirer',
+  'set.checkins': 'Tes check-ins',
+  'set.checkinsSub': 'Tous les check-ins, du plus récent. Tu peux en supprimer n’importe lequel.',
+  'aria.hello': 'Bao le panda qui dit bonjour',
+  'splash.sub': 'Coucou ! Ton petit compagnon sur le chemin du mieux-être.',
+  'login.email': 'E-mail',
+  'login.emailPh': 'toi@exemple.fr',
+  'login.name': 'Comment Bao doit-il t’appeler ?',
+  'nav.home': 'Aperçu',
+  'nav.checkin': 'Check-in du jour',
+  'nav.patterns': 'Tendances',
+  'nav.report': 'Mon rapport',
+  'nav.settings': 'Réglages',
+  'side.title': 'Tes données restent à toi',
+  'home.hi': 'Coucou, je suis Bao.',
+  'home.step': 'On peut avancer un petit pas à la fois.',
+  'lg.intensity': 'Intensité des symptômes',
+  'lg.logged': 'Symptômes notés',
+  'lg.last7': '7 derniers jours',
+  'key.sel': 'sélectionnée',
+  'key.view': 'Vue de face / de dos',
+  'key.zoom': 'Chaque zone s’ouvre en grand',
+  'prec.a': 'Précise le point :',
+  'prec.b': '',
+  'top.new': '+ Nouveau check-in',
+  'login.consent': 'J’accepte que BAO conserve les informations de santé que j’écris, pour tenir mon journal. J’ai lu la <a href="/privacy.html" target="_blank" rel="noopener">politique de confidentialité</a> et les <a href="/terms.html" target="_blank" rel="noopener">conditions</a>.',
+  'legal.privacy': 'Confidentialité',
+  'legal.terms': 'Conditions',
+  'legal.support': 'Aide',
+  'rem.sub': 'Un petit rappel chaque soir pour faire ton check-in.',
+  'rem.at': 'Rappelle-moi à',
+  'acc.delete': 'Supprimer mon compte',
+  'acc.deleteWarn': 'Cela supprime ton compte, tous tes check-ins et ton avatar. C’est définitif.',
+  'acc.deletePw': 'Écris ton mot de passe pour confirmer',
+  'acc.deleteGo': 'Supprimer pour toujours',
+  'acc.deleteCancel': 'Garder mon compte',
+  'forgot.link': 'Mot de passe oublié ?',
+  'reset.again': 'Écris-le encore une fois',
+  'lang.title': 'Langue',
+  'lang.sub': 'Bao parle la langue que tu choisis.',
+  'err.offline': 'Le serveur de BAO n’a pas répondu. Ton check-in reste sur cet appareil et sera envoyé la prochaine fois.',
+  'err.localOnly': 'Ton journal est encore seulement sur cet appareil. Touche « Pas encore de compte ? Crée-en un » et inscris-toi avec le même e-mail et le même mot de passe : tes check-ins passeront dans ton compte.',
+  'tab.home': 'Accueil', 'tab.checkin': 'Check-in', 'tab.calendar': 'Calendrier', 'tab.patterns': 'Tendances', 'tab.report': 'Rapport', 'tab.settings': 'Réglages'
+};
+
+const PART_FR = {
+  'head':'Tête', 'eyes':'Yeux', 'jaw':'Mâchoire', 'neck':'Cou', 'back of head':'Arrière de la tête',
+  'left shoulder':'Épaule gauche', 'right shoulder':'Épaule droite', 'chest':'Poitrine', 'stomach':'Estomac',
+  'lower belly':'Bas du ventre', 'hips':'Hanches', 'upper back':'Haut du dos', 'middle back':'Milieu du dos',
+  'lower back':'Bas du dos', 'buttocks':'Fesses',
+  'left upper arm':'Bras gauche', 'right upper arm':'Bras droit', 'left elbow':'Coude gauche', 'right elbow':'Coude droit',
+  'left forearm':'Avant-bras gauche', 'right forearm':'Avant-bras droit', 'left hand':'Main gauche', 'right hand':'Main droite',
+  'left thigh':'Cuisse gauche', 'right thigh':'Cuisse droite', 'back of left thigh':'Arrière de la cuisse gauche',
+  'back of right thigh':'Arrière de la cuisse droite', 'left knee':'Genou gauche', 'right knee':'Genou droit',
+  'back of left knee':'Creux du genou gauche', 'back of right knee':'Creux du genou droit',
+  'left lower leg':'Jambe gauche', 'right lower leg':'Jambe droite', 'left calf':'Mollet gauche', 'right calf':'Mollet droit',
+  'left foot':'Pied gauche', 'right foot':'Pied droit', 'left heel':'Talon gauche', 'right heel':'Talon droit',
+  '(no area marked)':'(aucune zone indiquée)'
+};
+const MONTHS_FR = ['JAN','FÉV','MAR','AVR','MAI','JUIN','JUIL','AOÛT','SEP','OCT','NOV','DÉC'];
+const PET_FR = {
+  panda:'Panda', cat:'Chat', bunny:'Lapin', bear:'Ours', fox:'Renard', dog:'Chien',
+  natural:'Naturel', caramel:'Sable', chocolate:'Cacao', honey:'Miel', peach:'Pêche', rose:'Rose', berry:'Baie',
+  lavender:'Lilas', sky:'Ciel', ocean:'Océan', mint:'Menthe', sage:'Sauge', grey:'Gris', charcoal:'Ardoise',
+  original:'Original', red:'Rouge', coral:'Corail', orange:'Orange', yellow:'Jaune', green:'Vert', teal:'Pétrole',
+  blue:'Bleu', navy:'Marine', purple:'Violet', pink:'Rose vif', brown:'Marron', black:'Noir', white:'Blanc',
+  0:'Aucun', 1:'Écharpe', 2:'Lunettes', 3:'Bonnet', 4:'Nœud', 5:'Fleur'
+};
+const BUILTIN_FR = {
+  patterns: [
+    ["mal (à|a) la t[eê]te|migraine|c[eé]phal", [
+      "Les maux de tête peuvent être épuisants. Merci de me le dire. Est-ce que ça pulse, ça serre ou ça pique ?",
+      "Je t’entends. Le mal de tête prend beaucoup d’énergie. Depuis combien de temps ça dure ?"]],
+    ["vertige|t[eê]te qui tourne|[eé]tourdi", [
+      "Se sentir instable fait peur. Tu as bien fait de le noter. La pièce tourne, ou tu as l’impression de t’évanouir ?"]],
+    ["m[aâ]choire|serre les dents|grince", [
+      "La mâchoire retient beaucoup de choses qu’on ne dit pas. C’est une douleur sourde ou un tiraillement quand tu ouvres la bouche ?"]],
+    ["gorge serr[eé]e|boule dans la gorge|du mal (à|a) avaler", [
+      "Cette sensation fait peur et elle est très fréquente quand on est tendu·e. C’est une pression, ou comme si quelque chose était coincé ?"]],
+    ["\\bcou\\b|nuque|torticolis", [
+      "Le cou garde beaucoup de tension. Il est raide, douloureux ou ça brûle ?"]],
+    ["[eé]paule", [
+      "Les épaules se tendent souvent avant qu’on remarque le stress. C’est comme un nœud ou comme un poids ?"]],
+    ["poitrine|palpitation|c(œ|oe)ur (qui )?(bat|s.emballe)|oppression", [
+      "Ça a l’air effrayant. Merci de me le confier. C’est serré, piquant ou comme un battement irrégulier ?"]],
+    ["respir|souffle|essouffl", [
+      "Avoir du mal à respirer fait peur. Je suis là. C’est plus dur d’inspirer ou d’expirer ?"]],
+    ["ventre|estomac|naus[eé]e|ballonn|crampe", [
+      "Le ventre réagit souvent avant la tête. Ça serre, ça brûle ou c’est comme un nœud ?"]],
+    ["dos|lombaire|sciatique", [
+      "Le dos se plaint quand on reste trop longtemps dans la même position. Douleur sourde ou élancement ?"]],
+    ["fatigu|[eé]puis[eé]|sans [eé]nergie|crev[eé]", [
+      "La fatigue compte aussi comme symptôme. C’est le corps qui est lourd ou la tête qui est vide ?"]],
+    ["dormi|insomnie|sommeil|cauchemar", [
+      "Le sommeil change tout le reste. Le problème, c’était de t’endormir ou de rester endormi·e ?"]],
+    ["anxi|angoiss|stress|nerveu|inqui[eè]t", [
+      "L’anxiété et le corps sont très liés. Tu la sens comme un bourdonnement, une pression ou un nœud ?"]],
+    ["douleur|mal|[cç]a brûle|[cç]a pique|lancinant", [
+      "Je suis désolé que tu aies mal. Merci de l’écrire. C’est aigu, sourd, brûlant ou comme une pression ?",
+      "Merci de me le dire. Depuis combien de temps ça dure ?"]]
+  ],
+  zones: [
+    ["m[aâ]choire|dents", "jaw"], ["yeux|oeil|œil|vue", "eyes"], ["t[eê]te|migraine|vertige", "head"],
+    ["\\bcou\\b|nuque|gorge", "neck"], ["haut du dos|omoplate", "upper back"], ["[eé]paule", "left shoulder"],
+    ["poitrine|c(œ|oe)ur|respir|souffle", "chest"], ["ventre|estomac|naus[eé]e|ballonn", "stomach"],
+    ["bas du dos|lombaire|sciatique", "lower back"], ["hanche|bassin", "hips"], ["\\bmains?\\b|poignet|doigt", "left hand"],
+    ["genou", "left knee"], ["mollet", "left calf"], ["jambe", "left lower leg"]
+  ]
+};
+
+I18N.es = {
+  'locale': 'es-ES',
+  'doc.title': 'BAO — diario de síntomas y bienestar',
+  'days': ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+  'title.home': ['Resumen', 'Un lugar tranquilo para escuchar lo que te dice el cuerpo'],
+  'title.checkin': ['Check-in del día', 'Un minuto para notar lo que hay'],
+  'title.patterns': ['Patrones', 'Conexiones, no conclusiones'],
+  'title.report': ['Mi informe', 'Reconstruido a partir de tus check-ins reales'],
+  'title.settings': ['Ajustes', 'Tus datos, tus reglas'],
+  'title.calendar': ['Calendario', 'Cada check-in, día a día'],
+  'nav.calendar': 'Calendario',
+  'cal.logged': n => n + (n === 1 ? ' día registrado este mes' : ' días registrados este mes'),
+  'cal.loggedNone': 'todavía nada registrado este mes',
+  'cal.aria': n => n + (n === 1 ? ' síntoma registrado' : ' síntomas registrados'),
+  'cal.ariaRep': n => n + (n === 1 ? ' volvió más de una vez' : ' volvieron más de una vez'),
+  'cal.ariaEmpty': 'ningún check-in',
+  'day.nothing': 'Nada registrado aquí',
+  'day.nothingSub': 'Está bien. Puedes añadirlo cuando te parezca útil.',
+  'day.start': 'Empezar un check-in',
+  'day.meta': n => n + ' check-in' + (n === 1 ? '' : 's') + ' · todo lo que escribiste, con tus palabras',
+  'day.peak': 'Intensidad máxima',
+  'day.avg': 'Media',
+  'day.count': 'Síntomas registrados',
+  'day.areas': 'Zonas del cuerpo',
+  'day.nth': n => 'Check-in ' + n,
+  'day.added': 'Añadiste',
+  'day.yes': 'Sí — volvió más de una vez',
+  'day.no': 'No',
+  'day.thoughts': 'Pensamientos',
+  'day.feelings': 'Emociones',
+  'day.personal': 'Espacio personal',
+  'day.kept': 'Bao lo guardó para ti. Nadie más lo ve.',
+  'day.addToday': 'Añadir a hoy',
+  'aria.phone': 'Bao con un teléfono',
+  'err.badLogin': 'El correo o la contraseña no son correctos.',
+  'err.locked': s => 'Demasiados intentos fallidos. Espera ' + s + ' segundos y vuelve a intentarlo.',
+  'err.noCrypto': 'Este navegador no puede cifrar tus datos aquí. Abre Bao con https:// o localhost.',
+  'err.exists': 'Este correo ya está registrado. Inicia sesión.',
+  'err.email': 'Escribe un correo electrónico válido.',
+  'err.pwLen': 'La contraseña necesita al menos 8 caracteres.',
+  'err.name': 'Escribe un nombre.',
+  'err.generic': 'No ha funcionado.',
+  'login.ledeCreate': 'Tu correo y una contraseña. Bao guardará ahí tus check-ins.',
+  'login.ledeSignin': 'Inicia sesión para encontrar tus check-ins donde los dejaste.',
+  'login.create': 'Crear mi cuenta',
+  'login.signin': 'Iniciar sesión',
+  'login.toSignin': 'Ya tengo una cuenta',
+  'login.toCreate': '¿Aún no tienes cuenta? Crea una',
+  'login.whereServer': 'Tu diario se guarda en el servidor de BAO, solo para ti.',
+  'login.whereBrowser': 'Las cuentas se guardan en este navegador. Inicia server.py para guardarlas en un archivo.',
+  'login.welcome': n => 'Hola, ' + n + '.',
+  'q.log': '¿Has tenido algún síntoma hoy?',
+  'q.symptoms': '¿De qué síntoma quieres hablar hoy?',
+  'q.situation': '¿En qué situación apareció el síntoma?',
+  'q.repeated': '¿Has tenido este síntoma varias veces desde tu último check-in?',
+  'q.another': 'Vale. ¡Anotado! ¿Hay otro síntoma que quieras añadir?',
+  'q.day': '¿Qué tal tu día? :)',
+  'q.memory': '¿Algo más que quieras que recuerde?',
+  'q.emotions': '¿Hubo algo que te hiciera sonreír hoy?',
+  'q.personal': 'Si quieres añadir algo, un pensamiento o una nota solo para ti, puedes escribirlo aquí abajo:',
+  'ans.yes': 'sí',
+  'ans.no': 'no',
+  'chat.hi': n => '¡Holaa ' + n + ', me llamo BAO!',
+  'chat.intro': 'Voy a ser tu asistente personal en esta aplicación :),\nrellenemos juntos lo que necesito para seguir tus síntomas...\nTe haré unas preguntas sencillas.',
+  'chat.almost': 'Ya casi hemos terminado :)',
+  'chat.multi': '\n- Pasó varias veces durante el día -',
+  'chat.thanks': n => 'Gracias por este minuto, ' + n + '. Guárdalo cuando estés list@.',
+  'chat.friend': 'amig@',
+  'body.marker': '- ZONAS DEL CUERPO -',
+  'body.title': '¿Dónde lo sientes? Toca una o varias zonas.',
+  'body.confirm': 'Aquí es donde lo siento',
+  'body.count': n => n + (n === 1 ? ' seleccionada' : ' seleccionadas'),
+  'body.highlighted': z => 'Te he marcado esta zona: ' + z.toLowerCase() + '. Mueve el punto si me equivoqué.',
+  'body.aria': side => 'Mapa del cuerpo interactivo, vista ' + (side === 'back' ? 'de espalda' : 'de frente'),
+  'rate.marker': '- INTENSIDAD -',
+  'rate.title': '¿Qué tan fuerte fue?',
+  'rate.confirm': 'Guardar este valor',
+  'rate.aria': 'Intensidad del síntoma',
+  'rate.low': 'No se nota',
+  'rate.high': 'Insoportable',
+  'recap.title': '* RESUMEN *',
+  'recap.symptoms': '* SÍNTOMAS * --> ',
+  'recap.parts': '* ZONAS DEL CUERPO * --> ',
+  'recap.rating': '* INTENSIDAD DEL DOLOR * --> ',
+  'recap.situations': '* SITUACIONES * --> ',
+  'recap.thoughts': '* PENSAMIENTOS * --> ',
+  'recap.feelings': '* EMOCIONES * --> ',
+  'recap.personal': '* ESPACIO PERSONAL * --> ',
+  'recap.intensity': '* INTENSIDAD * --> ',
+  'save.btn': 'Guardar este check-in',
+  'save.again': 'Empezar otro',
+  'save.done': 'Guardado ✓',
+  'save.toastServer': n => 'Guardado en tu cuenta — ' + n + ' check-in(s) hasta ahora.',
+  'save.toastBrowser': n => 'Guardado en este navegador — ' + n + ' check-in(s) hasta ahora.',
+  'chart.aria': 'La intensidad de tus síntomas a lo largo del tiempo',
+  'chart.empty': 'Todavía no hay intensidad registrada en este periodo.',
+  'home.fromLastWeek': ' respecto a la semana pasada',
+  'home.checkins': 'Check-ins',
+  'home.last7': n => 'últimos 7 días: ' + n,
+  'home.noneYet': 'ninguno todavía — empieza cuando quieras',
+  'home.signal': 'Señal del cuerpo',
+  'home.avgAll': 'media de todos los síntomas',
+  'home.noIntensity': 'todavía no hay intensidad registrada',
+  'home.topArea': 'Zona más señalada',
+  'home.times': n => (n === 1 ? 'registrada 1 vez' : 'registrada ' + n + ' veces'),
+  'home.mapFills': 'el mapa del cuerpo la rellena',
+  'home.reflectionOnly': 'Solo reflexiones',
+  'home.noRecent': 'Todavía no hay check-ins. Bao te espera en la página del check-in.',
+  'insight.emptyTitle': 'Todavía nada que observar.',
+  'insight.emptyText': 'Después de algunos check-ins, Bao empezará a mostrarte qué zonas vuelven más a menudo. Los patrones son pistas, nunca diagnósticos.',
+  'insight.title': area => area + ': es la zona que más vuelve.',
+  'insight.text': (n, area, times, multi) => 'En ' + n + ' check-in(s) marcaste esta zona (' + area.toLowerCase() + ') ' +
+      times + (times === 1 ? ' vez' : ' veces') + (multi ? ', y ' + multi + ' síntoma(s) aparecieron varias veces en un día' : '') +
+      '. Es algo para explorar, no una conclusión.',
+  'prompts': ['¿Qué fue diferente hoy, aunque sea algo pequeño?', '¿Dónde te pidió atención tu cuerpo primero?',
+              '¿Qué cargaste hoy que mañana podrías soltar?', '¿Hubo un momento en que te sentiste en calma?'],
+  'pat.count': (c, s) => c + ' check-in(s) · ' + s + ' síntoma(s) registrado(s)',
+  'pat.head': ['Zona del cuerpo', 'Veces', 'Intensidad media', 'Última vez'],
+  'pat.empty': 'Nada registrado en este periodo.',
+  'pat.noWords': 'Todavía no se repite nada. Las palabras aparecen aquí cuando salen en al menos dos situaciones.',
+  'rep.empty': 'Tu informe se construye con tus check-ins. Todavía no tienes ninguno.',
+  'rep.me': 'Yo',
+  'rep.title': 'Mi informe de síntomas y bienestar',
+  'rep.draft': 'Borrador privado',
+  'rep.summary': 'Resumen',
+  'rep.summaryText': (c, s, a) => c + ' check-in(s). ' + s + ' síntoma(s) registrado(s). Intensidad media: <strong>' + a + '</strong>.',
+  'rep.notRecorded': 'no registrada',
+  'rep.symptoms': 'Síntomas registrados',
+  'rep.checkins': 'Check-ins',
+  'rep.day': 'Día: ',
+  'rep.feeling': 'Emociones: ',
+  'rep.personal': 'Espacio personal',
+  'set.storageServer': u => '<p class="signed-in">Has iniciado sesión como <strong>' + u + '</strong></p>',
+  'set.storageBrowser': u => '<p class="signed-in">Has iniciado sesión como <strong>' + u + '</strong></p><p class="storage-warn">Guardado solo en este dispositivo, no en el servidor de BAO.</p>',
+  'set.saved': n => n + (n === 1 ? ' guardado' : ' guardados'),
+  'set.symptoms': n => n + (n === 1 ? ' síntoma' : ' síntomas'),
+  'set.delete': 'Eliminar',
+  'set.empty': 'Todavía no hay nada guardado.',
+  'set.deleted': 'Check-in eliminado.',
+  'set.noteServer': 'Guardado en tu cuenta, protegido por tu contraseña.',
+  'set.noteBrowser': 'Guardado solo en este navegador. Inicia server.py para guardarlo en un archivo.',
+  'set.confirmClear': '¿Eliminar todos los check-ins? No se puede deshacer.',
+  'set.cleared': 'Se han eliminado todos los check-ins.',
+  'pet.your': 'tu avatar',
+  'pet.Your': 'Tu avatar',
+  'pet.saved': n => n + ' estará ahora junto a tus mensajes.',
+  'pet.removed': 'Avatar eliminado.',
+  'login.forgot': '¿Olvidaste tu contraseña?',
+  'login.back': 'Volver a iniciar sesión',
+  'login.ledeRecover': 'Introduce tu código de recuperación y elige una contraseña nueva. Tus check-ins se quedan como están.',
+  'login.recover': 'Poner contraseña nueva',
+  'login.pwLabel': 'Contraseña',
+  'login.pwPh': 'al menos 8 caracteres',
+  'err.pwMissing': 'Escribe tu contraseña.',
+  'login.newPw': 'Contraseña nueva',
+  'err.code': 'Escribe tu código de recuperación.',
+  'err.badRecovery': 'El correo o el código de recuperación no son correctos.',
+  'rc.new': 'Guarda este código en un lugar seguro. Es la única forma de volver a tu cuenta si olvidas la contraseña.',
+  'rc.upgrade': 'Ahora Bao puede ayudarte si olvidas la contraseña. Guarda este código: con él puedes poner una nueva.',
+  'rc.renewed': 'Este es tu nuevo código de recuperación. El antiguo ya no funciona.',
+  'rc.copied': 'Código copiado.',
+  'rc.changed': 'Tu contraseña se ha cambiado.',
+  'acc.nameSaved': n => 'Ahora Bao te llamará ' + n + '.',
+  'acc.noCode': 'El código de recuperación solo existe para cuentas guardadas en este navegador.',
+  'acc.confirmCode': '¿Crear un nuevo código de recuperación? El antiguo dejará de funcionar.',
+  'err.consent': 'Marca la casilla para aceptar cómo BAO guarda tu diario.',
+  'rem.title': 'Recordatorio diario',
+  'rem.pushTitle': 'BAO',
+  'rem.pushBody': n => 'Hola ' + n + ', ¿cómo se ha sentido tu cuerpo hoy? Un check-in de un minuto con Bao.',
+  'rem.saved': v => 'Recordatorio puesto a las ' + v + '.',
+  'rem.noteOn': v => 'Bao te lo recordará cada día a las ' + v + '.',
+  'rem.noteOff': 'El recordatorio está apagado.',
+  'rem.noteDenied': 'Las notificaciones están bloqueadas. Permítelas para BAO en los ajustes del teléfono.',
+  'rem.noteError': 'No se pudo poner el recordatorio. Inténtalo de nuevo en un momento.',
+  'rem.noteWeb': 'Guardado. Los recordatorios llegan en la app BAO para iPhone.',
+  'acc.deleted': 'Se han eliminado tu cuenta y todos tus check-ins.',
+  'forgot.lede': 'Escribe el correo con el que te registraste. Te enviaremos un enlace para elegir una contraseña nueva.',
+  'forgot.send': 'Envíame el enlace',
+  'forgot.back': 'Volver a iniciar sesión',
+  'forgot.sent': 'Si este correo tiene una cuenta de BAO, el enlace está en camino. Vale durante 30 minutos. Mira también en spam.',
+  'forgot.fail': 'No se ha podido enviar el correo ahora. Inténtalo en unos minutos.',
+  'reset.lede': 'Elige una contraseña nueva para tu cuenta de BAO.',
+  'reset.save': 'Guardar la contraseña nueva',
+  'reset.new': 'Contraseña nueva',
+  'reset.mismatch': 'Las dos contraseñas no son iguales.',
+  'reset.fail': 'Este enlace ha caducado o ya se usó. Pide uno nuevo.',
+  'reset.done': 'Tu contraseña se ha cambiado. Inicia sesión con la nueva.',
+  'forgot.needServer': 'La recuperación de la contraseña funciona en la web de BAO y en la app. Esta página está abierta como archivo, así que no puede enviar correos.',
+  'set.companion': 'Tu avatar',
+  'set.companionSub': 'Diseña el animalito que te representa. Aparece junto a tus mensajes en el chat.',
+  'pet.save': 'Guardar mi avatar',
+  'feel.notice.sad': 'Parece que te sentiste triste. Eso también cuenta. ¿Me cuentas un poco más?',
+  'feel.notice.angry': 'Parece que algo te hizo enfadar. ¿Me cuentas un poco más de lo que pasó?',
+  'feel.body': 'Gracias por contármelo. Las emociones a menudo también están en algún lugar del cuerpo.',
+  'feel.back': 'Anotado, lo he añadido a los síntomas de hoy. Volvamos a donde estábamos.',
+  'feel.name.sad': 'Tristeza',
+  'feel.name.angry': 'Enfado',
+  'q.feelSituation': '¿En qué situación te sentiste así?',
+  'q.feelRepeated': '¿Te has sentido así más de una vez desde tu último check-in?',
+  'feel.crisis': 'Gracias por confiarme esto. Solo soy un pequeño panda y no puedo ayudar en una emergencia, pero no tienes que cargar con esto a solas. Si estás en peligro o temes hacerte daño, llama ahora al 112. En España también puedes llamar al 024, gratis y a cualquier hora. ¿Hay alguien de confianza a quien puedas escribir hoy?',
+  'past.btn': 'Registrar este día',
+  'past.add': 'Añadir a este día',
+  'past.future': 'Este día todavía no ha llegado.',
+  'past.intro': d => 'Este check-in es para el ' + d + '. Piensa en ese día.',
+  'past.log': d => '¿Tuviste algún síntoma el ' + d + '?',
+  'past.symptoms': '¿De qué síntoma quieres hablar?',
+  'past.day': '¿Qué tal fue ese día?',
+  'past.emotions': '¿Hubo algo que te hiciera sonreír ese día?',
+  'del.sym': 'Eliminar este síntoma',
+  'del.sure': '¿Eliminar?',
+  'del.symDone': 'Síntoma eliminado.',
+  'del.entry': 'Eliminar este check-in',
+  'del.entryN': 'Eliminar este check-in',
+  'del.sureEntry': 'Toca otra vez para eliminar todo el check-in',
+  'del.entryDone': 'Check-in eliminado.',
+  'set.facts': '\n              <li><b>Nada es un diagnóstico.</b> Bao cuenta lo que escribes y te lo muestra. Leer un patrón os toca a ti y a tu médico.</li>\n              <li><b>Sin anuncios, sin rastreo, sin compartir.</b> Tus check-ins nunca se envían a ningún sitio por sí solos.</li>\n              <li><b>Puedes dejar cualquier pregunta vacía.</b> Un check-in corto también cuenta.</li>\n              <li><b>Eliminar es eliminar.</b> Lo que quitas aquí desaparece para siempre.</li>\n            ',
+  'cal.eyebrow': 'Tu línea del tiempo',
+  'cal.h': 'Cada día que registraste,<br><em>en un solo lugar.</em>',
+  'cal.lede': 'Toca un día para ver qué contenía ese check-in: síntomas, intensidad, zonas del cuerpo, situación y tus propias palabras.',
+  'cal.side': '<b>Los huecos están bien.</b>Los días que faltan no son fracasos.',
+  'cal.add': '+ Añadir check-in',
+  'cal.today': 'Hoy',
+  'cal.prev': 'Mes anterior',
+  'cal.next': 'Mes siguiente',
+  'cal.lgIntensity': 'Intensidad de los síntomas',
+  'cal.lgCount': 'Un punto por síntoma',
+  'cal.lgNote': 'Volvió más de una vez',
+  'cal.lgBar': 'Altura de la barra = intensidad 0–10',
+  'cal.foot': 'Esta vista sale solo de tus check-ins. Nada aquí es un diagnóstico.',
+  'acc.title': 'Tu cuenta',
+  'acc.sub': 'El nombre que usa Bao para saludarte.',
+  'acc.name': 'Nombre',
+  'acc.saveName': 'Guardar nombre',
+  'brand.sub': 'nota el patrón',
+  'nav.aria': 'Navegación principal',
+  'side.signout': 'Cerrar sesión',
+  'top.menu': 'Abrir el menú',
+  'home.eyebrow': 'Tu resumen',
+  'home.h': 'Escucha lo que tu cuerpo<br><em>intenta decirte.</em>',
+  'home.lede': 'Un lugar tranquilo para conectar síntomas, emociones y contexto, sin convertir tu vida en una hoja de cálculo.',
+  'aria.waving': 'Bao el panda saludando',
+  'home.last7h': 'Tus últimos 7 días',
+  'home.last7sub': 'Intensidad media de los síntomas por día, según tus check-ins.',
+  'home.details': 'Ver detalles →',
+  'home.obs': 'Una observación amable',
+  'home.recent': 'Check-ins recientes',
+  'home.recentSub': 'Tus notas, con tus palabras.',
+  'home.moment': 'Tómate un momento',
+  'home.momentSub': 'No hace falta encontrar la respuesta perfecta.',
+  'aria.thinking': 'Bao el panda pensando',
+  'aria.bao': 'Bao el panda',
+  'chat.h': 'Bao te escucha,<br><em>tómate tu tiempo.</em>',
+  'chat.lede': 'Escríbele como un mensaje. No se guarda nada hasta que pulses guardar.',
+  'chat.label': 'Tu respuesta',
+  'chat.ph': 'Escribe a Bao…',
+  'chat.send': 'Enviar',
+  'chat.yes': 'Sí',
+  'chat.no': 'No',
+  'body.front': 'Delante',
+  'body.back': 'Detrás',
+  'prec.close': 'Cerrar',
+  'prec.help': 'Toca exactamente donde lo sientes. Puedes mover la marca para ajustarla.',
+  'pat.eyebrow': 'Explorar patrones',
+  'pat.h': 'Conexiones,<br><em>no conclusiones.</em>',
+  'pat.lede': 'Relaciones que se repiten entre tu contexto y tus síntomas. Cuanto más tiempo los sigas, más clara puede ser la imagen.',
+  'aria.listening': 'Bao el panda escuchando',
+  'pat.line': '<b>Bao lee contigo.</b>Los patrones son pistas, no veredictos.',
+  'pat.add': '+ Añadir check-in',
+  'pat.show': 'Mostrar',
+  'opt.7': 'Últimos 7 días',
+  'opt.30': 'Últimos 30 días',
+  'opt.90': 'Últimos 3 meses',
+  'opt.all': 'Todo',
+  'lg.loggedDay': 'Síntomas registrados ese día',
+  'pat.where': 'Dónde aparece',
+  'pat.whereSub': 'Contado a partir de tus check-ins, no de una regla médica.',
+  'rep.eyebrow': 'Comparte a tu manera',
+  'rep.h': 'Un informe que hace<br><em>visible lo invisible.</em>',
+  'rep.lede': 'Dale a tu médico un punto de partida claro: tus observaciones, tus palabras y el contexto.',
+  'aria.team': 'Bao el panda a tu lado',
+  'rep.line': '<b>Tú decides.</b>Tú eliges qué compartir.',
+  'rep.print': 'Imprimir / guardar como PDF',
+  'rep.before': 'Antes de compartir',
+  'rep.beforeSub': 'Elige exactamente qué entra en el informe. Se reconstruye a partir de tus check-ins reales.',
+  'rep.optSummary': 'Resumen de síntomas',
+  'rep.optSummarySub': 'Zonas, intensidad, frecuencia',
+  'rep.optNotes': 'Notas del día',
+  'rep.optNotesSub': 'Tus reflexiones libres',
+  'rep.optPersonal': 'Espacio personal',
+  'rep.optPersonalSub': 'La línea privada al final de cada check-in',
+  'rep.incSummary': 'Incluir el resumen de síntomas',
+  'rep.incNotes': 'Incluir las notas del día',
+  'rep.incPersonal': 'Incluir el espacio personal',
+  'rep.nothingSent': '<span class="privacy-dot"></span>No se envía nada a ningún sitio. La impresión se hace en tu dispositivo.',
+  'set.eyebrow': 'Tu espacio',
+  'set.h': 'La privacidad es una<br><em>función, no una nota al pie.</em>',
+  'set.lede': 'Tus check-ins son personales. Tú decides qué se guarda, qué se analiza y qué se comparte.',
+  'aria.sleeping': 'Bao el panda durmiendo',
+  'set.line': '<b>Bao también descansa aquí.</b>Nada sale de tu dispositivo por sí solo.',
+  'set.where': 'Cómo funciona Bao',
+  'set.whereSub': 'Lo que hace la app, y lo que nunca hace.',
+  'home.ctaTitle': 'Empezar el check-in de hoy',
+  'home.ctaSub': 'Un minuto con Bao. No se guarda nada hasta que pulses guardar.',
+  'home.reflectHint': 'No hay una respuesta correcta. Bao pregunta y tú contestas solo lo que te apetezca.',
+  'set.clear': 'Eliminar todos mis check-ins',
+  'pet.animal': 'Animal',
+  'pet.colour': 'Color',
+  'pet.accessory': 'Accesorio',
+  'pet.accColour': 'Color del accesorio',
+  'pet.ph': 'p. ej. Tim',
+  'pet.remove': 'Quitar',
+  'set.checkins': 'Tus check-ins',
+  'set.checkinsSub': 'Todos los check-ins, del más reciente. Puedes eliminar cualquiera.',
+  'aria.hello': 'Bao el panda diciendo hola',
+  'splash.sub': '¡Holaa! Tu pequeño compañero en el camino hacia sentirte mejor.',
+  'login.email': 'Correo electrónico',
+  'login.emailPh': 'tu@ejemplo.com',
+  'login.name': '¿Cómo quieres que te llame Bao?',
+  'nav.home': 'Resumen',
+  'nav.checkin': 'Check-in del día',
+  'nav.patterns': 'Patrones',
+  'nav.report': 'Mi informe',
+  'nav.settings': 'Ajustes',
+  'side.title': 'Tus datos siguen siendo tuyos',
+  'home.hi': 'Hola, soy Bao.',
+  'home.step': 'Podemos ir paso a paso.',
+  'lg.intensity': 'Intensidad de los síntomas',
+  'lg.logged': 'Síntomas registrados',
+  'lg.last7': 'Últimos 7 días',
+  'key.sel': 'seleccionada',
+  'key.view': 'Vista delante / detrás',
+  'key.zoom': 'Cada zona se abre ampliada',
+  'prec.a': 'Marca el punto:',
+  'prec.b': '',
+  'top.new': '+ Nuevo check-in',
+  'login.consent': 'Acepto que BAO guarde la información de salud que escribo, para llevar mi diario. He leído la <a href="/privacy.html" target="_blank" rel="noopener">política de privacidad</a> y las <a href="/terms.html" target="_blank" rel="noopener">condiciones</a>.',
+  'legal.privacy': 'Privacidad',
+  'legal.terms': 'Condiciones',
+  'legal.support': 'Ayuda',
+  'rem.sub': 'Un pequeño recordatorio cada noche para hacer el check-in.',
+  'rem.at': 'Recuérdamelo a las',
+  'acc.delete': 'Eliminar mi cuenta',
+  'acc.deleteWarn': 'Esto elimina tu cuenta, todos tus check-ins y tu avatar. No se puede deshacer.',
+  'acc.deletePw': 'Escribe tu contraseña para confirmar',
+  'acc.deleteGo': 'Eliminar para siempre',
+  'acc.deleteCancel': 'Mantener mi cuenta',
+  'forgot.link': '¿Olvidaste tu contraseña?',
+  'reset.again': 'Escríbela otra vez',
+  'lang.title': 'Idioma',
+  'lang.sub': 'Bao habla el idioma que elijas.',
+  'err.offline': 'El servidor de BAO no respondió. Tu check-in se queda en este dispositivo y se enviará la próxima vez.',
+  'err.localOnly': 'Tu diario todavía está solo en este dispositivo. Toca «¿Aún no tienes cuenta? Crea una» y regístrate con el mismo correo y la misma contraseña: tus check-ins pasarán a tu cuenta.',
+  'tab.home': 'Inicio', 'tab.checkin': 'Check-in', 'tab.calendar': 'Calendario', 'tab.patterns': 'Patrones', 'tab.report': 'Informe', 'tab.settings': 'Ajustes'
+};
+
+const PART_ES = {
+  'head':'Cabeza', 'eyes':'Ojos', 'jaw':'Mandíbula', 'neck':'Cuello', 'back of head':'Nuca',
+  'left shoulder':'Hombro izquierdo', 'right shoulder':'Hombro derecho', 'chest':'Pecho', 'stomach':'Estómago',
+  'lower belly':'Bajo vientre', 'hips':'Caderas', 'upper back':'Parte alta de la espalda', 'middle back':'Mitad de la espalda',
+  'lower back':'Parte baja de la espalda', 'buttocks':'Glúteos',
+  'left upper arm':'Brazo izquierdo', 'right upper arm':'Brazo derecho', 'left elbow':'Codo izquierdo', 'right elbow':'Codo derecho',
+  'left forearm':'Antebrazo izquierdo', 'right forearm':'Antebrazo derecho', 'left hand':'Mano izquierda', 'right hand':'Mano derecha',
+  'left thigh':'Muslo izquierdo', 'right thigh':'Muslo derecho', 'back of left thigh':'Parte trasera del muslo izquierdo',
+  'back of right thigh':'Parte trasera del muslo derecho', 'left knee':'Rodilla izquierda', 'right knee':'Rodilla derecha',
+  'back of left knee':'Detrás de la rodilla izquierda', 'back of right knee':'Detrás de la rodilla derecha',
+  'left lower leg':'Pierna izquierda', 'right lower leg':'Pierna derecha', 'left calf':'Gemelo izquierdo', 'right calf':'Gemelo derecho',
+  'left foot':'Pie izquierdo', 'right foot':'Pie derecho', 'left heel':'Talón izquierdo', 'right heel':'Talón derecho',
+  '(no area marked)':'(ninguna zona marcada)'
+};
+const MONTHS_ES = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
+const PET_ES = {
+  panda:'Panda', cat:'Gato', bunny:'Conejo', bear:'Oso', fox:'Zorro', dog:'Perro',
+  natural:'Natural', caramel:'Arena', chocolate:'Cacao', honey:'Miel', peach:'Melocotón', rose:'Rosa', berry:'Frutos rojos',
+  lavender:'Lila', sky:'Cielo', ocean:'Océano', mint:'Menta', sage:'Salvia', grey:'Gris', charcoal:'Pizarra',
+  original:'Original', red:'Rojo', coral:'Coral', orange:'Naranja', yellow:'Amarillo', green:'Verde', teal:'Petróleo',
+  blue:'Azul', navy:'Azul marino', purple:'Morado', pink:'Rosa fuerte', brown:'Marrón', black:'Negro', white:'Blanco',
+  0:'Ninguno', 1:'Bufanda', 2:'Gafas', 3:'Gorro', 4:'Lazo', 5:'Flor'
+};
+const BUILTIN_ES = {
+  patterns: [
+    ["dolor de cabeza|migra[ñn]a|cefalea|me duele la cabeza", [
+      "El dolor de cabeza puede agotar mucho. Gracias por contármelo. ¿Late, aprieta o pincha?",
+      "Te escucho. El dolor de cabeza quita mucha energía. ¿Desde cuándo dura?"]],
+    ["mareo|mareada|mareado|v[eé]rtigo", [
+      "Sentirse inestable asusta. Hiciste bien en anotarlo. ¿Te da vueltas la habitación o sientes que te vas a desmayar?"]],
+    ["mand[ií]bula|aprieto los dientes|rechino", [
+      "La mandíbula guarda muchas cosas que no decimos. ¿Es un dolor sordo o un tirón al abrir la boca?"]],
+    ["nudo en la garganta|garganta cerrada|me cuesta tragar", [
+      "Esa sensación asusta y es muy común con la tensión. ¿Es una presión o como si algo estuviera atascado?"]],
+    ["cuello|cervical|nuca", [
+      "El cuello guarda mucha tensión. ¿Está rígido, dolorido o arde?"]],
+    ["hombro", [
+      "Los hombros se tensan a menudo antes de notar el estrés. ¿Es como un nudo o como un peso?"]],
+    ["pecho|palpitaciones|el coraz[oó]n (me )?(late|va)|opresi[oó]n", [
+      "Suena aterrador. Gracias por confiármelo. ¿Es opresión, pinchazo o un latido irregular?"]],
+    ["respir|aire|ahogo|falta de aire", [
+      "Tener problemas para respirar da miedo. Estoy aquí. ¿Te cuesta más coger aire o soltarlo?"]],
+    ["est[oó]mago|barriga|tripa|n[aá]usea|hinchaz|c[oó]lico", [
+      "El estómago a menudo reacciona antes que la cabeza. ¿Aprieta, quema o es como un nudo?"]],
+    ["espalda|lumbar|ci[aá]tica", [
+      "La espalda se queja cuando pasamos mucho tiempo en la misma postura. ¿Dolor sordo o punzante?"]],
+    ["cansad|agotad|sin energ[ií]a|reventad", [
+      "El cansancio también cuenta como síntoma. ¿Está pesado el cuerpo o vacía la cabeza?"]],
+    ["dorm|insomnio|sue[ñn]o|pesadilla", [
+      "El sueño cambia todo lo demás. ¿Te costó dormirte o seguir dormid@?"]],
+    ["ansi|angustia|estr[eé]s|nervios|preocupad", [
+      "La ansiedad y el cuerpo están muy unidos. ¿La sientes como un zumbido, una presión o un nudo?"]],
+    ["dolor|me duele|duele|quema|pincha|punzada", [
+      "Siento que tengas dolor. Gracias por escribirlo. ¿Es agudo, sordo, quemante o como una presión?",
+      "Gracias por contármelo. ¿Desde cuándo dura?"]]
+  ],
+  zones: [
+    ["mand[ií]bula|dientes", "jaw"], ["ojos|vista", "eyes"], ["cabeza|migra[ñn]a|mareo", "head"],
+    ["cuello|garganta|nuca", "neck"], ["parte alta de la espalda|om[oó]plato", "upper back"], ["hombro", "left shoulder"],
+    ["pecho|coraz[oó]n|respir|aire", "chest"], ["est[oó]mago|barriga|tripa|n[aá]usea", "stomach"],
+    ["parte baja de la espalda|lumbar|ci[aá]tica", "lower back"], ["cadera|pelvis", "hips"], ["\\bmanos?\\b|mu[ñn]eca|dedo", "left hand"],
+    ["rodilla", "left knee"], ["gemelo|pantorrilla", "left calf"], ["pierna", "left lower leg"]
+  ]
+};
+
 function partName(p){
   if (LANG === 'it') return PART_IT[String(p).toLowerCase()] || p;
+  if (LANG === 'fr') return PART_FR[String(p).toLowerCase()] || p;
+  if (LANG === 'es') return PART_ES[String(p).toLowerCase()] || p;
   if (LANG !== 'de') return p;
   return PART_DE[String(p).toLowerCase()] || p;
 }
@@ -2243,7 +3086,7 @@ async function readLocal(){
 }
 async function jget(url){
   const r = await fetch(url, { cache:'no-store', credentials:'same-origin' });
-  if (!r.ok) throw new Error(url);
+  if (!r.ok){ const e = new Error(url); e.status = r.status; throw e; }
   return r.json();
 }
 async function jpost(url, body){
@@ -2254,6 +3097,7 @@ async function jpost(url, body){
   if (!r.ok){
     const e = new Error((data && data.error) || url);
     e.data = data || {};
+    e.status = r.status;
     throw e;
   }
   return data;
@@ -2269,7 +3113,7 @@ const store = {
         DATA.forEach((e, i) => { if (!e.id) e.id = 'old-' + i; });
         await saveLocal();
         return;
-      }catch(e){ MODE = 'browser'; }
+      }catch(e){ showToast(t('err.offline')); }
     }
     DATA = await readLocal();
     DATA.forEach((e, i) => { if (!e.id) e.id = 'old-' + i; });
@@ -2280,7 +3124,7 @@ const store = {
     if (entry.forDay){ const [y, m, d] = entry.forDay.split('-').map(Number); const n = new Date(); entry.date = new Date(y, m - 1, d, n.getHours(), n.getMinutes()).toISOString(); }
     if (MODE === 'server'){
       try{ DATA = (await jpost('/api/checkin', entry)).checkins; await saveLocal(); return; }
-      catch(e){ MODE = 'browser'; }
+      catch(e){ showToast(t('err.offline')); }
     }
     DATA.push(entry);
     await saveLocal();
@@ -2288,14 +3132,14 @@ const store = {
   async remove(id){
     if (MODE === 'server'){
       try{ DATA = (await jpost('/api/checkin/delete', { id })).checkins; await saveLocal(); return; }
-      catch(e){ MODE = 'browser'; }
+      catch(e){ showToast(t('err.offline')); return; }
     }
     DATA = DATA.filter(e => e.id !== id);
     await saveLocal();
   },
   async clear(){
     if (MODE === 'server'){
-      try{ await jpost('/api/checkins/clear', {}); }catch(e){ MODE = 'browser'; }
+      try{ await jpost('/api/checkins/clear', {}); }catch(e){ showToast(t('err.offline')); return; }
     }
     DATA = [];
     await saveLocal();
@@ -2463,7 +3307,7 @@ const auth = {
         USER_NAME = r.name || '';
         if (r.user) await resumeSession(r.user);   // unlocks the encrypted local backup, if this tab has the key
         return r.user;
-      }catch(e){ MODE = 'browser'; }
+      }catch(e){ return null; }
     }
     return resumeSession(null);
   },
@@ -2471,7 +3315,12 @@ const auth = {
     if (!cryptoReady()) throw new Error(t('err.noCrypto'));
     checkThrottle(u);
     if (MODE === 'server'){
-      const r = await jpost('/api/auth/login', { username:u, password:p });
+      let r;
+      try{ r = await jpost('/api/auth/login', { username:u, password:p }); }
+      catch(err){
+        if ((err.status === 401 || err.status === 404) && own(localUsers(), u)) throw new Error(t('err.localOnly'));
+        throw err;
+      }
       USER_NAME = r.name || '';
       const rec = own(localUsers(), r.user) ? localUsers()[r.user] : null;
       let made = rec ? await openRecord(rec, p) : null;
@@ -2830,14 +3679,14 @@ function itPatterns(){
 }
 function respondLocal(text){
   const t = (text || '').toLowerCase();
-  if (LANG === 'it') itPatterns();
-  for (const [re, answers] of (LANG === 'it' ? PATTERNS_IT : LANG === 'de' ? PATTERNS_DE : PATTERNS)) if (re.test(t)) return pick(answers);
+  const X = extraPatterns(LANG);
+  for (const [re, answers] of (X ? X.p : LANG === 'de' ? PATTERNS_DE : PATTERNS)) if (re.test(t)) return pick(answers);
   return null;
 }
 function zoneLocal(text){
   const t = (text || '').toLowerCase();
-  if (LANG === 'it') itPatterns();
-  for (const [re, zone] of (LANG === 'it' ? ZONES_IT : LANG === 'de' ? ZONES_DE : ZONES)) if (re.test(t)) return zone;
+  const X = extraPatterns(LANG);
+  for (const [re, zone] of (X ? X.z : LANG === 'de' ? ZONES_DE : ZONES)) if (re.test(t)) return zone;
   return null;
 }
 
@@ -3051,7 +3900,7 @@ async function runConversation(){
 
       // Python answers in the chosen language when patterns_bao_salute.py has it.
       let reply = null, zone = null, fromServer = false;
-      if (MODE === 'server' && LANG !== 'it'){
+      if (MODE === 'server' && (LANG === 'en' || LANG === 'de')){
         try{
           const d = await jpost('/api/bao', { text: name, lang: LANG });
           reply = d.response; zone = d.zone; fromServer = true;
@@ -3249,7 +4098,7 @@ pView.addEventListener('click', e => {
 
 const MONTHS    = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 const MONTHS_DE = ['JAN','FEB','MÄR','APR','MAI','JUN','JUL','AUG','SEP','OKT','NOV','DEZ'];
-const months = () => LANG === 'de' ? MONTHS_DE : LANG === 'it' ? MONTHS_IT : MONTHS;
+const months = () => ({ de:MONTHS_DE, it:MONTHS_IT, fr:MONTHS_FR, es:MONTHS_ES })[LANG] || MONTHS;
 const dOf = e => {
   const d = new Date(e.date || Date.now());
   if (!e.forDay || !/^\d{4}-\d{2}-\d{2}$/.test(e.forDay)) return d;
@@ -3856,7 +4705,7 @@ function chipRow(host, items, isOn, onPick, asSwatch){
       b.style.background = it.fur || it;
       b.setAttribute('aria-label', it.id || it);
     } else {
-      b.textContent = (LANG === 'it' && PET_IT[it.id]) || (LANG === 'de' && it.de) || it.label;
+      b.textContent = ((({ it:PET_IT, fr:PET_FR, es:PET_ES })[LANG] || {})[it.id]) || (LANG === 'de' && it.de) || it.label;
     }
     b.addEventListener('click', () => { onPick(it); renderPetStudio(); });
     host.appendChild(b);
@@ -3868,7 +4717,7 @@ function thumbRow(host, items, isOn, art, onPick){
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'chip thumb' + (isOn(it) ? ' on' : '');
-    const name = (LANG === 'it' && PET_IT[it.id]) || (LANG === 'de' && it.de) || it.label;
+    const name = ((({ it:PET_IT, fr:PET_FR, es:PET_ES })[LANG] || {})[it.id]) || (LANG === 'de' && it.de) || it.label;
     b.setAttribute('aria-label', name);
     b.setAttribute('aria-pressed', String(isOn(it)));
     b.innerHTML = '<span class="pet-img pet-stack">' + petArt(art(it)) + '</span><span class="lbl">' +
@@ -3894,7 +4743,7 @@ function renderPetStudio(){
     const b = document.createElement('button'), on = it.id === petDraft.accColour;
     b.type = 'button'; b.className = 'chip swatch2' + (on ? ' on' : '');
     b.setAttribute('aria-pressed', String(on));
-    const name = (LANG === 'it' && PET_IT[it.id]) || (LANG === 'de' && it.de) || it.label;
+    const name = ((({ it:PET_IT, fr:PET_FR, es:PET_ES })[LANG] || {})[it.id]) || (LANG === 'de' && it.de) || it.label;
     const dot = it.dot || ACC_BASE[petDraft.acc] || '#ccc';
     b.innerHTML = '<span class="sw" style="background:' + dot +
       (it.dot ? '' : ';box-shadow:inset 0 0 0 2px #fff,0 0 0 1px rgba(0,0,0,.18)') + '"></span><span class="lbl">' + esc(name) + '</span>';
@@ -4070,8 +4919,13 @@ $('signOutBtn').addEventListener('click', async () => {
 });
 
 function itAllowed(){ return ITALIAN_USERS.includes(String(USER || '').trim().toLowerCase()); }
+function addedLangs(){
+  try{ return JSON.parse(localStorage.getItem('bao.langs.added') || '[]').filter(l => EXTRA_LANGS.includes(l)); }catch(e){ return []; }
+}
+function langVisible(l){ return l === 'en' || l === 'de' || (l === 'it' ? itAllowed() : addedLangs().includes(l) || l === LANG); }
 function itGate(entering){
   $$('[data-lang="it"]').forEach(b => b.hidden = !itAllowed());
+  $$('[data-lang="fr"],[data-lang="es"]').forEach(b => b.hidden = !langVisible(b.dataset.lang));
   let off = false;
   try{ off = localStorage.getItem('bao.itOff::' + USER) === '1'; }catch(e){}
   if (itAllowed()){ if (entering && !off) setLang('it', true); }
@@ -4442,11 +5296,11 @@ async function captureBodyRating(zone, label){
 
 let feltNow = new Set();
 const FEEL_WORDS = {
-  sad:   /(?<!\p{L})(sad|sadder|saddest|sadness|unhappy|depressed|miserable|heartbroken|hopeless|lonely|tearful|cried|cry|crying|tears|upset(?!\s+(?:stomach|tummy|belly))|gloomy|feel(?:ing|s|t)?\s+(?:so\s+|really\s+|very\s+|a\s+bit\s+)?(?:down|low|blue)|traurig\p{L}*|traurigkeit|niedergeschlagen|bedrückt|deprimiert|geweint|weinen|weinte|einsam|unglücklich|hoffnungslos|triste|tristezza|infelice|depress\p{L}*|piang\p{L}*|pianto|giù di morale|abbattut\p{L}*|sconfortat\p{L}*)(?!\p{L})/iu,
-  angry: /(?<!\p{L})(angry|angrier|anger|mad|furious|annoyed|irritated|frustrated|frustration|pissed|rage|livid|resentful|wütend|wut|sauer|verärgert|genervt|gereizt|frustriert|ärgerlich|geärgert|zornig|aufgebracht|arrabbiat\p{L}*|rabbia|furios\p{L}*|incazzat\p{L}*|irritat\p{L}*|frustrat\p{L}*|innervosit\p{L}*)(?!\p{L})/iu
+  sad:   /(?<!\p{L})(sad|sadder|saddest|sadness|unhappy|depressed|miserable|heartbroken|hopeless|lonely|tearful|cried|cry|crying|tears|upset(?!\s+(?:stomach|tummy|belly))|gloomy|feel(?:ing|s|t)?\s+(?:so\s+|really\s+|very\s+|a\s+bit\s+)?(?:down|low|blue)|traurig\p{L}*|traurigkeit|niedergeschlagen|bedrückt|deprimiert|geweint|weinen|weinte|einsam|unglücklich|hoffnungslos|triste|tristezza|infelice|depress\p{L}*|piang\p{L}*|pianto|giù di morale|abbattut\p{L}*|sconfortat\p{L}*|tristesse|tristeza|pleur\p{L}*|llor\p{L}*|d[ée]prim\p{L}*|deprimid\p{L}*)(?!\p{L})/iu,
+  angry: /(?<!\p{L})(angry|angrier|anger|mad|furious|annoyed|irritated|frustrated|frustration|pissed|rage|livid|resentful|wütend|wut|sauer|verärgert|genervt|gereizt|frustriert|ärgerlich|geärgert|zornig|aufgebracht|arrabbiat\p{L}*|rabbia|furios\p{L}*|incazzat\p{L}*|irritat\p{L}*|frustrat\p{L}*|innervosit\p{L}*|col[èe]re|f[âa]ch[ée]\p{L}*|[ée]nerv[ée]\p{L}*|enfadad\p{L}*|enojad\p{L}*|rabia|furieu\p{L}*)(?!\p{L})/iu
 };
-const CRISIS_WORDS = /(suicid|uccidermi|farla finita|voglio morire|non voglio più vivere|farmi del male|tagliarmi|autolesion|kill myself|end my life|want to die|wanna die|don['’]?t want to live|self[- ]?harm|hurt myself|cut myself|suizid|selbstmord|mich umbringen|nicht mehr leben|sterben will|mir etwas antun|mir was antun|ritzen|selbstverletz)/i;
-const NEGATION = /(\bnot\b|n't\b|n’t\b|\bnever\b|\bno\b|\bnicht\b|\bnie\b|\bnon\b|\bmai\b|(?<!\p{L})kein\p{L}*)/iu;
+const CRISIS_WORDS = /(suicid|me tuer|en finir|envie de mourir|veux mourir|me faire du mal|me couper|matarme|quitarme la vida|quiero morir|hacerme da[ñn]o|cortarme|uccidermi|farla finita|voglio morire|non voglio più vivere|farmi del male|tagliarmi|autolesion|kill myself|end my life|want to die|wanna die|don['’]?t want to live|self[- ]?harm|hurt myself|cut myself|suizid|selbstmord|mich umbringen|nicht mehr leben|sterben will|mir etwas antun|mir was antun|ritzen|selbstverletz)/i;
+const NEGATION = /(\bnot\b|n't\b|n’t\b|\bnever\b|\bno\b|\bnicht\b|\bnie\b|\bnon\b|\bmai\b|\bpas\b|\bjamais\b|\bnunca\b|(?<!\p{L})kein\p{L}*)/iu;
 
 function feelingsIn(text){
   const found = [];
@@ -4626,12 +5480,26 @@ Object.assign(I18N.de, {
 
 
 function paintLangOptions(){
-  const LANG_NAMES = { en:'English', de:'Deutsch', it:'Italiano' };
+  const LANG_NAMES = { en:'English', de:'Deutsch', it:'Italiano', fr:'Français', es:'Español' };
   const host = document.getElementById('langOptions');
+  $$('[data-lang="fr"],[data-lang="es"]').forEach(b => b.hidden = !langVisible(b.dataset.lang));
   if (!host) return;
-  const list = LANGS.filter(l => l !== 'it' || itAllowed());
-  host.innerHTML = list.map(l => '<button type="button" data-pick-lang="' + l + '" class="' + (l === LANG ? 'on' : '') + '">' + LANG_NAMES[l] + '</button>').join('');
+  const list = LANGS.filter(langVisible);
+  const more = EXTRA_LANGS.filter(l => !list.includes(l));
+  host.innerHTML = list.map(l => '<button type="button" data-pick-lang="' + l + '" class="' + (l === LANG ? 'on' : '') + '">' + LANG_NAMES[l] + '</button>').join('') +
+    (more.length ? '<select class="lang-add" id="langAdd" aria-label="' + esc(t('lang.add')) + '"><option value="">' + esc(t('lang.add')) + '</option>' +
+      more.map(l => '<option value="' + l + '">' + LANG_NAMES[l] + '</option>').join('') + '</select>' : '');
   host.querySelectorAll('[data-pick-lang]').forEach(b => b.addEventListener('click', () => setLang(b.dataset.pickLang)));
+  const add = document.getElementById('langAdd');
+  if (add) add.addEventListener('change', () => {
+    const l = add.value;
+    if (!l) return;
+    const now = addedLangs();
+    if (!now.includes(l)) now.push(l);
+    try{ localStorage.setItem('bao.langs.added', JSON.stringify(now)); }catch(e){}
+    setLang(l);
+    paintLangOptions();
+  });
 }
 async function syncLocalUp(){
   const key = e => e.id || ('d:' + e.date);
@@ -4669,13 +5537,49 @@ Object.assign(I18N.en, { 'set.storageBrowser': u => '<p class="signed-in">You ar
 Object.assign(I18N.de, { 'set.storageBrowser': u => '<p class="signed-in">Angemeldet als <strong>' + u + '</strong></p><p class="storage-warn">Nur auf diesem Gerät gespeichert, nicht auf dem BAO-Server.</p>' });
 Object.assign(I18N.it, { 'set.storageBrowser': u => '<p class="signed-in">Hai fatto l’accesso come <strong>' + u + '</strong></p><p class="storage-warn">Salvato solo su questo dispositivo, non sul server di BAO.</p>' });
 
+
+async function detectServer(){
+  try{
+    const r = await fetch('/api/auth/me', { cache:'no-store', credentials:'same-origin' });
+    const type = (r.headers.get('content-type') || '').toLowerCase();
+    if (type.includes('application/json')) return true;
+    return r.status >= 500;
+  }catch(e){ return false; }
+}
+Object.assign(I18N.en, {
+  'err.offline': 'The BAO server did not answer. Your check-in is kept on this device and will be sent next time.',
+  'err.localOnly': 'Your diary is still only on this device. Tap “No account yet? Create one” and sign up with the same email and password: your check-ins will move to your account.'
+});
+Object.assign(I18N.de, {
+  'err.offline': 'Der BAO-Server hat nicht geantwortet. Dein Check-in bleibt auf diesem Gerät und wird beim nächsten Mal gesendet.',
+  'err.localOnly': 'Dein Tagebuch ist noch nur auf diesem Gerät. Tippe auf „Noch kein Konto?“ und registriere dich mit derselben E-Mail und demselben Passwort: deine Check-ins kommen dann in dein Konto.'
+});
+Object.assign(I18N.it, {
+  'err.offline': 'Il server di BAO non ha risposto. Il check-in resta su questo dispositivo e verrà mandato la prossima volta.',
+  'err.localOnly': 'Il tuo diario è ancora solo su questo dispositivo. Tocca “Non hai un account? Creane uno” e registrati con la stessa email e la stessa password: i tuoi check-in passeranno nel tuo account.'
+});
+
+
+const EXTRA_PATTERNS = {};
+function extraPatterns(l){
+  const src = { it: typeof BUILTIN_IT !== 'undefined' ? BUILTIN_IT : null, fr: BUILTIN_FR, es: BUILTIN_ES }[l];
+  if (!src) return null;
+  if (!EXTRA_PATTERNS[l]) EXTRA_PATTERNS[l] = { p: compilePairs(src.patterns), z: compilePairs(src.zones) };
+  return EXTRA_PATTERNS[l];
+}
+Object.assign(I18N.en, { 'lang.add': '+ Add a language' });
+Object.assign(I18N.de, { 'lang.add': '+ Sprache hinzufügen' });
+Object.assign(I18N.it, { 'lang.add': '+ Aggiungi una lingua' });
+Object.assign(I18N.fr, { 'lang.add': '+ Ajouter une langue' });
+Object.assign(I18N.es, { 'lang.add': '+ Añadir un idioma' });
+
 (async function boot(){
   try{
     applyLang();
   // Older versions kept the signed-in email in localStorage, which anyone could fake.
   try{ localStorage.removeItem('somatic.session.v2'); }catch(e){}
 
-  try{ await jget('/api/auth/me'); MODE = 'server'; }catch(e){ MODE = 'browser'; }
+  MODE = (await detectServer()) ? 'server' : 'browser';
 
     USER = await auth.me();
     if (RESET_TOKEN){ showLogin(); loginMode = 'reset'; paintLogin(); }
