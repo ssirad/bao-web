@@ -131,6 +131,9 @@ async function handle(context){
   try{
     switch (route){
 
+    case 'GET /api/version':
+      return json({ version: 'bao-server 2026-09-28 18:20' });
+
     case 'GET /api/auth/me': {
       const u = await currentUser(env, request);
       return u ? json(publicUser(u)) : fail('Not signed in.', 401);
