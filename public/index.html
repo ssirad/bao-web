@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-F9Ep3oacekFV55c/Rau6EQtPjviXHgRJ63cu4rUP2kM='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-m4D74F0UbY4qntMeHlIaUVuozmkqF5HVVfVPWE46oBM='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>BAO &mdash; symptom &amp; wellbeing tracker</title>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -597,6 +597,34 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
   padding:10px 12px;font-size:13px;text-align:left;line-height:1.45}
 .login-ok[hidden],#emailField[hidden],#passField[hidden],#pass2Field[hidden],#loginForgot[hidden]{display:none}
 #loginForgot{display:block;margin:6px auto 0}
+
+.tabbar{display:none}
+.lang-options{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.lang-options button{border:1px solid var(--line);background:#fff;color:#4f6163;border-radius:12px;padding:10px 16px;font-weight:750;font-size:13px}
+.lang-options button.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.mobile-only{display:none}
+@media(max-width:680px){
+  .topbar{position:sticky;top:0;height:auto;min-height:0;padding:calc(env(safe-area-inset-top,0px) + 10px) 16px 10px;background:#f7faf8;backdrop-filter:none;z-index:20}
+  .topbar::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:140px;background:#f7faf8}
+  .topbar .mobile-menu,.topbar .lang-switch,#pageSub{display:none!important}
+  #pageTitle{font-size:20px;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:62vw}
+  #newCheckinBtn{font-size:0;width:42px;height:42px;padding:0;border-radius:50%;display:grid;place-items:center;flex:0 0 auto}
+  #newCheckinBtn::before{content:"+";font-size:26px;line-height:1;font-weight:600}
+  .content{padding:20px 16px calc(96px + env(safe-area-inset-bottom,0px))}
+  .hero .title{font-size:30px;line-height:1.08}
+  .hero{gap:14px}
+  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(255,255,255,.97);
+    border-top:1px solid var(--line);padding:6px 2px calc(env(safe-area-inset-bottom,0px) + 6px);box-shadow:0 -6px 20px rgba(35,74,72,.05)}
+  .tabbar button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;border:0;background:transparent;
+    color:#8a9a9b;font-size:10px;font-weight:750;padding:4px 0;min-width:0}
+  .tabbar button span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  .tabbar svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .tabbar button.active{color:var(--teal)}
+  .bao-chat-form,.bao-chat-quick{bottom:calc(62px + env(safe-area-inset-bottom,0px))}
+  .toast{left:16px;right:16px;bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+  .mobile-only{display:inline-flex}
+  .signout-row{margin-top:16px}
+}
 </style>
 <script>
 /* ---------------------------------------------------------------------------
@@ -668,6 +696,14 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
         <button class="btn primary" id="newCheckinBtn" data-i18n="top.new">+ New check-in</button>
       </div>
     </header>
+
+    <nav class="tabbar" aria-label="Main navigation" data-i18n-attr="aria-label|nav.aria">
+      <button class="active" data-view="home"><svg viewBox="0 0 24 24"><path d="M4 13.5 12 5l8 8.5M6.5 12v7h11v-7M9.5 19v-4h5v4"/></svg><span data-i18n="tab.home">Home</span></button>
+      <button data-view="calendar"><svg viewBox="0 0 24 24"><path d="M4 7.5h16v13H4zM4 7.5V5.5h16v2M8.5 3.5v3M15.5 3.5v3M4 11h16"/></svg><span data-i18n="tab.calendar">Calendar</span></button>
+      <button data-view="patterns"><svg viewBox="0 0 24 24"><path d="M4 18V6m0 12h16M7 15l3-4 3 2 4-6"/></svg><span data-i18n="tab.patterns">Patterns</span></button>
+      <button data-view="report"><svg viewBox="0 0 24 24"><path d="M7 3h8l3 3v15H7zM15 3v4h4M9.5 12h6M9.5 16h6M9.5 8h2"/></svg><span data-i18n="tab.report">Report</span></button>
+      <button data-view="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M5.6 18.4l1.8-1.8M16.6 7.4l1.8-1.8"/></svg><span data-i18n="tab.settings">Settings</span></button>
+    </nav>
 
     <div class="content">
 
@@ -922,6 +958,7 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
               <button class="btn primary" id="nameSave" type="button" data-i18n="acc.saveName">Save name</button>
             </div>
 
+            <div class="signout-row mobile-only"><button class="btn outline" id="signOut2" type="button" data-i18n="side.signout">Sign out</button></div>
             <button class="linklike danger" id="delOpen" type="button" data-i18n="acc.delete">Delete my account</button>
             <div class="del-box" id="delBox" hidden>
               <p data-i18n="acc.deleteWarn">This removes your account, every check-in and your avatar. It cannot be undone.</p>
@@ -933,6 +970,11 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
               <button class="linklike" id="delCancel" type="button" data-i18n="acc.deleteCancel">Keep my account</button>
             </div>
 
+          </div>
+
+          <div class="card compact lang-card">
+            <div class="card-head"><div><h2 data-i18n="lang.title">Language</h2><div class="muted" data-i18n="lang.sub">Bao speaks the language you choose.</div></div></div>
+            <div class="lang-options" id="langOptions"></div>
           </div>
 
           <div class="card compact reminder-card">
@@ -2103,6 +2145,7 @@ function applyLang(){
   const side = document.querySelector('.body-view-toggle button.active');
   const fig  = document.querySelector('#bodyStage .figure');
   if (side && fig) fig.setAttribute('aria-label', t('body.aria', side.dataset.side));
+  paintLangOptions();
   $$('[data-lang]').forEach(b => {
     b.classList.toggle('on', b.dataset.lang === LANG);
     b.setAttribute('aria-pressed', String(b.dataset.lang === LANG));
@@ -2214,6 +2257,7 @@ const store = {
       try{
         const list = await jget('/api/checkins');
         DATA = Array.isArray(list) ? list : [];
+        await syncLocalUp();
         DATA.forEach((e, i) => { if (!e.id) e.id = 'old-' + i; });
         await saveLocal();
         return;
@@ -2451,7 +2495,10 @@ const auth = {
     if (MODE === 'server'){
       const r = await jpost('/api/auth/register', { username:u, password:p, name, lang: LANG });
       USER_NAME = r.name || name;
-      const made = await upgradeAccount(r.user, p, USER_NAME);
+      const prev = own(localUsers(), r.user) ? localUsers()[r.user] : null;
+      let made = prev ? await openRecord(prev, p).catch(() => null) : null;
+      if (made && made.rec) storeRecord(r.user, made.rec);
+      if (!made) made = await upgradeAccount(r.user, p, USER_NAME);
       startSession(r.user, made.raw, made.key);
       return r.user;
     }
@@ -3856,7 +3903,7 @@ function paintTitle(id){
 }
 function go(id){
   $$('.view').forEach(v => v.classList.toggle('active', v.id === id));
-  $$('.nav button').forEach(b => b.classList.toggle('active', b.dataset.view === id));
+  $$('.nav button, .tabbar button').forEach(b => b.classList.toggle('active', b.dataset.view === id));
   paintTitle(id);
   document.body.classList.toggle('chat-mode', id === 'checkin');
   document.querySelector('.sidebar').classList.remove('open');
@@ -3868,6 +3915,7 @@ function go(id){
   if (id === 'home')     renderHome();
 }
 $$('.nav button').forEach(b => b.addEventListener('click', () => go(b.dataset.view)));
+$$('.tabbar button').forEach(b => b.addEventListener('click', () => b.dataset.view === 'checkin' ? logFor(null) : go(b.dataset.view)));
 $$('[data-go]').forEach(b => b.addEventListener('click', () => b.dataset.go === 'checkin' ? logFor(null) : go(b.dataset.go)));
 $('newCheckinBtn').addEventListener('click', () => logFor(null));
 document.querySelector('.mobile-menu').addEventListener('click', () => document.querySelector('.sidebar').classList.toggle('open'));
@@ -4567,6 +4615,46 @@ Object.assign(I18N.de, {
   'del.sureEntry': 'Nochmal tippen, um den ganzen Check-in zu löschen',
   'del.entryDone': 'Check-in gelöscht.'
 });
+
+
+function paintLangOptions(){
+  const LANG_NAMES = { en:'English', de:'Deutsch', it:'Italiano' };
+  const host = document.getElementById('langOptions');
+  if (!host) return;
+  const list = LANGS.filter(l => l !== 'it' || itAllowed());
+  host.innerHTML = list.map(l => '<button type="button" data-pick-lang="' + l + '" class="' + (l === LANG ? 'on' : '') + '">' + LANG_NAMES[l] + '</button>').join('');
+  host.querySelectorAll('[data-pick-lang]').forEach(b => b.addEventListener('click', () => setLang(b.dataset.pickLang)));
+}
+async function syncLocalUp(){
+  const key = e => e.id || ('d:' + e.date);
+  const seenKey = 'bao.seen::' + USER;
+  let seen = [];
+  try{ seen = JSON.parse(localStorage.getItem(seenKey) || '[]'); }catch(e){}
+  const seenSet = new Set(seen);
+  let local = [];
+  try{ local = await readLocal(); }catch(e){}
+  const onServer = new Set(DATA.map(key));
+  const missing = (local || []).filter(e => e && !onServer.has(key(e)) && !seenSet.has(key(e)));
+  for (const e of missing){
+    const copy = JSON.parse(JSON.stringify(e));
+    copy.forDay = copy.forDay || localKey(dOf(e));
+    delete copy.user;
+    try{
+      const r = await jpost('/api/checkin', copy);
+      if (r && Array.isArray(r.checkins)) DATA = r.checkins;
+      seenSet.add(key(e));
+    }catch(err){ break; }
+  }
+  DATA.forEach(e => seenSet.add(key(e)));
+  try{ localStorage.setItem(seenKey, JSON.stringify([...seenSet].slice(-3000))); }catch(e){}
+}
+$('signOut2').addEventListener('click', () => $('signOutBtn').click());
+
+Object.assign(I18N.en, { 'lang.title':'Language', 'lang.sub':'Bao speaks the language you choose.' });
+Object.assign(I18N.de, { 'lang.title':'Sprache', 'lang.sub':'Bao spricht die Sprache, die du wählst.',
+  'tab.home':'Start', 'tab.checkin':'Check-in', 'tab.calendar':'Kalender', 'tab.patterns':'Muster', 'tab.report':'Bericht', 'tab.settings':'Einstellungen' });
+Object.assign(I18N.it, { 'lang.title':'Lingua', 'lang.sub':'Bao parla la lingua che scegli.',
+  'tab.home':'Home', 'tab.checkin':'Check-in', 'tab.calendar':'Calendario', 'tab.patterns':'Schemi', 'tab.report':'Report', 'tab.settings':'Impostazioni' });
 
 (async function boot(){
   try{
