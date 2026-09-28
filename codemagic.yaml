@@ -1,5 +1,3 @@
-# Codemagic costruisce l'app per iPhone su un Mac nel cloud e la manda su TestFlight.
-# Prima di usarlo cambia le tre righe segnate con  <-- CAMBIA
 workflows:
   bao-ios:
     name: BAO iPhone

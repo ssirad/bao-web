@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-m4D74F0UbY4qntMeHlIaUVuozmkqF5HVVfVPWE46oBM='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-tzywM94doo9reEop4Q19xVPttT7WjBsaGaeGXfsTc8c='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>BAO &mdash; symptom &amp; wellbeing tracker</title>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -625,6 +625,13 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
   .mobile-only{display:inline-flex}
   .signout-row{margin-top:16px}
 }
+
+.settings-cols{align-items:stretch}
+.settings-cols>.set-col>.card{width:100%;max-width:none;box-sizing:border-box}
+.settings-cols>.set-col>.card:last-child{flex:1 1 auto}
+.settings-cols .how-card{display:flex;flex-direction:column}
+.settings-cols .how-card>div:last-child{margin-top:auto!important;padding-top:18px}
+.storage-warn{margin:8px 0 0;color:#a4553f;font-size:12px;font-weight:700}
 </style>
 <script>
 /* ---------------------------------------------------------------------------
@@ -1005,13 +1012,6 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
                 <div class="form-label" style="margin-top:14px" data-i18n="pet.colour">Colour</div>
                 <div class="chip-row grid7" id="petColour"></div>
 
-                <label class="form-label" for="petName" style="margin-top:14px" data-i18n="acc.name">Name</label>
-                <input class="input" id="petName" maxlength="18" placeholder="e.g. Tim" data-i18n-attr="placeholder|pet.ph">
-
-                <div style="display:flex;gap:9px;margin-top:16px;flex-wrap:wrap">
-                  <button class="btn primary" id="petSave" data-i18n="pet.save">Save my avatar</button>
-                  <button class="btn outline" id="petClear" data-i18n="pet.remove">Remove</button>
-                </div>
               </div>
 
               <div class="pet-controls">
@@ -1021,6 +1021,14 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
                 <div id="petAccColourWrap">
                 <div class="form-label" style="margin-top:14px" data-i18n="pet.accColour">Accessory colour</div>
                 <div class="chip-row grid7" id="petAccColour"></div>
+                </div>
+
+                <label class="form-label" for="petName" style="margin-top:14px" data-i18n="acc.name">Name</label>
+                <input class="input" id="petName" maxlength="18" placeholder="e.g. Tim" data-i18n-attr="placeholder|pet.ph">
+
+                <div style="display:flex;gap:9px;margin-top:16px;flex-wrap:wrap">
+                  <button class="btn primary" id="petSave" data-i18n="pet.save">Save my avatar</button>
+                  <button class="btn outline" id="petClear" data-i18n="pet.remove">Remove</button>
                 </div>
               </div>
             </div>
@@ -4655,6 +4663,11 @@ Object.assign(I18N.de, { 'lang.title':'Sprache', 'lang.sub':'Bao spricht die Spr
   'tab.home':'Start', 'tab.checkin':'Check-in', 'tab.calendar':'Kalender', 'tab.patterns':'Muster', 'tab.report':'Bericht', 'tab.settings':'Einstellungen' });
 Object.assign(I18N.it, { 'lang.title':'Lingua', 'lang.sub':'Bao parla la lingua che scegli.',
   'tab.home':'Home', 'tab.checkin':'Check-in', 'tab.calendar':'Calendario', 'tab.patterns':'Schemi', 'tab.report':'Report', 'tab.settings':'Impostazioni' });
+
+
+Object.assign(I18N.en, { 'set.storageBrowser': u => '<p class="signed-in">You are logged in as <strong>' + u + '</strong></p><p class="storage-warn">Saved only on this device, not on the BAO server.</p>' });
+Object.assign(I18N.de, { 'set.storageBrowser': u => '<p class="signed-in">Angemeldet als <strong>' + u + '</strong></p><p class="storage-warn">Nur auf diesem Gerät gespeichert, nicht auf dem BAO-Server.</p>' });
+Object.assign(I18N.it, { 'set.storageBrowser': u => '<p class="signed-in">Hai fatto l’accesso come <strong>' + u + '</strong></p><p class="storage-warn">Salvato solo su questo dispositivo, non sul server di BAO.</p>' });
 
 (async function boot(){
   try{
