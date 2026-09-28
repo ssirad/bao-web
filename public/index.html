@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-XXxwxjMB79Qcysa9E9D1zxNh6eeVrZD4GfcWju1sVP8='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-F9Ep3oacekFV55c/Rau6EQtPjviXHgRJ63cu4rUP2kM='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>BAO &mdash; symptom &amp; wellbeing tracker</title>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -282,7 +282,7 @@ body.chat-mode::-webkit-scrollbar{width:0;height:0}
 .lang-switch button.on{background:var(--teal);color:#fff}
 .login-card{position:relative}
 .login-card .lang-switch{position:absolute;top:14px;right:14px}
-html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinein, um ihn zu verfeinern"}
+html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinein, um ihn zu verfeinern"}html[lang="it"] .bodymap:before{content:"Tocca una zona, poi ingrandisci per essere più precisa"}.lang-switch button[hidden]{display:none}
 @media print{.lang-switch{display:none!important}}
 .toast{z-index:950}
 .login-card h2{margin:4px 0 6px;color:var(--teal-dark)}
@@ -664,7 +664,7 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
         <div><div id="pageTitle" style="font-weight:800">Overview</div><div class="tiny" id="pageSub">A calm place to notice what your body is telling you</div></div>
       </div>
       <div class="top-actions">
-        <div class="lang-switch" role="group" aria-label="Language / Sprache"><button type="button" data-lang="en" aria-label="English">EN</button><button type="button" data-lang="de" aria-label="Deutsch">DE</button></div>
+        <div class="lang-switch" role="group" aria-label="Language / Sprache"><button type="button" data-lang="en" aria-label="English">EN</button><button type="button" data-lang="de" aria-label="Deutsch">DE</button><button type="button" data-lang="it" aria-label="Italiano" hidden>IT</button></div>
         <button class="btn primary" id="newCheckinBtn" data-i18n="top.new">+ New check-in</button>
       </div>
     </header>
@@ -963,7 +963,7 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
                 <div class="form-label" style="margin-top:14px" data-i18n="pet.colour">Colour</div>
                 <div class="chip-row grid7" id="petColour"></div>
 
-                <label class="form-label" for="petName" style="margin-top:14px">Name</label>
+                <label class="form-label" for="petName" style="margin-top:14px" data-i18n="acc.name">Name</label>
                 <input class="input" id="petName" maxlength="18" placeholder="e.g. Tim" data-i18n-attr="placeholder|pet.ph">
 
                 <div style="display:flex;gap:9px;margin-top:16px;flex-wrap:wrap">
@@ -1006,7 +1006,7 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
 
 <div class="login-screen" id="loginScreen" hidden>
   <form class="login-card" id="loginForm">
-    <div class="lang-switch" role="group" aria-label="Language / Sprache"><button type="button" data-lang="en" aria-label="English">EN</button><button type="button" data-lang="de" aria-label="Deutsch">DE</button></div>
+    <div class="lang-switch" role="group" aria-label="Language / Sprache"><button type="button" data-lang="en" aria-label="English">EN</button><button type="button" data-lang="de" aria-label="Deutsch">DE</button><button type="button" data-lang="it" aria-label="Italiano" hidden>IT</button></div>
     <div class="login-art"><span class="bao bao-checkin" role="img" aria-label="Bao the panda" data-i18n-attr="aria-label|aria.bao"></span></div>
     <div class="brand-name login-brand">BAO <svg viewBox="0 0 24 24" class="heart-mark"><path d="M12 20.7S3.6 15.6 3.6 9.9c0-2.6 2-4.6 4.5-4.6 1.6 0 3 .8 3.9 2.1.9-1.3 2.3-2.1 3.9-2.1 2.5 0 4.5 2 4.5 4.6 0 5.7-8.4 10.8-8.4 10.8z"/></svg></div>
     <p class="muted" id="loginLede">Sign in to find your check-ins where you left them.</p>
@@ -1054,7 +1054,8 @@ const $  = id => document.getElementById(id);
 const $$ = sel => [...document.querySelectorAll(sel)];
 const wait = ms => new Promise(r => setTimeout(r, ms));
 
-const LANGS = ['en', 'de'];
+const LANGS = ['en', 'de', 'it'];
+const ITALIAN_USERS = ['sofia.sirad@gmail.com'];
 let LANG = (() => {
   try{ const s = localStorage.getItem('bao.lang'); if (LANGS.includes(s)) return s; }catch(e){}
   return /^de\b/i.test(navigator.language || '') ? 'de' : 'en';
@@ -1569,7 +1570,7 @@ Object.assign(I18N.de, {
 });
 
 // One decimal, with a decimal comma in German (4,5 instead of 4.5).
-const num = v => LANG === 'de' ? v.toFixed(1).replace('.', ',') : v.toFixed(1);
+const num = v => LANG !== 'en' ? v.toFixed(1).replace('.', ',') : v.toFixed(1);
 
 function t(key, ...args){
   const dict = I18N[LANG] || I18N.en;
@@ -1588,7 +1589,498 @@ const PART_DE = {
   '(no area marked)':'(kein Bereich markiert)'
 };
 Object.assign(PART_DE, {"eyes": "Augen", "jaw": "Kiefer", "lower belly": "Unterbauch", "right elbow": "Rechter Ellbogen", "left elbow": "Linker Ellbogen", "right knee": "Rechtes Knie", "left knee": "Linkes Knie", "back of head": "Hinterkopf", "middle back": "Mittlerer Rücken", "buttocks": "Gesäß", "back of left thigh": "Linker Oberschenkel hinten", "back of right thigh": "Rechter Oberschenkel hinten", "back of left knee": "Linke Kniekehle", "back of right knee": "Rechte Kniekehle", "left calf": "Linke Wade", "right calf": "Rechte Wade", "left heel": "Linke Ferse", "right heel": "Rechte Ferse"});
+I18N.it = {
+  'locale': 'it-IT',
+  'doc.title': 'BAO — diario di sintomi e benessere',
+  'days': ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'],
+  'title.home': ['Panoramica', 'Un posto tranquillo per ascoltare cosa ti dice il corpo'],
+  'title.checkin': ['Check-in del giorno', 'Un minuto per notare cosa c’è'],
+  'title.patterns': ['Schemi', 'Collegamenti, non conclusioni'],
+  'title.report': ['Il mio report', 'Ricostruito dai tuoi check-in veri'],
+  'title.settings': ['Impostazioni', 'I tuoi dati, le tue regole'],
+  'title.calendar': ['Calendario', 'Ogni check-in, giorno per giorno'],
+  'nav.calendar': 'Calendario',
+  'cal.logged': n => n + (n === 1 ? ' giorno registrato questo mese' : ' giorni registrati questo mese'),
+  'cal.loggedNone': 'ancora niente registrato questo mese',
+  'cal.aria': n => n + (n === 1 ? ' sintomo registrato' : ' sintomi registrati'),
+  'cal.ariaRep': n => n + (n === 1 ? ' è tornato più di una volta' : ' sono tornati più di una volta'),
+  'cal.ariaEmpty': 'nessun check-in',
+  'day.nothing': 'Niente registrato qui',
+  'day.nothingSub': 'Va bene così. Puoi aggiungerlo quando ti sembra utile.',
+  'day.start': 'Inizia un check-in',
+  'day.meta': n => n + (n === 1 ? ' check-in' : ' check-in') + ' · tutto quello che hai scritto, con le tue parole',
+  'day.peak': 'Intensità massima',
+  'day.avg': 'Media',
+  'day.count': 'Sintomi registrati',
+  'day.areas': 'Zone del corpo',
+  'day.nth': n => 'Check-in ' + n,
+  'day.added': 'Hai aggiunto',
+  'day.yes': 'Sì — è tornato più di una volta',
+  'day.no': 'No',
+  'day.thoughts': 'Pensieri',
+  'day.feelings': 'Emozioni',
+  'day.personal': 'Spazio personale',
+  'day.kept': 'Bao l’ha custodito per te. Nessun altro lo vede.',
+  'day.addToday': 'Aggiungi a oggi',
+  'aria.phone': 'Bao con un telefono in mano',
+  'err.badLogin': 'Email o password sbagliate.',
+  'err.locked': s => 'Troppi tentativi sbagliati. Aspetta ' + s + ' secondi e riprova.',
+  'err.noCrypto': 'Questo browser non può cifrare i tuoi dati qui. Apri Bao con https:// o localhost.',
+  'err.exists': 'Questa email è già registrata. Accedi.',
+  'err.email': 'Scrivi un indirizzo email valido.',
+  'err.pwLen': 'La password deve avere almeno 8 caratteri.',
+  'err.name': 'Scrivi un nome.',
+  'err.generic': 'Non ha funzionato.',
+  'login.ledeCreate': 'La tua email e una password. Bao terrà i tuoi check-in lì.',
+  'login.ledeSignin': 'Accedi per ritrovare i tuoi check-in dove li hai lasciati.',
+  'login.create': 'Crea il mio account',
+  'login.signin': 'Accedi',
+  'login.toSignin': 'Ho già un account',
+  'login.toCreate': 'Non hai un account? Creane uno',
+  'login.whereServer': 'Il tuo diario è custodito sul server di BAO, solo per te.',
+  'login.whereBrowser': 'Gli account sono salvati in questo browser. Avvia server.py per tenerli in un file.',
+  'login.welcome': n => 'Ciao, ' + n + '.',
+  'q.log': 'Hai avuto qualche sintomo oggi?',
+  'q.symptoms': 'Di quale sintomo vuoi parlare oggi?',
+  'q.situation': 'In che situazione è comparso il sintomo?',
+  'q.repeated': 'Hai avuto questo sintomo più volte dall’ultimo check-in?',
+  'q.another': 'Va bene. Annotato! C’è un altro sintomo che vuoi aggiungere?',
+  'q.day': 'Com’è andata la giornata? :)',
+  'q.memory': 'C’è altro che vuoi che mi ricordi?',
+  'q.emotions': 'C’è stato qualcosa che ti ha fatto sorridere oggi?',
+  'q.personal': 'Se vuoi aggiungere qualcosa, un pensiero o una nota solo per te, puoi scriverlo qui sotto:',
+  'ans.yes': 'sì',
+  'ans.no': 'no',
+  'chat.hi': n => 'Ciaoo ' + n + ', io sono BAO.',
+  'chat.intro': 'Sarò il tuo assistente personale in questa app :),\nriempiamo insieme quello che mi serve per seguire i tuoi sintomi...\nTi farò qualche domanda semplice.',
+  'chat.almost': 'Abbiamo quasi finito :)',
+  'chat.multi': '\n- È successo più volte durante la giornata -',
+  'chat.thanks': n => 'Grazie per questo minuto, ' + n + '. Salvalo quando sei pronta.',
+  'chat.friend': 'amica',
+  'body.marker': '- ZONE DEL CORPO -',
+  'body.title': 'Dove lo senti? Tocca una o più zone.',
+  'body.confirm': 'È qui che lo sento',
+  'body.count': n => n + (n === 1 ? ' selezionata' : ' selezionate'),
+  'body.highlighted': z => 'Ti ho evidenziato questa zona: ' + z.toLowerCase() + '. Sposta il punto se ho sbagliato.',
+  'body.aria': side => 'Mappa del corpo interattiva, vista ' + (side === 'back' ? 'da dietro' : 'davanti'),
+  'rate.marker': '- INTENSITÀ -',
+  'rate.title': 'Quanto era forte?',
+  'rate.confirm': 'Salva questo valore',
+  'rate.aria': 'Intensità del sintomo',
+  'rate.low': 'Non si sente',
+  'rate.high': 'Insopportabile',
+  'recap.title': '* RIEPILOGO *',
+  'recap.symptoms': '* SINTOMI * --> ',
+  'recap.parts': '* ZONE DEL CORPO * --> ',
+  'recap.rating': '* INTENSITÀ DEL DOLORE * --> ',
+  'recap.situations': '* SITUAZIONI * --> ',
+  'recap.thoughts': '* PENSIERI * --> ',
+  'recap.feelings': '* EMOZIONI * --> ',
+  'recap.personal': '* SPAZIO PERSONALE * --> ',
+  'recap.intensity': '* INTENSITÀ * --> ',
+  'save.btn': 'Salva questo check-in',
+  'save.again': 'Iniziane un altro',
+  'save.done': 'Salvato ✓',
+  'save.toastServer': n => 'Salvato nel tuo account — ' + n + ' check-in finora.',
+  'save.toastBrowser': n => 'Salvato in questo browser — ' + n + ' check-in finora.',
+  'chart.aria': 'L’intensità dei tuoi sintomi nel tempo',
+  'chart.empty': 'Nessuna intensità registrata in questo periodo.',
+  'home.fromLastWeek': ' rispetto alla settimana scorsa',
+  'home.checkins': 'Check-in',
+  'home.last7': n => 'ultimi 7 giorni: ' + n,
+  'home.noneYet': 'ancora nessuno — inizia quando vuoi',
+  'home.signal': 'Segnale del corpo',
+  'home.avgAll': 'media di tutti i sintomi',
+  'home.noIntensity': 'ancora nessuna intensità registrata',
+  'home.topArea': 'Zona più segnalata',
+  'home.times': n => (n === 1 ? 'registrata 1 volta' : 'registrata ' + n + ' volte'),
+  'home.mapFills': 'la mappa del corpo la riempie',
+  'home.reflectionOnly': 'Solo riflessioni',
+  'home.noRecent': 'Ancora nessun check-in. Bao ti aspetta nella pagina del check-in.',
+  'insight.emptyTitle': 'Ancora niente da osservare.',
+  'insight.emptyText': 'Dopo qualche check-in Bao inizierà a mostrarti quali zone tornano più spesso. Gli schemi sono indizi, mai diagnosi.',
+  'insight.title': area => area + ': è la zona che torna di più.',
+  'insight.text': (n, area, times, multi) => 'In ' + n + ' check-in hai segnalato questa zona (' + area.toLowerCase() + ') ' +
+      times + (times === 1 ? ' volta' : ' volte') + (multi ? ', e ' + multi + (multi === 1 ? ' sintomo è comparso' : ' sintomi sono comparsi') + ' più volte in un giorno' : '') +
+      '. È qualcosa da esplorare, non una conclusione.',
+  'prompts': ['Cosa è stato diverso oggi, anche una piccola cosa?', 'Dove ti ha chiesto attenzione il corpo per primo?',
+              'Cosa hai portato con te oggi che domani potresti lasciare giù?', 'C’è stato un momento in cui ti sei sentita tranquilla?'],
+  'pat.count': (c, s) => c + ' check-in · ' + s + (s === 1 ? ' sintomo registrato' : ' sintomi registrati'),
+  'pat.head': ['Zona del corpo', 'Volte', 'Intensità media', 'Ultima volta'],
+  'pat.empty': 'Niente registrato in questo periodo.',
+  'pat.noWords': 'Ancora niente si ripete. Le parole compaiono qui quando appaiono in almeno due situazioni.',
+  'rep.empty': 'Il report si costruisce dai tuoi check-in. Non ne hai ancora.',
+  'rep.me': 'Io',
+  'rep.title': 'Il mio report di sintomi e benessere',
+  'rep.draft': 'Bozza privata',
+  'rep.summary': 'Riassunto',
+  'rep.summaryText': (c, s, a) => c + ' check-in. ' + s + (s === 1 ? ' sintomo registrato' : ' sintomi registrati') + '. Intensità media: <strong>' + a + '</strong>.',
+  'rep.notRecorded': 'non registrata',
+  'rep.symptoms': 'Sintomi registrati',
+  'rep.checkins': 'Check-in',
+  'rep.day': 'Giornata: ',
+  'rep.feeling': 'Emozioni: ',
+  'rep.personal': 'Spazio personale',
+  'set.storageServer': u => '<p class="signed-in">Hai fatto l’accesso come <strong>' + u + '</strong></p>',
+  'set.storageBrowser': u => '<p class="signed-in">Hai fatto l’accesso come <strong>' + u + '</strong></p>',
+  'set.saved': n => n + (n === 1 ? ' salvato' : ' salvati'),
+  'set.symptoms': n => n + (n === 1 ? ' sintomo' : ' sintomi'),
+  'set.delete': 'Elimina',
+  'set.empty': 'Ancora niente salvato.',
+  'set.deleted': 'Check-in eliminato.',
+  'set.noteServer': 'Salvato nel tuo account, protetto dalla tua password.',
+  'set.noteBrowser': 'Salvato solo in questo browser. Avvia server.py per tenerlo in un file.',
+  'set.confirmClear': 'Eliminare tutti i check-in? Non si può tornare indietro.',
+  'set.cleared': 'Tutti i check-in sono stati eliminati.',
+  'pet.your': 'il tuo avatar',
+  'pet.Your': 'Il tuo avatar',
+  'pet.saved': n => n + ' ora starà accanto ai tuoi messaggi.',
+  'pet.removed': 'Avatar rimosso.',
+  'login.forgot': 'Hai dimenticato la password?',
+  'login.back': 'Torna all’accesso',
+  'login.ledeRecover': 'Inserisci il codice di recupero e scegli una nuova password. I tuoi check-in restano come sono.',
+  'login.recover': 'Imposta nuova password',
+  'login.pwLabel': 'Password',
+  'login.pwPh': 'almeno 8 caratteri',
+  'err.pwMissing': 'Inserisci la password.',
+  'login.newPw': 'Nuova password',
+  'err.code': 'Inserisci il codice di recupero.',
+  'err.badRecovery': 'Email o codice di recupero sbagliati.',
+  'rc.new': 'Conserva questo codice. È l’unico modo per rientrare se dimentichi la password.',
+  'rc.upgrade': 'Ora Bao può aiutarti se dimentichi la password. Conserva questo codice: con lui puoi impostarne una nuova.',
+  'rc.renewed': 'Questo è il tuo nuovo codice di recupero. Quello vecchio non funziona più.',
+  'rc.copied': 'Codice copiato.',
+  'rc.changed': 'La password è stata cambiata.',
+  'acc.nameSaved': n => 'Ora Bao ti chiamerà ' + n + '.',
+  'acc.noCode': 'Il codice di recupero esiste solo per gli account salvati in questo browser.',
+  'acc.confirmCode': 'Creare un nuovo codice di recupero? Quello vecchio smetterà di funzionare.',
+  'err.consent': 'Spunta la casella per accettare come BAO conserva il tuo diario.',
+  'rem.title': 'Promemoria giornaliero',
+  'rem.pushTitle': 'BAO',
+  'rem.pushBody': n => 'Ciao ' + n + ', come si è sentito il tuo corpo oggi? Un check-in di un minuto con Bao.',
+  'rem.saved': v => 'Promemoria impostato alle ' + v + '.',
+  'rem.noteOn': v => 'Bao te lo ricorderà ogni giorno alle ' + v + '.',
+  'rem.noteOff': 'Il promemoria è spento.',
+  'rem.noteDenied': 'Le notifiche sono bloccate. Consentile a BAO nelle impostazioni del telefono.',
+  'rem.noteError': 'Non sono riuscito a impostare il promemoria. Riprova tra poco.',
+  'rem.noteWeb': 'Salvato. I promemoria arrivano nell’app BAO per iPhone.',
+  'acc.deleted': 'Il tuo account e tutti i tuoi check-in sono stati eliminati.',
+  'forgot.lede': 'Scrivi l’email con cui ti sei registrata. Ti mandiamo un link per scegliere una nuova password.',
+  'forgot.send': 'Mandami il link',
+  'forgot.back': 'Torna all’accesso',
+  'forgot.sent': 'Se questa email ha un account BAO, il link sta arrivando. Vale 30 minuti. Controlla anche lo spam.',
+  'forgot.fail': 'Non è stato possibile mandare l’email adesso. Riprova tra qualche minuto.',
+  'reset.lede': 'Scegli una nuova password per il tuo account BAO.',
+  'reset.save': 'Salva la nuova password',
+  'reset.new': 'Nuova password',
+  'reset.mismatch': 'Le due password non sono uguali.',
+  'reset.fail': 'Questo link è scaduto o è già stato usato. Chiedine uno nuovo.',
+  'reset.done': 'La password è cambiata. Accedi con quella nuova.',
+  'forgot.needServer': 'Il recupero della password funziona sul sito di BAO e nell’app. Questa pagina è aperta come file, quindi non può mandare email.',
+  'set.companion': 'Il tuo avatar',
+  'set.companionSub': 'Disegna il piccolo animale che ti rappresenta. Compare accanto ai tuoi messaggi nella chat.',
+  'pet.save': 'Salva il mio avatar',
+  'feel.notice.sad': 'Sembra che ti sia sentita triste. Conta anche questo. Mi racconti un po’ di più?',
+  'feel.notice.angry': 'Sembra che qualcosa ti abbia fatto arrabbiare. Mi racconti un po’ di più di cosa è successo?',
+  'feel.body': 'Grazie di avermelo detto. Spesso le emozioni stanno anche da qualche parte nel corpo.',
+  'feel.back': 'Annotato, l’ho aggiunto ai sintomi di oggi. Torniamo a dove eravamo.',
+  'feel.name.sad': 'Tristezza',
+  'feel.name.angry': 'Rabbia',
+  'q.feelSituation': 'In che situazione ti sei sentita così?',
+  'q.feelRepeated': 'Ti sei sentita così più di una volta dall’ultimo check-in?',
+  'feel.crisis': 'Grazie di avermelo affidato. Sono solo un piccolo panda e non posso aiutarti in un’emergenza, ma non devi portare questo peso da sola. Se sei in pericolo o temi di farti del male, chiama subito il 112. Puoi anche parlare con Telefono Amico Italia allo 02 2327 2327. C’è una persona di cui ti fidi a cui puoi scrivere oggi?',
+  'past.btn': 'Registra questo giorno',
+  'past.add': 'Aggiungi a questo giorno',
+  'past.future': 'Questo giorno non è ancora arrivato.',
+  'past.intro': d => 'Questo check-in è per ' + d + '. Ripensa a quel giorno.',
+  'past.log': d => 'Hai avuto qualche sintomo ' + d + '?',
+  'past.symptoms': 'Di quale sintomo vuoi parlare?',
+  'past.day': 'Com’è andato quel giorno?',
+  'past.emotions': 'C’è stato qualcosa che ti ha fatto sorridere quel giorno?',
+  'del.sym': 'Elimina questo sintomo',
+  'del.sure': 'Eliminare?',
+  'del.symDone': 'Sintomo eliminato.',
+  'del.entry': 'Elimina questo check-in',
+  'del.entryN': 'Elimina questo check-in',
+  'del.sureEntry': 'Tocca di nuovo per eliminare tutto il check-in',
+  'del.entryDone': 'Check-in eliminato.',
+  'set.facts': '\n              <li><b>Niente è una diagnosi.</b> Bao conta quello che scrivi e te lo mostra. Leggere uno schema spetta a te e al tuo medico.</li>\n              <li><b>Niente pubblicità, niente tracciamento, niente condivisione.</b> I tuoi check-in non vengono mai mandati da nessuna parte da soli.</li>\n              <li><b>Puoi lasciare vuota qualsiasi domanda.</b> Anche un check-in breve conta.</li>\n              <li><b>Eliminare vuol dire eliminare.</b> Quello che togli qui sotto sparisce per sempre.</li>\n            ',
+  'cal.eyebrow': 'La tua linea del tempo',
+  'cal.h': 'Ogni giorno che hai registrato,<br><em>in un posto solo.</em>',
+  'cal.lede': 'Tocca un giorno per vedere cosa conteneva quel check-in: sintomi, intensità, zone del corpo, situazione e le tue parole.',
+  'cal.side': '<b>I buchi vanno bene.</b>I giorni saltati non sono fallimenti.',
+  'cal.add': '+ Aggiungi check-in',
+  'cal.today': 'Oggi',
+  'cal.prev': 'Mese precedente',
+  'cal.next': 'Mese successivo',
+  'cal.lgIntensity': 'Intensità dei sintomi',
+  'cal.lgCount': 'Un punto per sintomo',
+  'cal.lgNote': 'Tornato più di una volta',
+  'cal.lgBar': 'Altezza della barra = intensità 0–10',
+  'cal.foot': 'Questa vista nasce solo dai tuoi check-in. Niente qui è una diagnosi.',
+  'acc.title': 'Il tuo account',
+  'acc.sub': 'Il nome che Bao usa quando ti saluta.',
+  'acc.name': 'Nome',
+  'acc.saveName': 'Salva il nome',
+  'brand.sub': 'nota lo schema',
+  'nav.aria': 'Navigazione principale',
+  'side.signout': 'Esci',
+  'top.menu': 'Apri il menu',
+  'home.eyebrow': 'La tua panoramica',
+  'home.h': 'Ascolta quello che il tuo corpo<br><em>sta cercando di dirti.</em>',
+  'home.lede': 'Un posto tranquillo per collegare sintomi, emozioni e contesto, senza trasformare la tua vita in un foglio di calcolo.',
+  'aria.waving': 'Bao il panda che saluta',
+  'home.last7h': 'I tuoi ultimi 7 giorni',
+  'home.last7sub': 'Intensità media dei sintomi per giorno, dai tuoi check-in.',
+  'home.details': 'Vedi i dettagli →',
+  'home.obs': 'Un’osservazione gentile',
+  'home.recent': 'Check-in recenti',
+  'home.recentSub': 'Le tue note, con le tue parole.',
+  'home.moment': 'Prenditi un momento',
+  'home.momentSub': 'Non serve trovare la risposta perfetta.',
+  'aria.thinking': 'Bao il panda che pensa',
+  'aria.bao': 'Bao il panda',
+  'chat.h': 'Bao ti ascolta,<br><em>prenditi il tuo tempo.</em>',
+  'chat.lede': 'Scrivigli come in un messaggio. Niente viene salvato finché non premi salva.',
+  'chat.label': 'La tua risposta',
+  'chat.ph': 'Scrivi a Bao…',
+  'chat.send': 'Invia',
+  'chat.yes': 'Sì',
+  'chat.no': 'No',
+  'body.front': 'Davanti',
+  'body.back': 'Dietro',
+  'prec.close': 'Chiudi',
+  'prec.help': 'Tocca esattamente dove lo senti. Puoi spostare il segno per aggiustarlo.',
+  'pat.eyebrow': 'Esplora gli schemi',
+  'pat.h': 'Collegamenti,<br><em>non conclusioni.</em>',
+  'pat.lede': 'Relazioni che si ripetono tra il tuo contesto e i tuoi sintomi. Più a lungo li segui, più il quadro può diventare chiaro.',
+  'aria.listening': 'Bao il panda che ascolta',
+  'pat.line': '<b>Bao legge insieme a te.</b>Gli schemi sono indizi, non verdetti.',
+  'pat.add': '+ Aggiungi check-in',
+  'pat.show': 'Mostra',
+  'opt.7': 'Ultimi 7 giorni',
+  'opt.30': 'Ultimi 30 giorni',
+  'opt.90': 'Ultimi 3 mesi',
+  'opt.all': 'Tutto',
+  'lg.loggedDay': 'Sintomi registrati quel giorno',
+  'pat.where': 'Dove si fa sentire',
+  'pat.whereSub': 'Contato dai tuoi check-in, non da una regola medica.',
+  'rep.eyebrow': 'Condividi alle tue condizioni',
+  'rep.h': 'Un report che rende<br><em>visibile l’invisibile.</em>',
+  'rep.lede': 'Dai al tuo medico un punto di partenza chiaro: le tue osservazioni, le tue parole e il contesto intorno.',
+  'aria.team': 'Bao il panda al tuo fianco',
+  'rep.line': '<b>Decidi tu.</b>Scegli tu cosa condividere.',
+  'rep.print': 'Stampa / salva come PDF',
+  'rep.before': 'Prima di condividere',
+  'rep.beforeSub': 'Scegli esattamente cosa entra nel report. Viene ricostruito dai tuoi check-in veri.',
+  'rep.optSummary': 'Riassunto dei sintomi',
+  'rep.optSummarySub': 'Zone, intensità, frequenza',
+  'rep.optNotes': 'Note del giorno',
+  'rep.optNotesSub': 'Le tue riflessioni libere',
+  'rep.optPersonal': 'Spazio personale',
+  'rep.optPersonalSub': 'La riga privata alla fine di ogni check-in',
+  'rep.incSummary': 'Includi il riassunto dei sintomi',
+  'rep.incNotes': 'Includi le note del giorno',
+  'rep.incPersonal': 'Includi lo spazio personale',
+  'rep.nothingSent': '<span class="privacy-dot"></span>Niente viene mandato da nessuna parte. La stampa avviene sul tuo dispositivo.',
+  'set.eyebrow': 'Il tuo spazio',
+  'set.h': 'La privacy è una<br><em>funzione, non una nota a piè di pagina.</em>',
+  'set.lede': 'I tuoi check-in sono personali. Decidi tu cosa salvare, cosa analizzare e cosa condividere.',
+  'aria.sleeping': 'Bao il panda che dorme',
+  'set.line': '<b>Anche Bao riposa qui.</b>Niente esce dal tuo dispositivo da solo.',
+  'set.where': 'Come funziona Bao',
+  'set.whereSub': 'Cosa fa l’app, e cosa non fa mai.',
+  'home.ctaTitle': 'Inizia il check-in di oggi',
+  'home.ctaSub': 'Un minuto con Bao. Niente viene salvato finché non premi salva.',
+  'home.reflectHint': 'Non c’è una risposta giusta. Bao chiede, tu rispondi solo a quello che ti va.',
+  'set.clear': 'Elimina tutti i miei check-in',
+  'pet.animal': 'Animale',
+  'pet.colour': 'Colore',
+  'pet.accessory': 'Accessorio',
+  'pet.accColour': 'Colore dell’accessorio',
+  'pet.ph': 'es. Tim',
+  'pet.remove': 'Rimuovi',
+  'set.checkins': 'I tuoi check-in',
+  'set.checkinsSub': 'Tutti i check-in, dal più recente. Puoi eliminarne qualsiasi.',
+  'aria.hello': 'Bao il panda che ti saluta',
+  'splash.sub': 'Ciaoo! Il tuo piccolo compagno nel viaggio verso lo stare meglio.',
+  'login.email': 'Email',
+  'login.emailPh': 'tu@esempio.com',
+  'login.name': 'Come vuoi che ti chiami Bao?',
+  'nav.home': 'Panoramica',
+  'nav.checkin': 'Check-in del giorno',
+  'nav.patterns': 'Schemi',
+  'nav.report': 'Il mio report',
+  'nav.settings': 'Impostazioni',
+  'side.title': 'I tuoi dati restano tuoi',
+  'home.hi': 'Ciao, sono Bao.',
+  'home.step': 'Possiamo fare un piccolo passo alla volta.',
+  'lg.intensity': 'Intensità dei sintomi',
+  'lg.logged': 'Sintomi registrati',
+  'lg.last7': 'Ultimi 7 giorni',
+  'key.sel': 'selezionata',
+  'key.view': 'Vista davanti / dietro',
+  'key.zoom': 'Ogni zona si apre ingrandita',
+  'prec.a': 'Indica il punto:',
+  'prec.b': '',
+  'top.new': '+ Nuovo check-in',
+  'login.consent': 'Accetto che BAO conservi le informazioni sulla salute che scrivo, per tenere il mio diario. Ho letto la <a href="/privacy.html" target="_blank" rel="noopener">Privacy Policy</a> e i <a href="/terms.html" target="_blank" rel="noopener">Termini</a>.',
+  'legal.privacy': 'Privacy',
+  'legal.terms': 'Termini',
+  'legal.support': 'Supporto',
+  'rem.sub': 'Un piccolo promemoria ogni sera per fare il check-in.',
+  'rem.at': 'Ricordamelo alle',
+  'acc.delete': 'Elimina il mio account',
+  'acc.deleteWarn': 'Questo elimina il tuo account, tutti i check-in e il tuo avatar. Non si può tornare indietro.',
+  'acc.deletePw': 'Scrivi la password per confermare',
+  'acc.deleteGo': 'Elimina per sempre',
+  'acc.deleteCancel': 'Tieni il mio account',
+  'forgot.link': 'Hai dimenticato la password?',
+  'reset.again': 'Scrivila di nuovo'
+};
+
+const PART_IT = {
+  'head':'Testa', 'eyes':'Occhi', 'jaw':'Mascella', 'neck':'Collo', 'back of head':'Nuca',
+  'left shoulder':'Spalla sinistra', 'right shoulder':'Spalla destra', 'chest':'Petto', 'stomach':'Stomaco',
+  'lower belly':'Basso ventre', 'hips':'Fianchi', 'upper back':'Parte alta della schiena', 'middle back':'Centro della schiena',
+  'lower back':'Parte bassa della schiena', 'buttocks':'Glutei',
+  'left upper arm':'Braccio sinistro', 'right upper arm':'Braccio destro', 'left elbow':'Gomito sinistro', 'right elbow':'Gomito destro',
+  'left forearm':'Avambraccio sinistro', 'right forearm':'Avambraccio destro', 'left hand':'Mano sinistra', 'right hand':'Mano destra',
+  'left thigh':'Coscia sinistra', 'right thigh':'Coscia destra', 'back of left thigh':'Retro della coscia sinistra',
+  'back of right thigh':'Retro della coscia destra', 'left knee':'Ginocchio sinistro', 'right knee':'Ginocchio destro',
+  'back of left knee':'Dietro il ginocchio sinistro', 'back of right knee':'Dietro il ginocchio destro',
+  'left lower leg':'Gamba sinistra', 'right lower leg':'Gamba destra', 'left calf':'Polpaccio sinistro', 'right calf':'Polpaccio destro',
+  'left foot':'Piede sinistro', 'right foot':'Piede destro', 'left heel':'Tallone sinistro', 'right heel':'Tallone destro',
+  '(no area marked)':'(nessuna zona segnata)'
+};
+const MONTHS_IT = ['GEN','FEB','MAR','APR','MAG','GIU','LUG','AGO','SET','OTT','NOV','DIC'];
+const PET_IT = {
+  panda:'Panda', cat:'Gatto', bunny:'Coniglio', bear:'Orso', fox:'Volpe', dog:'Cane',
+  natural:'Naturale', caramel:'Sabbia', chocolate:'Cacao', honey:'Miele', peach:'Pesca', rose:'Rosa', berry:'Frutti di bosco',
+  lavender:'Lilla', sky:'Cielo', ocean:'Oceano', mint:'Menta', sage:'Salvia', grey:'Grigio', charcoal:'Ardesia',
+  original:'Originale', red:'Rosso', coral:'Corallo', orange:'Arancione', yellow:'Giallo', green:'Verde', teal:'Petrolio',
+  blue:'Blu', navy:'Blu notte', purple:'Viola', pink:'Rosa', brown:'Marrone', black:'Nero', white:'Bianco',
+  0:'Nessuno', 1:'Sciarpa', 2:'Occhiali', 3:'Berretto', 4:'Fiocco', 5:'Fiore'
+};
+
+const BUILTIN_IT = {
+  patterns: [
+    ["mal di testa|cefalea|emicrania|la testa (mi )?(fa male|scoppia|pulsa)", [
+      "Il mal di testa può essere sfinente. Grazie di avermelo detto. Pulsa, preme o punge?",
+      "Ti sento. Il mal di testa toglie tante energie. Da quanto tempo dura?",
+      "Annotato. Guardiamolo insieme, con calma. È costante o arriva a ondate?"]],
+    ["vertigin|capogir|giramento di testa|mi gira la testa|stordit", [
+      "Sentirsi instabili fa paura. Hai fatto bene a scriverlo. Ti sembra che la stanza giri, o di stare per svenire?",
+      "Grazie di averlo notato. Le vertigini si sottovalutano facilmente. Quanto dura un episodio?"]],
+    ["nebbia (mentale|nella testa)|brain ?fog|non riesco a concentrarmi|concentrazione|smemorat|confus", [
+      "La nebbia mentale è un sintomo vero, non pigrizia. Ti senti più rallentata o più assente?",
+      "Grazie di averle dato un nome. È durata minuti, ore o tutto il giorno?"]],
+    ["vista (sfocata|annebbiata)|occhi (mi )?(fanno male|bruciano)|occhi stanchi|bruciore agli occhi|sensibile alla luce", [
+      "Gli occhi si stancano prima che ce ne accorgiamo. Bruciano, fanno male o sembra che ci sia sabbia?",
+      "Annotato. Da quanto tempo li senti così?"]],
+    ["mascella|mandibola|digrign|serro i denti|stringo i denti|bruxismo", [
+      "La mascella trattiene tante cose che non diciamo ad alta voce. È un dolore sordo o una fitta quando apri la bocca?",
+      "Grazie di averlo annotato. C’è da quando ti sei svegliata?"]],
+    ["nodo alla gola|gola chiusa|gola stretta|fatica a deglutire|difficoltà a deglutire", [
+      "Questa sensazione spaventa ed è molto comune quando siamo tese. Sembra una pressione, o come se qualcosa fosse bloccato?",
+      "Grazie di avermelo detto. C’è sempre, o va e viene?"]],
+    ["collo|cervical|torcicollo", [
+      "Il collo trattiene tanta tensione. Grazie di averlo notato. È rigido, dolente o brucia?",
+      "Annotato. Il collo porta spesso quello che non riusciamo a dire. Da quanto lo senti così?"]],
+    ["parte alta della schiena|schiena in alto|scapol", [
+      "Questa zona si irrigidisce con lo stress e davanti agli schermi. Sembra un nodo o un bruciore?",
+      "Grazie. C’è da qualche ora o da qualche giorno?"]],
+    ["spalla|spalle", [
+      "Le spalle spesso si tendono prima che ci accorgiamo di essere stressate. Sembra un nodo o un peso?",
+      "Grazie. Teniamo d’occhio quando si irrigidiscono. Si allenta o peggiora?"]],
+    ["petto|torace|tachicardia|palpitazion|batticuore|il cuore (mi )?(batte|corre)|oppressione", [
+      "Sembra spaventoso. Grazie di avermelo detto. È una stretta, una fitta o un battito irregolare?",
+      "Annotato con cura. Le sensazioni al petto meritano attenzione. È arrivato all’improvviso o è cresciuto piano piano?"]],
+    ["respir|fiato|affanno|non riesco a respirare|iperventil|manca l.aria", [
+      "Avere difficoltà a respirare fa paura. Sono qui. Ti è più difficile inspirare o espirare?",
+      "Grazie di avermelo detto. Quanto è durata questa sensazione?"]],
+    ["gonfi|crampi|colon irritabile|stitich|diarrea|aria nella pancia", [
+      "La digestione sente lo stress in modo molto diretto. È una pancia tesa e piena o una fitta che stringe?",
+      "Grazie di averlo annotato. Per quante ore è durato?"]],
+    ["stomaco|pancia|nausea|mal di pancia|mi viene da vomitare|voltastomaco", [
+      "Lo stomaco spesso reagisce prima della testa. Stringe, brucia o sembra un nodo?",
+      "Grazie. Le sensazioni di pancia sono sensazioni vere. Arriva a ondate o resta?"]],
+    ["niente appetito|non ho fame|non riesco a mangiare|ho mangiato troppo|mangio troppo|fame nervosa", [
+      "Quando l’appetito cambia vale la pena guardarci. È fastidio per il cibo o proprio nessun segnale?",
+      "Grazie di avermelo detto. È stato solo oggi o da qualche giorno?"]],
+    ["parte bassa della schiena|lombar|mal di schiena|sciatica|colpo della strega", [
+      "La parte bassa della schiena si lamenta quando restiamo troppo tempo nella stessa posizione. È un dolore sordo o una fitta?",
+      "Annotato. Migliora quando ti muovi o peggiora?"]],
+    ["schiena|fianc|anca|bacino", [
+      "Grazie di averlo annotato. È rigido, dolente o una fitta improvvisa?",
+      "Annotato. C’è sempre o solo con certi movimenti?"]],
+    ["formicol|intorpid|addormentat|non sento (la|il|le)", [
+      "Vale la pena descrivere bene il formicolio. Pizzica, vibra o è proprio insensibile?",
+      "Grazie di averlo notato. Quanto tempo ci mette a passare?"]],
+    ["gambe pesanti|mi fanno male le gambe|gambe senza riposo|polpacc|ginocchi", [
+      "Le gambe ci portano tutto il giorno. Le senti pesanti, dolenti o irrequiete?",
+      "Annotato. Peggiora più stai ferma?"]],
+    ["\\bman[oi]\\b|polso|polsi|dita|dito", [
+      "Le mani ci raccontano tanto. È dolore, rigidità o formicolio?",
+      "Grazie di averlo annotato. Dura minuti o tutto il giorno?"]],
+    ["tremo|tremor|tremit|\\btic\\b|spasm|scatti|contrazion", [
+      "Grazie di descriverlo. I movimenti sono difficili da mettere in parole. È fine e veloce o lento e ampio?",
+      "Annotato. Quanto è durato?"]],
+    ["prurit|mi prude|eruzion|orticaria|eczema|dermatite|pelle", [
+      "La pelle spesso reagisce allo stress prima di noi. Prude, brucia o punge?",
+      "Grazie di averlo annotato. È comparso in pochi minuti o piano piano durante il giorno?"]],
+    ["sudo|sudat|vampat|mani fredde|brividi|ho freddo", [
+      "Anche i cambi di temperatura contano. È un’ondata di calore o un freddo che non passa?",
+      "Annotato. Quanto ci è voluto perché passasse?"]],
+    ["stanc|esaust|sfinit|senza energi|senza forze|spossat|a pezzi", [
+      "Anche la stanchezza è un sintomo. Hai fatto bene ad annotarla. È pesante il corpo o vuota la testa?",
+      "Grazie. Essere esauste è un’informazione, non una debolezza. Dura da qualche ora o da giorni?"]],
+    ["non (ho )?dormit|non riesco a dormire|insonnia|dormito male|sveglia di notte|incubo|incubi", [
+      "Il sonno cambia tutto il resto. Grazie di averlo annotato. Il problema è stato addormentarti o restare addormentata?",
+      "Annotato. Vediamo come sonno e sintomi cambiano insieme. Quante ore hai dormito?"]],
+    ["dolore|fa male|mi fa male|brucia|bruciore|fitta|punge|pulsa", [
+      "Mi dispiace che tu abbia dolore. Grazie di scriverlo. È acuto, sordo, bruciante o come una pressione?",
+      "Annotato. Dare un nome al dolore è già un passo. C’è sempre o arriva a ondate?",
+      "Grazie di avermelo detto. Da quanto tempo va avanti?"]],
+    ["panico", [
+      "Un attacco di panico toglie tutte le forze. Quanto è durato prima di calmarsi?",
+      "Grazie di avermelo detto. Cosa ha fatto il tuo corpo: cuore a mille, tremore, sudore freddo?"]],
+    ["ansi|preoccupat|agitat|nervos|tesa|teso|inquiet", [
+      "Ansia e corpo sono molto legati. Grazie di condividerlo. La senti come un ronzio, una pressione o un nodo?",
+      "Ti sento. C’è da qualche minuto o da tutto il giorno?"]],
+    ["sopraffatt|troppo da fare|non ce la faccio|burn ?out|al limite|esplodo", [
+      "È tanto da portare. Grazie di dirlo. Lo senti più come un peso o come un rumore?",
+      "Ti sento. Da quanto tempo lo porti così?"]],
+    ["arrabbiat|rabbia|irritat|frustrat|incazzat|furios|nervi", [
+      "Anche la rabbia è un’informazione, non un fallimento. Il tuo corpo si è scaldato, irrigidito o ha tremato?",
+      "Grazie di averlo annotato. Quanto ci è voluto perché si calmasse?"]],
+    ["vuota|vuoto|distaccat|non mi sento reale|irreale|dissociat|lontana da tutto", [
+      "Sentirsi lontane da tutto merita uno sguardo gentile. È come una nebbia, o come guardarsi da fuori?",
+      "Grazie di avermelo detto. Quanto è durato?"]],
+    ["triste|tristezza|giù di morale|pianto|piangere|ho pianto|senza speranza|sola|infelice|depress", [
+      "Grazie di avermelo detto. Ci vuole coraggio. Pesa sul petto o sembra più un vuoto?",
+      "Sono qui. Possiamo andare piano. È stato solo oggi o da più tempo?"]]
+  ],
+  zones: [
+    ["mascella|mandibola|digrign|denti", "jaw"],
+    ["occhi|vista", "eyes"],
+    ["mal di testa|cefalea|emicrania|vertigin|capogir|testa", "head"],
+    ["collo|gola|cervical|deglut", "neck"],
+    ["parte alta della schiena|scapol", "upper back"],
+    ["spalla|spalle", "left shoulder"],
+    ["petto|torace|cuore|palpitazion|respir|fiato", "chest"],
+    ["stomaco|pancia|nausea|gonfi|crampi|appetito", "stomach"],
+    ["parte bassa della schiena|lombar|mal di schiena|sciatica", "lower back"],
+    ["fianc|anca|bacino", "hips"],
+    ["\\bman[oi]\\b|polso|polsi|dita", "left hand"],
+    ["ginocchi", "left knee"],
+    ["polpacc", "left calf"],
+    ["gambe|gamba", "left lower leg"]
+  ]
+};
+
 function partName(p){
+  if (LANG === 'it') return PART_IT[String(p).toLowerCase()] || p;
   if (LANG !== 'de') return p;
   return PART_DE[String(p).toLowerCase()] || p;
 }
@@ -1598,14 +2090,14 @@ function applyLang(){
   document.title = t('doc.title');
   $$('[data-i18n]').forEach(el => {
     if (el._en === undefined) el._en = el.innerHTML;
-    const de = I18N.de[el.dataset.i18n];
-    el.innerHTML = LANG === 'de' && de !== undefined ? de : el._en;
+    const tr = LANG !== 'en' ? I18N[LANG][el.dataset.i18n] : undefined;
+    el.innerHTML = tr !== undefined ? tr : el._en;
   });
   $$('[data-i18n-attr]').forEach(el => {
     const [attr, key] = el.dataset.i18nAttr.split('|');
     if (el._enAttr === undefined) el._enAttr = el.getAttribute(attr);
-    const de = I18N.de[key];
-    el.setAttribute(attr, LANG === 'de' && de !== undefined ? de : el._enAttr);
+    const tr = LANG !== 'en' ? I18N[LANG][key] : undefined;
+    el.setAttribute(attr, tr !== undefined ? tr : el._enAttr);
   });
   $$('.body-part').forEach(b => b.setAttribute('aria-label', partName(b.dataset.part)));
   const side = document.querySelector('.body-view-toggle button.active');
@@ -2235,7 +2727,7 @@ const BUILTIN_DE = {
 };
 
 let PATTERNS = [], ZONES = [], PATTERN_SOURCE = '';
-let PATTERNS_DE = [], ZONES_DE = [];
+let PATTERNS_DE = [], ZONES_DE = [], PATTERNS_IT = null, ZONES_IT = null;
 
 function toJsRegex(src){
   let s = String(src), flags = 'i';
@@ -2278,14 +2770,19 @@ async function loadPatterns(){
 }
 
 const pick = l => l[Math.floor(Math.random() * l.length)];
+function itPatterns(){
+  if (!PATTERNS_IT){ PATTERNS_IT = compilePairs(BUILTIN_IT.patterns); ZONES_IT = compilePairs(BUILTIN_IT.zones); }
+}
 function respondLocal(text){
   const t = (text || '').toLowerCase();
-  for (const [re, answers] of (LANG === 'de' ? PATTERNS_DE : PATTERNS)) if (re.test(t)) return pick(answers);
+  if (LANG === 'it') itPatterns();
+  for (const [re, answers] of (LANG === 'it' ? PATTERNS_IT : LANG === 'de' ? PATTERNS_DE : PATTERNS)) if (re.test(t)) return pick(answers);
   return null;
 }
 function zoneLocal(text){
   const t = (text || '').toLowerCase();
-  for (const [re, zone] of (LANG === 'de' ? ZONES_DE : ZONES)) if (re.test(t)) return zone;
+  if (LANG === 'it') itPatterns();
+  for (const [re, zone] of (LANG === 'it' ? ZONES_IT : LANG === 'de' ? ZONES_DE : ZONES)) if (re.test(t)) return zone;
   return null;
 }
 
@@ -2499,7 +2996,7 @@ async function runConversation(){
 
       // Python answers in the chosen language when patterns_bao_salute.py has it.
       let reply = null, zone = null, fromServer = false;
-      if (MODE === 'server'){
+      if (MODE === 'server' && LANG !== 'it'){
         try{
           const d = await jpost('/api/bao', { text: name, lang: LANG });
           reply = d.response; zone = d.zone; fromServer = true;
@@ -2697,7 +3194,7 @@ pView.addEventListener('click', e => {
 
 const MONTHS    = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 const MONTHS_DE = ['JAN','FEB','MÄR','APR','MAI','JUN','JUL','AUG','SEP','OKT','NOV','DEZ'];
-const months = () => LANG === 'de' ? MONTHS_DE : MONTHS;
+const months = () => LANG === 'de' ? MONTHS_DE : LANG === 'it' ? MONTHS_IT : MONTHS;
 const dOf = e => {
   const d = new Date(e.date || Date.now());
   if (!e.forDay || !/^\d{4}-\d{2}-\d{2}$/.test(e.forDay)) return d;
@@ -3304,7 +3801,7 @@ function chipRow(host, items, isOn, onPick, asSwatch){
       b.style.background = it.fur || it;
       b.setAttribute('aria-label', it.id || it);
     } else {
-      b.textContent = (LANG === 'de' && it.de) || it.label;
+      b.textContent = (LANG === 'it' && PET_IT[it.id]) || (LANG === 'de' && it.de) || it.label;
     }
     b.addEventListener('click', () => { onPick(it); renderPetStudio(); });
     host.appendChild(b);
@@ -3316,7 +3813,7 @@ function thumbRow(host, items, isOn, art, onPick){
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'chip thumb' + (isOn(it) ? ' on' : '');
-    const name = (LANG === 'de' && it.de) || it.label;
+    const name = (LANG === 'it' && PET_IT[it.id]) || (LANG === 'de' && it.de) || it.label;
     b.setAttribute('aria-label', name);
     b.setAttribute('aria-pressed', String(isOn(it)));
     b.innerHTML = '<span class="pet-img pet-stack">' + petArt(art(it)) + '</span><span class="lbl">' +
@@ -3342,7 +3839,7 @@ function renderPetStudio(){
     const b = document.createElement('button'), on = it.id === petDraft.accColour;
     b.type = 'button'; b.className = 'chip swatch2' + (on ? ' on' : '');
     b.setAttribute('aria-pressed', String(on));
-    const name = (LANG === 'de' && it.de) || it.label;
+    const name = (LANG === 'it' && PET_IT[it.id]) || (LANG === 'de' && it.de) || it.label;
     const dot = it.dot || ACC_BASE[petDraft.acc] || '#ccc';
     b.innerHTML = '<span class="sw" style="background:' + dot +
       (it.dot ? '' : ';box-shadow:inset 0 0 0 2px #fff,0 0 0 1px rgba(0,0,0,.18)') + '"></span><span class="lbl">' + esc(name) + '</span>';
@@ -3433,6 +3930,7 @@ function paintLogin(){
   setTimeout(() => $('loginUser').focus(), 60);
 }
 function showLogin(){
+  itGate(false);
   loginMode = 'signin';
   document.querySelector('.app').classList.add('locked');
   $('loginScreen').hidden = false;
@@ -3441,6 +3939,7 @@ function showLogin(){
   setTimeout(() => $('loginUser').focus(), 400);
 }
 async function enterApp(){
+  itGate(true);
   $('loginScreen').hidden = true;
   document.querySelector('.app').classList.remove('locked');
   $('userChip').hidden = false;
@@ -3514,8 +4013,23 @@ $('signOutBtn').addEventListener('click', async () => {
   showLogin();
 });
 
-function setLang(lang){
+function itAllowed(){ return ITALIAN_USERS.includes(String(USER || '').trim().toLowerCase()); }
+function itGate(entering){
+  $$('[data-lang="it"]').forEach(b => b.hidden = !itAllowed());
+  let off = false;
+  try{ off = localStorage.getItem('bao.itOff::' + USER) === '1'; }catch(e){}
+  if (itAllowed()){ if (entering && !off) setLang('it', true); }
+  else if (LANG === 'it') setLang('en', true);
+}
+function setLang(lang, auto){
   if (!LANGS.includes(lang) || lang === LANG) return;
+  if (lang === 'it' && !itAllowed()) return;
+  if (!auto && itAllowed()){
+    try{
+      if (lang === 'it') localStorage.removeItem('bao.itOff::' + USER);
+      else localStorage.setItem('bao.itOff::' + USER, '1');
+    }catch(e){}
+  }
   LANG = lang;
   try{ localStorage.setItem('bao.lang', lang); }catch(e){}
   applyLang();
@@ -3872,11 +4386,11 @@ async function captureBodyRating(zone, label){
 
 let feltNow = new Set();
 const FEEL_WORDS = {
-  sad:   /(?<!\p{L})(sad|sadder|saddest|sadness|unhappy|depressed|miserable|heartbroken|hopeless|lonely|tearful|cried|cry|crying|tears|upset(?!\s+(?:stomach|tummy|belly))|gloomy|feel(?:ing|s|t)?\s+(?:so\s+|really\s+|very\s+|a\s+bit\s+)?(?:down|low|blue)|traurig\p{L}*|traurigkeit|niedergeschlagen|bedrückt|deprimiert|geweint|weinen|weinte|einsam|unglücklich|hoffnungslos)(?!\p{L})/iu,
-  angry: /(?<!\p{L})(angry|angrier|anger|mad|furious|annoyed|irritated|frustrated|frustration|pissed|rage|livid|resentful|wütend|wut|sauer|verärgert|genervt|gereizt|frustriert|ärgerlich|geärgert|zornig|aufgebracht)(?!\p{L})/iu
+  sad:   /(?<!\p{L})(sad|sadder|saddest|sadness|unhappy|depressed|miserable|heartbroken|hopeless|lonely|tearful|cried|cry|crying|tears|upset(?!\s+(?:stomach|tummy|belly))|gloomy|feel(?:ing|s|t)?\s+(?:so\s+|really\s+|very\s+|a\s+bit\s+)?(?:down|low|blue)|traurig\p{L}*|traurigkeit|niedergeschlagen|bedrückt|deprimiert|geweint|weinen|weinte|einsam|unglücklich|hoffnungslos|triste|tristezza|infelice|depress\p{L}*|piang\p{L}*|pianto|giù di morale|abbattut\p{L}*|sconfortat\p{L}*)(?!\p{L})/iu,
+  angry: /(?<!\p{L})(angry|angrier|anger|mad|furious|annoyed|irritated|frustrated|frustration|pissed|rage|livid|resentful|wütend|wut|sauer|verärgert|genervt|gereizt|frustriert|ärgerlich|geärgert|zornig|aufgebracht|arrabbiat\p{L}*|rabbia|furios\p{L}*|incazzat\p{L}*|irritat\p{L}*|frustrat\p{L}*|innervosit\p{L}*)(?!\p{L})/iu
 };
-const CRISIS_WORDS = /(suicid|kill myself|end my life|want to die|wanna die|don['’]?t want to live|self[- ]?harm|hurt myself|cut myself|suizid|selbstmord|mich umbringen|nicht mehr leben|sterben will|mir etwas antun|mir was antun|ritzen|selbstverletz)/i;
-const NEGATION = /(\bnot\b|n't\b|n’t\b|\bnever\b|\bno\b|\bnicht\b|\bnie\b|(?<!\p{L})kein\p{L}*)/iu;
+const CRISIS_WORDS = /(suicid|uccidermi|farla finita|voglio morire|non voglio più vivere|farmi del male|tagliarmi|autolesion|kill myself|end my life|want to die|wanna die|don['’]?t want to live|self[- ]?harm|hurt myself|cut myself|suizid|selbstmord|mich umbringen|nicht mehr leben|sterben will|mir etwas antun|mir was antun|ritzen|selbstverletz)/i;
+const NEGATION = /(\bnot\b|n't\b|n’t\b|\bnever\b|\bno\b|\bnicht\b|\bnie\b|\bnon\b|\bmai\b|(?<!\p{L})kein\p{L}*)/iu;
 
 function feelingsIn(text){
   const found = [];
