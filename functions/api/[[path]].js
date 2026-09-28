@@ -105,6 +105,21 @@ async function readBody(request){
 }
 
 export async function onRequest(context){
+  try{
+    return await handle(context);
+  }catch(err){
+    console.error('BAO server error (outer)', err && err.stack || err);
+    return fail('BAO server error: ' + (err && err.message || String(err)), 500);
+  }
+}
+
+// Background work (emails) must never break the answer to the page.
+function later(context, promise){
+  const p = Promise.resolve(promise).catch(err => console.error('BAO background error', err && err.stack || err));
+  try{ context.waitUntil(p); }catch(e){}
+}
+
+async function handle(context){
   const { request, env } = context;
   if (!env.BAO) return fail('The KV namespace "BAO" is not connected to this project.', 500);
 
@@ -134,7 +149,7 @@ export async function onRequest(context){
       if (await env.BAO.get('u:' + email)) return fail('That email is already registered. Sign in instead.', 409);
       const user = { email, name, lang, verified: false, created: new Date().toISOString(), ...(await newPassword(pw)), sessions: [] };
       const cookie = await startSession(env, user);
-      context.waitUntil(sendConfirmation(env, request, user, lang));
+      later(context, sendConfirmation(env, request, user, lang));
       return json(publicUser(user), 200, { 'Set-Cookie': cookie });
     }
 
@@ -197,7 +212,7 @@ export async function onRequest(context){
           const t = token();
           await putJSON(env, 'r:' + await sha256(t), { email }, { expirationTtl: RESET_MIN * 60 });
           const link = appUrl(env, request) + '/?reset=' + encodeURIComponent(t);
-          context.waitUntil(sendMail(env, email, mailReset(env, request, lang, user.name, link)));
+          later(context, sendMail(env, email, mailReset(env, request, lang, user.name, link)));
         }
       }
       return json({ ok: true });
@@ -303,6 +318,6 @@ export async function onRequest(context){
     }
   }catch(err){
     console.error('BAO server error', route, err && err.stack || err);
-    return fail('Something went wrong on the BAO server.', 500);
+    return fail('BAO server error: ' + (err && err.message || String(err)), 500);
   }
 }
