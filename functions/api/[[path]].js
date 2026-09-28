@@ -1,248 +1,308 @@
-// Il server di Bao per Cloudflare Pages (prima era server.py con Flask).
-// Risponde a tutti gli indirizzi /api/... ; la pagina index.html resta identica.
-//
-// Dove finiscono i dati: nello spazio "KV" di Cloudflare collegato con il nome BAO
-// (vedi wrangler.toml e le istruzioni). Chiavi usate:
-//   user:<email>      account (nome, sale, hash della password)
-//   sess:<token>      sessione aperta -> email (scade da sola dopo 30 giorni)
-//   pet:<email>       il compagno
-//   checkins:<email>  la lista dei check-in
-//   fail:<email>      tentativi di accesso sbagliati (scade dopo 15 minuti)
+// BAO server on Cloudflare Pages Functions.
+// Everything lives in one KV namespace bound as `BAO`:
+//   u:<email>    account      c:<email>  check-ins      p:<email>  avatar
+//   s:<hash>     session      r:<hash>   reset link     v:<hash>   email confirmation link
+//   rl:<...>     rate limits
+// Settings (Pages > Settings > Variables and Secrets): RESEND_API_KEY (secret), MAIL_FROM, APP_URL.
+import { sendMail, mailConfirm, mailReset } from '../../lib/mail.js';
 
-import { PATTERNS, ZONES, PATTERNS_DE, ZONES_DE } from '../_lib/patterns.js';
+const COOKIE = 'bao_session';
+const SESSION_DAYS = 30;
+const ITER = 100000;                 // PBKDF2 rounds (the Workers maximum)
+const RESET_MIN = 30;
+const VERIFY_DAYS = 7;
+const MAX_CHECKINS = 5000;
+const MAX_ENTRY_BYTES = 200 * 1024;
 
-const SESSION_COOKIE = 'bao_session';
-const SESSION_DAYS   = 30;
-const PBKDF2_ITER    = 100000;          // il massimo che Cloudflare Workers permette
-const MAX_FAILS      = 10;              // poi l'accesso a quell'email si blocca per 15 minuti
-const EMAIL_RE       = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-
-// ---------------------------------------------------------------- utilita'
-const json = (data, status = 200, headers = {}) =>
-  new Response(JSON.stringify(data), {
-    status,
-    headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', ...headers }
-  });
-const fail = (message, status) => json({ error: message }, status);
-
+const enc = new TextEncoder();
 const hex = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
-const randomHex = n => hex(crypto.getRandomValues(new Uint8Array(n)));
+const fromHex = h => new Uint8Array((h.match(/../g) || []).map(x => parseInt(x, 16)));
+const b64u = bytes => btoa(String.fromCharCode(...bytes)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+const token = () => b64u(crypto.getRandomValues(new Uint8Array(32)));
+const sha256 = async s => hex(await crypto.subtle.digest('SHA-256', enc.encode(s)));
 
-function cleanEmail(raw){
-  const v = String(raw || '').trim().toLowerCase().slice(0, 120);
-  return EMAIL_RE.test(v) ? v : '';
+function json(data, status = 200, headers = {}){
+  return new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', ...headers } });
 }
+const fail = (msg, status = 400) => json({ error: msg }, status);
 
-async function hashPassword(password, salt, iterations = PBKDF2_ITER){
-  const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveBits']);
-  const bits = await crypto.subtle.deriveBits(
-    { name: 'PBKDF2', hash: 'SHA-256', salt: new TextEncoder().encode(salt), iterations }, key, 256);
+function cleanEmail(v){
+  const e = String(v || '').trim().toLowerCase();
+  return e.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e) ? e : null;
+}
+const cleanLang = l => ['en', 'de', 'it', 'fr', 'es', 'pt', 'nl'].includes(l) ? l : 'en';
+
+async function hashPassword(pw, saltHex){
+  const key = await crypto.subtle.importKey('raw', enc.encode(pw), 'PBKDF2', false, ['deriveBits']);
+  const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: fromHex(saltHex), iterations: ITER }, key, 256);
   return hex(bits);
 }
-
-function sameString(a, b){          // confronto a tempo costante
-  if (a.length !== b.length) return false;
+function sameString(a, b){
+  if (typeof a !== 'string' || typeof b !== 'string' || a.length !== b.length) return false;
   let d = 0;
   for (let i = 0; i < a.length; i++) d |= a.charCodeAt(i) ^ b.charCodeAt(i);
   return d === 0;
 }
+async function newPassword(pw){
+  const salt = hex(crypto.getRandomValues(new Uint8Array(16)));
+  return { salt, hash: await hashPassword(pw, salt) };
+}
+
+const getJSON = async (env, key, fallback = null) => (await env.BAO.get(key, 'json')) ?? fallback;
+const putJSON = (env, key, value, opts) => env.BAO.put(key, JSON.stringify(value), opts);
+
+function cookieValue(request){
+  const m = (request.headers.get('Cookie') || '').match(new RegExp('(?:^|;\\s*)' + COOKIE + '=([^;]+)'));
+  return m ? m[1] : null;
+}
+function sessionCookie(value, maxAge){
+  return COOKIE + '=' + value + '; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=' + maxAge;
+}
+
+async function startSession(env, user){
+  const t = token();
+  const h = await sha256(t);
+  await putJSON(env, 's:' + h, { email: user.email }, { expirationTtl: SESSION_DAYS * 86400 });
+  user.sessions = [...(user.sessions || []), h].slice(-20);
+  await putJSON(env, 'u:' + user.email, user);
+  return sessionCookie(t, SESSION_DAYS * 86400);
+}
+async function currentUser(env, request){
+  const t = cookieValue(request);
+  if (!t) return null;
+  const s = await getJSON(env, 's:' + await sha256(t));
+  if (!s) return null;
+  return getJSON(env, 'u:' + s.email);
+}
+async function endAllSessions(env, user){
+  await Promise.all((user.sessions || []).map(h => env.BAO.delete('s:' + h)));
+  user.sessions = [];
+}
+
+// true = allowed. Counts per key inside a time window.
+async function limit(env, key, max, seconds){
+  const k = 'rl:' + key;
+  const n = Number(await env.BAO.get(k)) || 0;
+  if (n >= max) return false;
+  await env.BAO.put(k, String(n + 1), { expirationTtl: Math.max(60, seconds) });
+  return true;
+}
+
+function appUrl(env, request){
+  return (env.APP_URL || new URL(request.url).origin).replace(/\/+$/, '');
+}
+const publicUser = u => ({ user: u.email, name: u.name || '', verified: !!u.verified });
+
+async function sendConfirmation(env, request, user, lang){
+  const t = token();
+  await putJSON(env, 'v:' + await sha256(t), { email: user.email }, { expirationTtl: VERIFY_DAYS * 86400 });
+  const link = appUrl(env, request) + '/api/auth/verify?token=' + encodeURIComponent(t);
+  return sendMail(env, user.email, mailConfirm(env, request, lang, user.name, link));
+}
 
 async function readBody(request){
-  try { return await request.json(); } catch { return {}; }
+  try{ return await request.json(); }catch(e){ return {}; }
 }
-async function kvGet(env, key, fallback){
-  const v = await env.BAO.get(key, 'json');
-  return v === null ? fallback : v;
-}
-const kvPut = (env, key, value, opts) => env.BAO.put(key, JSON.stringify(value), opts);
-
-// ---------------------------------------------------------------- sessioni
-function readCookie(request, name){
-  const raw = request.headers.get('Cookie') || '';
-  for (const part of raw.split(';')){
-    const [k, ...v] = part.trim().split('=');
-    if (k === name) return decodeURIComponent(v.join('='));
-  }
-  return '';
-}
-function cookieHeader(value, maxAge, secure){
-  return `${SESSION_COOKIE}=${value}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${maxAge}` + (secure ? '; Secure' : '');
-}
-async function currentUser(request, env){
-  const token = readCookie(request, SESSION_COOKIE);
-  if (!/^[0-9a-f]{64}$/.test(token)) return null;
-  return await env.BAO.get('sess:' + token);
-}
-async function openSession(env, email, secure){
-  const token = randomHex(32);
-  await env.BAO.put('sess:' + token, email, { expirationTtl: SESSION_DAYS * 86400 });
-  return cookieHeader(token, SESSION_DAYS * 86400, secure);
-}
-
-// ---------------------------------------------------------------- Bao risponde
-function toRegex(src){
-  let s = String(src);
-  if (s.startsWith('(?i)')) s = s.slice(4);
-  try { return new RegExp(s, 'i'); } catch { return null; }
-}
-const compiled = new Map();
-function table(list){
-  if (!compiled.has(list)) compiled.set(list, list.map(([re, v]) => [toRegex(re), v]).filter(([re]) => re));
-  return compiled.get(list);
-}
-function respond(text, lang){
-  const low = String(text || '').toLowerCase();
-  let response = null, zone = null;
-  for (const [re, answers] of table(lang === 'de' ? PATTERNS_DE : PATTERNS)){
-    if (re.test(low)){ response = answers[Math.floor(Math.random() * answers.length)]; break; }
-  }
-  for (const [re, z] of table(lang === 'de' ? ZONES_DE : ZONES)){
-    if (re.test(low)){ zone = z; break; }
-  }
-  return { response, zone };
-}
-
-// ---------------------------------------------------------------- le rotte
-const routes = {
-  'GET auth/me': async ({ env, me }) => {
-    if (!me) return json({ user: null, name: '' });
-    const rec = await kvGet(env, 'user:' + me, {});
-    return json({ user: me, name: rec.name || '' });
-  },
-
-  'POST auth/register': async ({ env, body, secure }) => {
-    const email = cleanEmail(body.username);
-    const pw = String(body.password || '');
-    if (!email) return fail('Please write a valid email address.', 400);
-    if (pw.length < 6) return fail('The password needs at least 6 characters.', 400);
-    if (await env.BAO.get('user:' + email)) return fail('That email is already registered. Sign in instead.', 409);
-
-    const name = String(body.name || '').trim().slice(0, 24) || email.split('@')[0];
-    const salt = randomHex(16);
-    await kvPut(env, 'user:' + email, {
-      salt, iter: PBKDF2_ITER, hash: await hashPassword(pw, salt), name,
-      created: new Date().toISOString()
-    });
-    return json({ user: email, name }, 200, { 'Set-Cookie': await openSession(env, email, secure) });
-  },
-
-  'POST auth/login': async ({ env, body, secure }) => {
-    const email = cleanEmail(body.username);
-    const pw = String(body.password || '');
-    const fails = Number(await env.BAO.get('fail:' + email) || 0);
-    if (fails >= MAX_FAILS) return fail('Too many attempts. Please wait 15 minutes and try again.', 429);
-
-    const rec = email ? await kvGet(env, 'user:' + email, null) : null;
-    if (!rec){
-      await hashPassword(pw, 'x'.repeat(32));          // stessa attesa, cosi' non si capisce se l'email esiste
-      return fail('There is no account with that email.', 404);
-    }
-    if (!sameString(await hashPassword(pw, rec.salt, rec.iter || PBKDF2_ITER), rec.hash)){
-      await env.BAO.put('fail:' + email, String(fails + 1), { expirationTtl: 900 });
-      return fail('That password does not match.', 401);
-    }
-    if (fails) await env.BAO.delete('fail:' + email);
-    return json({ user: email, name: rec.name || '' }, 200, { 'Set-Cookie': await openSession(env, email, secure) });
-  },
-
-  'POST auth/logout': async ({ request, env, secure }) => {
-    const token = readCookie(request, SESSION_COOKIE);
-    if (/^[0-9a-f]{64}$/.test(token)) await env.BAO.delete('sess:' + token);
-    return json({ ok: true }, 200, { 'Set-Cookie': cookieHeader('', 0, secure) });
-  },
-
-  'POST auth/name': async ({ env, me, body }) => {
-    if (!me) return fail('Please sign in first.', 401);
-    const name = String(body.name || '').trim().slice(0, 24);
-    if (!name) return fail('Please write a name.', 400);
-    const rec = await kvGet(env, 'user:' + me, {});
-    rec.name = name;
-    await kvPut(env, 'user:' + me, rec);
-    return json({ ok: true, name });
-  },
-
-  'GET pet': async ({ env, me }) => {
-    if (!me) return fail('Please sign in first.', 401);
-    return json({ pet: await kvGet(env, 'pet:' + me, null) });
-  },
-
-  'POST pet': async ({ env, me, body }) => {
-    if (!me) return fail('Please sign in first.', 401);
-    const pet = body.pet || null;
-    if (pet) await kvPut(env, 'pet:' + me, pet);
-    else await env.BAO.delete('pet:' + me);
-    return json({ ok: true, pet });
-  },
-
-  'GET patterns': async () => json({
-    patterns:    PATTERNS,
-    zones:       ZONES,
-    patterns_de: PATTERNS_DE,
-    zones_de:    ZONES_DE,
-    source: 'patterns.js',
-    bao_imported: true,
-    bao_error: null
-  }),
-
-  'POST bao': async ({ body }) => {
-    const lang = String(body.lang || 'en').startsWith('de') ? 'de' : 'en';
-    return json(respond(body.text, lang));
-  },
-
-  'GET checkins': async ({ env, me }) => {
-    if (!me) return fail('Please sign in first.', 401);
-    return json(await kvGet(env, 'checkins:' + me, []));
-  },
-
-  'POST checkin': async ({ env, me, body }) => {
-    if (!me) return fail('Please sign in first.', 401);
-    const entry = body && typeof body === 'object' ? body : {};
-    entry.date = new Date().toISOString();
-    if (!entry.id) entry.id = 'c' + Date.now().toString(36) + randomHex(3);
-    entry.user = me;
-    const items = await kvGet(env, 'checkins:' + me, []);
-    items.push(entry);
-    await kvPut(env, 'checkins:' + me, items);
-    return json({ ok: true, total: items.length, checkins: items });
-  },
-
-  'POST checkin/delete': async ({ env, me, body }) => {
-    if (!me) return fail('Please sign in first.', 401);
-    const items = (await kvGet(env, 'checkins:' + me, [])).filter(e => e.id !== body.id);
-    await kvPut(env, 'checkins:' + me, items);
-    return json({ ok: true, checkins: items });
-  },
-
-  'POST checkins/clear': async ({ env, me }) => {
-    if (!me) return fail('Please sign in first.', 401);
-    await kvPut(env, 'checkins:' + me, []);
-    return json({ ok: true, checkins: [] });
-  }
-};
 
 export async function onRequest(context){
   const { request, env } = context;
   if (!env.BAO) return fail('The KV namespace "BAO" is not connected to this project.', 500);
 
-  const url  = new URL(request.url);
-  const path = url.pathname.replace(/^\/api\/?/, '').replace(/\/+$/, '');
-  const handler = routes[request.method + ' ' + path];
-  if (!handler) return fail('Not found.', 404);
+  const url = new URL(request.url);
+  const path = url.pathname.replace(/\/+$/, '');
+  const method = request.method;
+  const route = method + ' ' + path;
 
-  // Le richieste che cambiano qualcosa devono arrivare dal sito stesso.
-  if (request.method === 'POST'){
-    const origin = request.headers.get('Origin');
-    if (origin && origin !== url.origin) return fail('Forbidden.', 403);
-  }
+  try{
+    switch (route){
 
-  try {
-    return await handler({
-      request, env,
-      body:   request.method === 'POST' ? await readBody(request) : {},
-      me:     await currentUser(request, env),
-      secure: url.protocol === 'https:'
-    });
-  } catch (err) {
-    return fail('Something went wrong on the server.', 500);
+    case 'GET /api/auth/me': {
+      const u = await currentUser(env, request);
+      return u ? json(publicUser(u)) : fail('Not signed in.', 401);
+    }
+
+    case 'POST /api/auth/register': {
+      const b = await readBody(request);
+      const email = cleanEmail(b.username);
+      const pw = String(b.password || '');
+      const name = String(b.name || '').trim().slice(0, 40);
+      const lang = cleanLang(b.lang);
+      if (!email) return fail('Please write a valid email address.');
+      if (pw.length < 8) return fail('The password needs at least 8 characters.');
+      if (!name) return fail('Please write a name.');
+      if (!await limit(env, 'reg:' + (request.headers.get('CF-Connecting-IP') || 'x'), 10, 3600)) return fail('Too many new accounts from here. Try again later.', 429);
+      if (await env.BAO.get('u:' + email)) return fail('That email is already registered. Sign in instead.', 409);
+      const user = { email, name, lang, verified: false, created: new Date().toISOString(), ...(await newPassword(pw)), sessions: [] };
+      const cookie = await startSession(env, user);
+      context.waitUntil(sendConfirmation(env, request, user, lang));
+      return json(publicUser(user), 200, { 'Set-Cookie': cookie });
+    }
+
+    case 'POST /api/auth/login': {
+      const b = await readBody(request);
+      const email = cleanEmail(b.username);
+      const pw = String(b.password || '');
+      if (!email || !pw) return fail('Email or password is wrong.', 401);
+      if (!await limit(env, 'login:' + email, 10, 900)) return fail('Too many wrong attempts. Please wait 15 minutes.', 429);
+      const user = await getJSON(env, 'u:' + email);
+      if (!user) return fail('Email or password is wrong.', 401);
+      if (!sameString(await hashPassword(pw, user.salt), user.hash)) return fail('Email or password is wrong.', 401);
+      await env.BAO.delete('rl:login:' + email);
+      const cookie = await startSession(env, user);
+      return json(publicUser(user), 200, { 'Set-Cookie': cookie });
+    }
+
+    case 'POST /api/auth/logout': {
+      const t = cookieValue(request);
+      if (t){
+        const h = await sha256(t);
+        const s = await getJSON(env, 's:' + h);
+        await env.BAO.delete('s:' + h);
+        if (s){
+          const u = await getJSON(env, 'u:' + s.email);
+          if (u){ u.sessions = (u.sessions || []).filter(x => x !== h); await putJSON(env, 'u:' + u.email, u); }
+        }
+      }
+      return json({ ok: true }, 200, { 'Set-Cookie': sessionCookie('', 0) });
+    }
+
+    case 'POST /api/auth/name': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      const name = String((await readBody(request)).name || '').trim().slice(0, 40);
+      if (!name) return fail('Please write a name.');
+      u.name = name;
+      await putJSON(env, 'u:' + u.email, u);
+      return json(publicUser(u));
+    }
+
+    case 'POST /api/auth/delete': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      const pw = String((await readBody(request)).password || '');
+      if (!sameString(await hashPassword(pw, u.salt), u.hash)) return fail('The password is not right.', 403);
+      await endAllSessions(env, u);
+      await Promise.all(['u:', 'c:', 'p:'].map(k => env.BAO.delete(k + u.email)));
+      return json({ ok: true }, 200, { 'Set-Cookie': sessionCookie('', 0) });
+    }
+
+    case 'POST /api/auth/forgot': {
+      const b = await readBody(request);
+      const email = cleanEmail(b.email);
+      const lang = cleanLang(b.lang);
+      // Same answer whether or not the account exists.
+      if (email && await limit(env, 'forgot:' + email, 3, 3600)){
+        const user = await getJSON(env, 'u:' + email);
+        if (user){
+          const t = token();
+          await putJSON(env, 'r:' + await sha256(t), { email }, { expirationTtl: RESET_MIN * 60 });
+          const link = appUrl(env, request) + '/?reset=' + encodeURIComponent(t);
+          context.waitUntil(sendMail(env, email, mailReset(env, request, lang, user.name, link)));
+        }
+      }
+      return json({ ok: true });
+    }
+
+    case 'POST /api/auth/reset': {
+      const b = await readBody(request);
+      const t = String(b.token || '');
+      const pw = String(b.password || '');
+      if (pw.length < 8) return fail('The password needs at least 8 characters.');
+      const key = 'r:' + await sha256(t);
+      const r = t ? await getJSON(env, key) : null;
+      if (!r) return fail('This link has expired or was already used.', 400);
+      await env.BAO.delete(key);
+      const user = await getJSON(env, 'u:' + r.email);
+      if (!user) return fail('This link has expired or was already used.', 400);
+      Object.assign(user, await newPassword(pw));
+      user.verified = true;                       // the link proved the email works
+      await endAllSessions(env, user);
+      await putJSON(env, 'u:' + user.email, user);
+      return json({ ok: true });
+    }
+
+    case 'GET /api/auth/verify': {
+      const t = url.searchParams.get('token') || '';
+      const key = 'v:' + await sha256(t);
+      const v = t ? await getJSON(env, key) : null;
+      let ok = false;
+      if (v){
+        const user = await getJSON(env, 'u:' + v.email);
+        if (user){ user.verified = true; await putJSON(env, 'u:' + user.email, user); ok = true; }
+        await env.BAO.delete(key);
+      }
+      return Response.redirect(appUrl(env, request) + '/?verified=' + (ok ? '1' : '0'), 302);
+    }
+
+    case 'POST /api/auth/verify/resend': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      if (u.verified) return json({ ok: true, verified: true });
+      if (!await limit(env, 'verify:' + u.email, 3, 3600)) return fail('Please wait a little before asking again.', 429);
+      const sent = await sendConfirmation(env, request, u, cleanLang((await readBody(request)).lang || u.lang));
+      return sent ? json({ ok: true }) : fail('The email could not be sent right now.', 502);
+    }
+
+    case 'GET /api/checkins': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      return json(await getJSON(env, 'c:' + u.email, []));
+    }
+
+    case 'POST /api/checkin': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      const raw = await request.text();
+      if (raw.length > MAX_ENTRY_BYTES) return fail('This check-in is too long.', 413);
+      let entry;
+      try{ entry = JSON.parse(raw); }catch(e){ return fail('Not a check-in.'); }
+      if (!entry || typeof entry !== 'object' || Array.isArray(entry)) return fail('Not a check-in.');
+      delete entry.user;
+      if (typeof entry.id !== 'string' || !entry.id) entry.id = 'c' + Date.now().toString(36) + token().slice(0, 6);
+      if (typeof entry.date !== 'string' || isNaN(Date.parse(entry.date))) entry.date = new Date().toISOString();
+      const list = await getJSON(env, 'c:' + u.email, []);
+      if (!list.some(e => e.id === entry.id)) list.push(entry);
+      if (list.length > MAX_CHECKINS) return fail('Too many check-ins.', 413);
+      await putJSON(env, 'c:' + u.email, list);
+      return json({ ok: true, total: list.length, checkins: list });
+    }
+
+    case 'POST /api/checkin/delete': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      const id = String((await readBody(request)).id || '');
+      const list = (await getJSON(env, 'c:' + u.email, [])).filter(e => e.id !== id);
+      await putJSON(env, 'c:' + u.email, list);
+      return json({ ok: true, checkins: list });
+    }
+
+    case 'POST /api/checkins/clear': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      await env.BAO.delete('c:' + u.email);
+      return json({ ok: true, checkins: [] });
+    }
+
+    case 'GET /api/pet': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      return json({ pet: await getJSON(env, 'p:' + u.email) });
+    }
+
+    case 'POST /api/pet': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      const pet = (await readBody(request)).pet;
+      if (pet && typeof pet === 'object' && JSON.stringify(pet).length < 4000) await putJSON(env, 'p:' + u.email, pet);
+      else await env.BAO.delete('p:' + u.email);
+      return json({ ok: true });
+    }
+
+    default:
+      return fail('Not found.', 404);
+    }
+  }catch(err){
+    console.error('BAO server error', route, err && err.stack || err);
+    return fail('Something went wrong on the BAO server.', 500);
   }
 }

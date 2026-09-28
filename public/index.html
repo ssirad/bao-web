@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-b1CtJBjJLxQJHy3saFOW9QgoTMRCd5H4S+OzQ4/RSr0='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-JzVYXn+c28Zk0lVXh4eh55uQ87w2sSJ3fgFqbyKqbWo='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>BAO &mdash; symptom &amp; wellbeing tracker</title>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -632,6 +632,13 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
 .settings-cols .how-card{display:flex;flex-direction:column}
 .settings-cols .how-card>div:last-child{margin-top:auto!important;padding-top:18px}
 .storage-warn{margin:8px 0 0;color:#a4553f;font-size:12px;font-weight:700}
+.verify-box{margin-top:14px;background:#fff6e8;border:1px solid #f1dcb6;border-radius:12px;padding:10px 12px;font-size:12.5px;color:#7a5a25;line-height:1.45}
+.verify-box .linklike{color:#187d78;font-weight:750;font-size:12.5px}
+.acc-actions{margin-top:14px}
+.lang-options .lang-chip{display:inline-flex;align-items:center;gap:0}
+.lang-options .lang-chip button.lang-x{border:1px solid var(--line);border-left:0;border-radius:0 12px 12px 0;padding:10px 10px;color:#9aa8a6;font-size:12px;background:#fff}
+.lang-options .lang-chip button.lang-x:hover{color:#b4573f}
+.lang-options .lang-chip>button:first-child{border-radius:12px 0 0 12px}
 </style>
 <script>
 /* ---------------------------------------------------------------------------
@@ -965,6 +972,8 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
               <button class="btn primary" id="nameSave" type="button" data-i18n="acc.saveName">Save name</button>
             </div>
 
+            <div class="verify-box" id="verifyBox" hidden><span data-i18n="ver.note">📩 Please confirm your email: we sent you a link.</span> <button class="linklike" id="verifyResend" type="button" data-i18n="ver.resend">Send it again</button></div>
+            <div class="acc-actions"><button class="btn outline" id="pwChange" type="button" data-i18n="pw.change">Change password</button></div>
             <div class="signout-row mobile-only"><button class="btn outline" id="signOut2" type="button" data-i18n="side.signout">Sign out</button></div>
             <button class="linklike danger" id="delOpen" type="button" data-i18n="acc.delete">Delete my account</button>
             <div class="del-box" id="delBox" hidden>
@@ -3994,6 +4003,7 @@ const store = {
 const LS_USERS = 'somatic.users.v2', LS_THROTTLE = 'somatic.throttle.v1';
 let USER = null;
 let USER_NAME = '';
+let USER_VERIFIED = true, JUST_REGISTERED = false;
 
 const own = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 function localUsers(){
@@ -4147,6 +4157,8 @@ const auth = {
       try{
         const r = await jget('/api/auth/me');
         USER_NAME = r.name || '';
+      USER_VERIFIED = r.verified !== false;
+        USER_VERIFIED = r.verified !== false;
         if (r.user) await resumeSession(r.user);   // unlocks the encrypted local backup, if this tab has the key
         return r.user;
       }catch(e){ return null; }
@@ -4194,6 +4206,8 @@ const auth = {
     if (MODE === 'server'){
       const r = await jpost('/api/auth/register', { username:u, password:p, name, lang: LANG });
       USER_NAME = r.name || name;
+      USER_VERIFIED = r.verified !== false;
+      JUST_REGISTERED = true;
       const prev = own(localUsers(), r.user) ? localUsers()[r.user] : null;
       let made = prev ? await openRecord(prev, p).catch(() => null) : null;
       if (made && made.rec) storeRecord(r.user, made.rec);
@@ -5687,6 +5701,8 @@ function showLogin(){
 }
 async function enterApp(){
   itGate(true);
+  paintVerify();
+  if (JUST_REGISTERED && MODE === 'server'){ JUST_REGISTERED = false; setTimeout(() => showToast(t('reg.sent')), 1200); }
   $('loginScreen').hidden = true;
   document.querySelector('.app').classList.remove('locked');
   $('userChip').hidden = false;
@@ -5764,7 +5780,7 @@ function itAllowed(){ return ITALIAN_USERS.includes(String(USER || '').trim().to
 function addedLangs(){
   try{ return JSON.parse(localStorage.getItem('bao.langs.added') || '[]').filter(l => EXTRA_LANGS.includes(l)); }catch(e){ return []; }
 }
-function langVisible(l){ return l === 'en' || l === 'de' || (l === 'it' ? itAllowed() : addedLangs().includes(l) || l === LANG); }
+function langVisible(l){ return l === 'en' || l === 'de' || (l === 'it' ? itAllowed() : addedLangs().includes(l)); }
 function itGate(entering){
   $$('[data-lang="it"]').forEach(b => b.hidden = !itAllowed());
   $$('[data-lang="fr"],[data-lang="es"],[data-lang="pt"],[data-lang="nl"]').forEach(b => b.hidden = !langVisible(b.dataset.lang));
@@ -6328,10 +6344,21 @@ function paintLangOptions(){
   if (!host) return;
   const list = LANGS.filter(langVisible);
   const more = EXTRA_LANGS.filter(l => !list.includes(l));
-  host.innerHTML = list.map(l => '<button type="button" data-pick-lang="' + l + '" class="' + (l === LANG ? 'on' : '') + '">' + LANG_NAMES[l] + '</button>').join('') +
+  host.innerHTML = list.map(l => {
+      const pick = '<button type="button" data-pick-lang="' + l + '" class="' + (l === LANG ? 'on' : '') + '">' + LANG_NAMES[l] + '</button>';
+      return EXTRA_LANGS.includes(l)
+        ? '<span class="lang-chip">' + pick + '<button type="button" class="lang-x" data-drop-lang="' + l + '" aria-label="' + esc(t('lang.remove')) + '" title="' + esc(t('lang.remove')) + '">✕</button></span>'
+        : pick;
+    }).join('') +
     (more.length ? '<select class="lang-add" id="langAdd" aria-label="' + esc(t('lang.add')) + '"><option value="">' + esc(t('lang.add')) + '</option>' +
       more.map(l => '<option value="' + l + '">' + LANG_NAMES[l] + '</option>').join('') + '</select>' : '');
   host.querySelectorAll('[data-pick-lang]').forEach(b => b.addEventListener('click', () => setLang(b.dataset.pickLang)));
+  host.querySelectorAll('[data-drop-lang]').forEach(b => b.addEventListener('click', () => {
+    const l = b.dataset.dropLang;
+    try{ localStorage.setItem('bao.langs.added', JSON.stringify(addedLangs().filter(x => x !== l))); }catch(e){}
+    if (LANG === l) setLang('en'); else paintLangOptions();
+    paintLangOptions();
+  }));
   const add = document.getElementById('langAdd');
   if (add) add.addEventListener('change', () => {
     const l = add.value;
@@ -6416,6 +6443,105 @@ Object.assign(I18N.fr, { 'lang.add': '+ Ajouter une langue' });
 Object.assign(I18N.es, { 'lang.add': '+ Añadir un idioma' });
 Object.assign(I18N.pt, { 'lang.add': '+ Adicionar um idioma' });
 Object.assign(I18N.nl, { 'lang.add': '+ Taal toevoegen' });
+
+
+function paintVerify(){
+  const box = document.getElementById('verifyBox');
+  if (box) box.hidden = !(MODE === 'server' && USER && USER_VERIFIED === false);
+  const pw = document.getElementById('pwChange');
+  if (pw) pw.hidden = !USER;
+}
+$('verifyResend').addEventListener('click', async () => {
+  try{ const r = await jpost('/api/auth/verify/resend', { lang: LANG }); if (r && r.verified){ USER_VERIFIED = true; paintVerify(); } showToast(t('ver.sent')); }
+  catch(e){ showToast(e.status === 429 ? t('ver.wait') : t('forgot.fail')); }
+});
+$('pwChange').addEventListener('click', async () => {
+  if (MODE !== 'server'){ showToast(t('forgot.needServer')); return; }
+  const b = $('pwChange'); b.disabled = true;
+  try{ await jpost('/api/auth/forgot', { email: USER, lang: LANG }); showToast(t('pw.sent')); }
+  catch(e){ showToast(t('forgot.fail')); }
+  setTimeout(() => { b.disabled = false; }, 4000);
+});
+(function verifiedFromLink(){
+  try{
+    const v = new URLSearchParams(location.search).get('verified');
+    if (v === null) return;
+    history.replaceState(null, '', location.pathname);
+    if (v === '1') USER_VERIFIED = true;
+    setTimeout(() => { showToast(t(v === '1' ? 'ver.done' : 'ver.bad')); paintVerify(); }, 1800);
+  }catch(e){}
+})();
+
+Object.assign(I18N.en, {
+  'rem.pushTitle': 'BAO 🐼',
+  'rem.pushBody': n => 'Hi ' + n + ' 💚 How did your body feel today? Bao is waiting for your one-minute check-in 🐼',
+  'ver.note': '📩 Please confirm your email: we sent you a link.', 'ver.resend': 'Send it again',
+  'ver.sent': 'Confirmation email sent 💌 Check your inbox (and spam).', 'ver.wait': 'Please wait a little before asking again.',
+  'ver.done': 'Your email is confirmed 💚', 'ver.bad': 'This confirmation link has expired or was already used.',
+  'reg.sent': 'Welcome 🐼 We sent you an email to confirm your account.',
+  'pw.change': 'Change password', 'pw.sent': 'We sent you an email with a link to change your password 💌',
+  'lang.remove': 'Remove this language'
+});
+Object.assign(I18N.de, {
+  'rem.pushTitle': 'BAO 🐼',
+  'rem.pushBody': n => 'Hallo ' + n + ' 💚 Wie hat sich dein Körper heute angefühlt? Bao wartet auf deinen Ein-Minuten-Check-in 🐼',
+  'ver.note': '📩 Bitte bestätige deine E-Mail: Wir haben dir einen Link geschickt.', 'ver.resend': 'Nochmal senden',
+  'ver.sent': 'Bestätigungs-E-Mail gesendet 💌 Schau in dein Postfach (und in den Spam).', 'ver.wait': 'Bitte warte kurz, bevor du es nochmal versuchst.',
+  'ver.done': 'Deine E-Mail ist bestätigt 💚', 'ver.bad': 'Dieser Bestätigungslink ist abgelaufen oder wurde schon benutzt.',
+  'reg.sent': 'Willkommen 🐼 Wir haben dir eine E-Mail geschickt, um dein Konto zu bestätigen.',
+  'pw.change': 'Passwort ändern', 'pw.sent': 'Wir haben dir eine E-Mail mit einem Link zum Ändern deines Passworts geschickt 💌',
+  'lang.remove': 'Diese Sprache entfernen'
+});
+Object.assign(I18N.it, {
+  'rem.pushTitle': 'BAO 🐼',
+  'rem.pushBody': n => 'Ciao ' + n + ' 💚 Come si è sentito il tuo corpo oggi? Bao ti aspetta per il check-in di un minuto 🐼',
+  'ver.note': '📩 Conferma la tua email: ti abbiamo mandato un link.', 'ver.resend': 'Mandalo di nuovo',
+  'ver.sent': 'Email di conferma inviata 💌 Controlla la posta (anche lo spam).', 'ver.wait': 'Aspetta un attimo prima di chiederlo di nuovo.',
+  'ver.done': 'La tua email è confermata 💚', 'ver.bad': 'Questo link di conferma è scaduto o è già stato usato.',
+  'reg.sent': 'Benvenuta 🐼 Ti abbiamo mandato una mail per confermare l’account.',
+  'pw.change': 'Cambia password', 'pw.sent': 'Ti abbiamo mandato una mail con il link per cambiare la password 💌',
+  'lang.remove': 'Togli questa lingua'
+});
+Object.assign(I18N.fr, {
+  'rem.pushTitle': 'BAO 🐼',
+  'rem.pushBody': n => 'Coucou ' + n + ' 💚 Comment ton corps s’est-il senti aujourd’hui ? Bao attend ton check-in d’une minute 🐼',
+  'ver.note': '📩 Confirme ton e-mail : nous t’avons envoyé un lien.', 'ver.resend': 'Le renvoyer',
+  'ver.sent': 'E-mail de confirmation envoyé 💌 Regarde ta boîte (et les spams).', 'ver.wait': 'Attends un peu avant de redemander.',
+  'ver.done': 'Ton e-mail est confirmé 💚', 'ver.bad': 'Ce lien de confirmation a expiré ou a déjà été utilisé.',
+  'reg.sent': 'Bienvenue 🐼 Nous t’avons envoyé un e-mail pour confirmer ton compte.',
+  'pw.change': 'Changer le mot de passe', 'pw.sent': 'Nous t’avons envoyé un e-mail avec un lien pour changer ton mot de passe 💌',
+  'lang.remove': 'Retirer cette langue'
+});
+Object.assign(I18N.es, {
+  'rem.pushTitle': 'BAO 🐼',
+  'rem.pushBody': n => 'Hola ' + n + ' 💚 ¿Cómo se ha sentido tu cuerpo hoy? Bao te espera para tu check-in de un minuto 🐼',
+  'ver.note': '📩 Confirma tu correo: te hemos enviado un enlace.', 'ver.resend': 'Enviarlo otra vez',
+  'ver.sent': 'Correo de confirmación enviado 💌 Mira tu bandeja (y el spam).', 'ver.wait': 'Espera un poco antes de pedirlo otra vez.',
+  'ver.done': 'Tu correo está confirmado 💚', 'ver.bad': 'Este enlace de confirmación ha caducado o ya se usó.',
+  'reg.sent': 'Bienvenid@ 🐼 Te hemos enviado un correo para confirmar tu cuenta.',
+  'pw.change': 'Cambiar contraseña', 'pw.sent': 'Te hemos enviado un correo con un enlace para cambiar la contraseña 💌',
+  'lang.remove': 'Quitar este idioma'
+});
+Object.assign(I18N.pt, {
+  'rem.pushTitle': 'BAO 🐼',
+  'rem.pushBody': n => 'Oi ' + n + ' 💚 Como o seu corpo se sentiu hoje? O Bao está esperando seu check-in de um minuto 🐼',
+  'ver.note': '📩 Confirme seu e-mail: enviamos um link para você.', 'ver.resend': 'Enviar de novo',
+  'ver.sent': 'E-mail de confirmação enviado 💌 Olhe sua caixa de entrada (e o spam).', 'ver.wait': 'Espere um pouco antes de pedir de novo.',
+  'ver.done': 'Seu e-mail está confirmado 💚', 'ver.bad': 'Este link de confirmação expirou ou já foi usado.',
+  'reg.sent': 'Boas-vindas 🐼 Enviamos um e-mail para confirmar sua conta.',
+  'pw.change': 'Trocar senha', 'pw.sent': 'Enviamos um e-mail com um link para trocar sua senha 💌',
+  'lang.remove': 'Remover este idioma'
+});
+Object.assign(I18N.nl, {
+  'rem.pushTitle': 'BAO 🐼',
+  'rem.pushBody': n => 'Hoi ' + n + ' 💚 Hoe voelde je lichaam zich vandaag? Bao wacht op je check-in van een minuut 🐼',
+  'ver.note': '📩 Bevestig je e-mail: we hebben je een link gestuurd.', 'ver.resend': 'Opnieuw sturen',
+  'ver.sent': 'Bevestigingsmail verstuurd 💌 Kijk in je inbox (en spam).', 'ver.wait': 'Wacht even voordat je het opnieuw vraagt.',
+  'ver.done': 'Je e-mail is bevestigd 💚', 'ver.bad': 'Deze bevestigingslink is verlopen of al gebruikt.',
+  'reg.sent': 'Welkom 🐼 We hebben je een e-mail gestuurd om je account te bevestigen.',
+  'pw.change': 'Wachtwoord wijzigen', 'pw.sent': 'We hebben je een e-mail gestuurd met een link om je wachtwoord te wijzigen 💌',
+  'lang.remove': 'Deze taal verwijderen'
+});
 
 (async function boot(){
   try{
