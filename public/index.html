@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-EEXahw2I36jhvHQPvjFxz72cquEg/1HR3hqWVF4ICbM='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-XXxwxjMB79Qcysa9E9D1zxNh6eeVrZD4GfcWju1sVP8='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>BAO &mdash; symptom &amp; wellbeing tracker</title>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -334,7 +334,7 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
 .day-empty h3{margin-top:8px}
 .day-empty p{font-size:12px;color:var(--muted);margin:6px 0 0}
 .sym-card{margin-top:14px;border:1px solid var(--line);border-radius:14px;padding:13px 14px;background:#fcfdfc}
-.sym-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.sym-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px}.sym-tools{display:flex;align-items:center;gap:4px;flex:0 0 auto}.sym-del{border:0;background:transparent;color:#a3b0ae;font-size:11px;font-weight:800;padding:3px 7px;border-radius:7px;line-height:1.2}.sym-del:hover{color:#b4573f;background:#fbe8e3}.sym-del.armed{color:#fff;background:#c9674f}.day-del{border:0;background:transparent;color:#b4573f;font-size:11.5px;font-weight:750;padding:6px 0;margin-top:8px}.day-del.armed{color:#fff;background:#c9674f;padding:6px 10px;border-radius:8px}
 .sym-head strong{font-size:13.5px;color:var(--ink);letter-spacing:-.01em}
 .sym-score{font-size:11px;font-weight:800;color:#b4573f;background:var(--coral-soft);border-radius:7px;padding:3px 7px;flex:0 0 auto}
 .sym-reflect{margin-top:10px;font-size:11.5px;font-style:italic;line-height:1.5;color:#7b8b8c;border-top:1px dashed #e6ecea;padding-top:9px}
@@ -3056,9 +3056,10 @@ function renderDayPanel(){
       html += '<div class="day-sec"><h4>' + t('day.nth', idx + 1) + ' · ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes()) + '</h4></div>';
     }
     (e.symptoms || []).forEach((x, n) => {
-      html += '<div class="sym-card"><div class="sym-head"><strong>' + esc(x.name || ('#' + (n + 1))) + '</strong>' +
+      html += '<div class="sym-card"><div class="sym-head"><strong>' + esc(x.name || ('#' + (n + 1))) + '</strong><span class="sym-tools">' +
         (x.rating !== '' && x.rating != null && !isNaN(Number(x.rating))
-          ? '<span class="sym-score">' + esc(String(x.rating)) + '/10</span>' : '') + '</div>';
+          ? '<span class="sym-score">' + esc(String(x.rating)) + '/10</span>' : '') +
+        '<button class="sym-del" type="button" data-del-sym="' + esc(e.id + '|' + n) + '" title="' + esc(t('del.sym')) + '" aria-label="' + esc(t('del.sym')) + '">&#10005;</button></span></div>';
       if (x.parts && x.parts.length)
         html += '<div class="chiprow" style="margin-top:8px">' + x.parts.map(pt => '<span>' + esc(partName(pt)) + '</span>').join('') + '</div>';
       if (said(x.detail))     html += qa(t('day.added'), x.detail);
@@ -3077,6 +3078,7 @@ function renderDayPanel(){
       html += '<div class="day-sec"><h4>' + t('day.feelings') + '</h4>' + qa(t(e.forDay ? 'past.emotions' : 'q.emotions'), e.emotions) + '</div>';
     if (said(e.personal))
       html += '<div class="day-sec"><h4>' + t('day.personal') + '</h4><div class="day-note">' + para(e.personal) + '</div></div>';
+    html += '<button class="day-del" type="button" data-del-entry="' + esc(e.id) + '">' + t(list.length > 1 ? 'del.entryN' : 'del.entry') + '</button>';
   });
 
   html += '<div class="bao-side" style="margin-top:18px"><span class="bao bao-listening"></span>' +
@@ -3085,6 +3087,7 @@ function renderDayPanel(){
 
   el.innerHTML = html;
   wireLog(el);
+  wireDelete(el);
 }
 
 $('calPrev').addEventListener('click', () => { calM--; if (calM < 0){ calM = 11; calY--; } renderCalendar(); });
@@ -3991,6 +3994,64 @@ Object.assign(I18N.de, {
   'past.symptoms': 'Über welches Symptom möchtest du sprechen?',
   'past.day':      'Wie war dieser Tag?',
   'past.emotions': 'Gab es an diesem Tag etwas, das dich zum Lächeln gebracht hat?'
+});
+
+
+function armed(btn, label){
+  if (btn.classList.contains('armed')) return true;
+  btn.classList.add('armed');
+  btn._label = btn.innerHTML;
+  btn.textContent = label;
+  setTimeout(() => { if (btn.isConnected){ btn.classList.remove('armed'); btn.innerHTML = btn._label; } }, 4000);
+  return false;
+}
+function wireDelete(el){
+  el.querySelectorAll('[data-del-sym]').forEach(b => b.addEventListener('click', async () => {
+    if (!armed(b, t('del.sure'))) return;
+    b.disabled = true;
+    const [id, n] = b.dataset.delSym.split('|');
+    await deleteSymptom(id, Number(n));
+  }));
+  el.querySelectorAll('[data-del-entry]').forEach(b => b.addEventListener('click', async () => {
+    if (!armed(b, t('del.sureEntry'))) return;
+    b.disabled = true;
+    await store.remove(b.dataset.delEntry);
+    renderAll();
+    showToast(t('del.entryDone'));
+  }));
+}
+// There is no "edit" on the server, so the check-in is saved again without that symptom
+// (on the same day), and only then the old copy is removed.
+async function deleteSymptom(id, n){
+  const old = DATA.find(e => e.id === id);
+  if (!old || !old.symptoms || !old.symptoms[n]) return;
+  const copy = JSON.parse(JSON.stringify(old));
+  copy.symptoms.splice(n, 1);
+  copy.forDay = copy.forDay || localKey(dOf(old));
+  delete copy.id; delete copy.user;
+  await store.add(copy);
+  await store.remove(id);
+  renderAll();
+  showToast(t('del.symDone'));
+}
+
+Object.assign(I18N.en, {
+  'del.sym':       'Delete this symptom',
+  'del.sure':      'Delete?',
+  'del.symDone':   'Symptom deleted.',
+  'del.entry':     'Delete this check-in',
+  'del.entryN':    'Delete this check-in',
+  'del.sureEntry': 'Tap again to delete the whole check-in',
+  'del.entryDone': 'Check-in deleted.'
+});
+Object.assign(I18N.de, {
+  'del.sym':       'Dieses Symptom löschen',
+  'del.sure':      'Löschen?',
+  'del.symDone':   'Symptom gelöscht.',
+  'del.entry':     'Diesen Check-in löschen',
+  'del.entryN':    'Diesen Check-in löschen',
+  'del.sureEntry': 'Nochmal tippen, um den ganzen Check-in zu löschen',
+  'del.entryDone': 'Check-in gelöscht.'
 });
 
 (async function boot(){
