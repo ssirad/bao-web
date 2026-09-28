@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-GS54dRGFxEagQbOpHn5PI5kIsEkz3bVOiTS0S76Il0o='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-EEXahw2I36jhvHQPvjFxz72cquEg/1HR3hqWVF4ICbM='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>BAO &mdash; symptom &amp; wellbeing tracker</title>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -1733,6 +1733,7 @@ const store = {
   async add(entry){
     entry.id   = 'c' + Date.now().toString(36) + randomB64(6).replace(/[^a-z0-9]/gi, '');
     entry.date = new Date().toISOString();
+    if (entry.forDay){ const [y, m, d] = entry.forDay.split('-').map(Number); const n = new Date(); entry.date = new Date(y, m - 1, d, n.getHours(), n.getMinutes()).toISOString(); }
     if (MODE === 'server'){
       try{ DATA = (await jpost('/api/checkin', entry)).checkins; await saveLocal(); return; }
       catch(e){ MODE = 'browser'; }
@@ -2480,19 +2481,21 @@ async function runConversation(){
   convo = 'running';
   entry = freshEntry();
   feltNow = new Set();
+  if (LOG_DAY) entry.forDay = LOG_DAY;
 
   entry.name = displayName();
 
   face('cheer');
   await baoSay(t('chat.hi', entry.name), '', 'happy', 700);
   await baoSay(t('chat.intro'), '', 'happy');
+  if (LOG_DAY) await baoSay(t('past.intro', prettyKey(LOG_DAY)), '', 'checkin');
 
-  const log = await askYesNo(t('q.log'), 'checkin');
+  const log = await askYesNo(LOG_DAY ? t('past.log', shortKey(LOG_DAY)) : t('q.log'), 'checkin');
 
   if (log === 'yes'){
     while (true){
 
-      const name = await ask(t('q.symptoms'), 'listening');
+      const name = await ask(t(LOG_DAY ? 'past.symptoms' : 'q.symptoms'), 'listening');
 
       // Python answers in the chosen language when patterns_bao_salute.py has it.
       let reply = null, zone = null, fromServer = false;
@@ -2532,8 +2535,8 @@ async function runConversation(){
     }
   }
 
-  entry.day    = await askFeel(t('q.day'), 'happy');
-  entry.emotions = await askFeel(t('q.emotions'), 'listening');
+  entry.day    = await askFeel(t(LOG_DAY ? 'past.day' : 'q.day'), 'happy');
+  entry.emotions = await askFeel(t(LOG_DAY ? 'past.emotions' : 'q.emotions'), 'listening');
 
   await baoSay(t('chat.almost'), '', 'cheer', 700);
   entry.personal = await askFeel(t('q.personal'), 'cheer');
@@ -2553,9 +2556,9 @@ function buildRecap(e){
   });
   return {
     symptoms: blocks,
-    thoughts: t('recap.thoughts') + '*' + t('q.day') + '* ' + e.day +
+    thoughts: t('recap.thoughts') + '*' + t(e.forDay ? 'past.day' : 'q.day') + '* ' + e.day +
               (e.memory ? '\n*' + t('q.memory') + '* ' + e.memory : ''),
-    feelings: t('recap.feelings') + '*' + t('q.emotions') + '* ' + e.emotions,
+    feelings: t('recap.feelings') + '*' + t(e.forDay ? 'past.emotions' : 'q.emotions') + '* ' + e.emotions,
     personal: t('recap.personal') + e.personal
   };
 }
@@ -2601,7 +2604,12 @@ async function showRecap(){
     renderAll();
     showToast(MODE === 'server' ? t('save.toastServer', DATA.length) : t('save.toastBrowser', DATA.length));
     save.textContent = t('save.done');
-    setTimeout(() => go('home'), 900);
+    const doneDay = entry.forDay;
+    LOG_DAY = null;
+    setTimeout(() => {
+      if (doneDay){ const [y, m] = doneDay.split('-').map(Number); calY = y; calM = m - 1; calSel = doneDay; go('calendar'); }
+      else go('home');
+    }, 900);
   });
   again.addEventListener('click', restartChat);
 }
@@ -2690,10 +2698,15 @@ pView.addEventListener('click', e => {
 const MONTHS    = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 const MONTHS_DE = ['JAN','FEB','MÄR','APR','MAI','JUN','JUL','AUG','SEP','OKT','NOV','DEZ'];
 const months = () => LANG === 'de' ? MONTHS_DE : MONTHS;
-const dOf = e => new Date(e.date || Date.now());
+const dOf = e => {
+  const d = new Date(e.date || Date.now());
+  if (!e.forDay || !/^\d{4}-\d{2}-\d{2}$/.test(e.forDay)) return d;
+  const [y, m, dd] = e.forDay.split('-').map(Number);
+  return new Date(y, m - 1, dd, d.getHours(), d.getMinutes(), d.getSeconds());
+};
 const dayKey = d => d.toISOString().slice(0, 10);
 
-function allSymptoms(list){ return list.flatMap(e => (e.symptoms || []).map(s => ({ ...s, date: e.date }))); }
+function allSymptoms(list){ return list.flatMap(e => (e.symptoms || []).map(s => ({ ...s, date: dOf(e).toISOString() }))); }
 function avg(nums){ return nums.length ? nums.reduce((a, b) => a + b, 0) / nums.length : null; }
 function within(days){
   if (!days) return DATA.slice();
@@ -3006,8 +3019,8 @@ function renderDayPanel(){
     el.innerHTML = '<div class="day-empty"><span class="bao bao-resting" style="width:76px;height:76px;margin:0 auto"></span>' +
       '<h3>' + t('day.nothing') + '</h3><p>' + esc(prettyKey(calSel)) + '</p>' +
       '<p>' + t('day.nothingSub') + '</p>' +
-      '<button class="btn secondary" style="margin-top:14px" data-go="checkin">' + t('day.start') + '</button></div>';
-    el.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => go(b.dataset.go)));
+      logButton('btn secondary', t(calSel === localKey(new Date()) ? 'day.start' : 'past.btn')) + '</div>';
+    wireLog(el);
     return;
   }
 
@@ -3056,22 +3069,22 @@ function renderDayPanel(){
     });
     if (said(e.day) || said(e.memory)){
       html += '<div class="day-sec"><h4>' + t('day.thoughts') + '</h4>';
-      if (said(e.day))    html += qa(t('q.day'), e.day);
+      if (said(e.day))    html += qa(t(e.forDay ? 'past.day' : 'q.day'), e.day);
       if (said(e.memory)) html += qa(t('q.memory'), e.memory);
       html += '</div>';
     }
     if (said(e.emotions))
-      html += '<div class="day-sec"><h4>' + t('day.feelings') + '</h4>' + qa(t('q.emotions'), e.emotions) + '</div>';
+      html += '<div class="day-sec"><h4>' + t('day.feelings') + '</h4>' + qa(t(e.forDay ? 'past.emotions' : 'q.emotions'), e.emotions) + '</div>';
     if (said(e.personal))
       html += '<div class="day-sec"><h4>' + t('day.personal') + '</h4><div class="day-note">' + para(e.personal) + '</div></div>';
   });
 
   html += '<div class="bao-side" style="margin-top:18px"><span class="bao bao-listening"></span>' +
     '<span style="font-size:11px;line-height:1.35;color:#839392">' + t('day.kept') + '</span></div>' +
-    '<button class="btn outline" style="margin-top:14px;width:100%" data-go="checkin">' + t('day.addToday') + '</button>';
+    logButton('btn outline', t(calSel === localKey(new Date()) ? 'day.addToday' : 'past.add'), 'width:100%');
 
   el.innerHTML = html;
-  el.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => go(b.dataset.go)));
+  wireLog(el);
 }
 
 $('calPrev').addEventListener('click', () => { calM--; if (calM < 0){ calM = 11; calY--; } renderCalendar(); });
@@ -3355,8 +3368,8 @@ function go(id){
   if (id === 'home')     renderHome();
 }
 $$('.nav button').forEach(b => b.addEventListener('click', () => go(b.dataset.view)));
-$$('[data-go]').forEach(b => b.addEventListener('click', () => go(b.dataset.go)));
-$('newCheckinBtn').addEventListener('click', () => { if (convo === 'done') restartChat(); go('checkin'); });
+$$('[data-go]').forEach(b => b.addEventListener('click', () => b.dataset.go === 'checkin' ? logFor(null) : go(b.dataset.go)));
+$('newCheckinBtn').addEventListener('click', () => logFor(null));
 document.querySelector('.mobile-menu').addEventListener('click', () => document.querySelector('.sidebar').classList.toggle('open'));
 
 $('petName').addEventListener('input', () => petDraft.name = $('petName').value);
@@ -3936,6 +3949,48 @@ Object.assign(I18N.de, {
   'q.feelSituation':   'In welcher Situation hast du dich so gefühlt?',
   'q.feelRepeated':    'Hast du dich seit deinem letzten Check-in mehrmals so gefühlt?',
   'feel.crisis':       'Danke, dass du mir das anvertraust. Ich bin nur ein kleiner Panda und kann in einem Notfall nicht helfen, aber du musst das nicht allein tragen. Wenn du in Gefahr bist oder befürchtest, dir etwas anzutun, ruf bitte jetzt die 112 an. Die TelefonSeelsorge ist rund um die Uhr kostenlos erreichbar: 0800 111 0 111. Gibt es jemanden, dem du vertraust und bei dem du dich heute melden kannst?'
+});
+
+
+let LOG_DAY = null;
+function shortKey(key){
+  const [y, m, d] = key.split('-').map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString(t('locale'), { weekday:'long', day:'numeric', month:'long' });
+}
+function logButton(cls, label, extra){
+  if (calSel > localKey(new Date())) return '<p class="tiny" style="margin-top:14px">' + t('past.future') + '</p>';
+  return '<button class="' + cls + '" style="margin-top:14px;' + (extra || '') + '" data-log-day="' + calSel + '">' + esc(label) + '</button>';
+}
+function wireLog(el){
+  el.querySelectorAll('[data-log-day]').forEach(b => b.addEventListener('click', () => logFor(b.dataset.logDay)));
+}
+function logFor(key){
+  const want = key && key !== localKey(new Date()) ? key : null;
+  const changed = want !== LOG_DAY;
+  LOG_DAY = want;
+  if (changed || convo === 'done') resetChat();
+  go('checkin');
+}
+
+Object.assign(I18N.en, {
+  'past.btn':      'Log this day',
+  'past.add':      'Add to this day',
+  'past.future':   'This day has not happened yet.',
+  'past.intro':    d => 'This check-in is for ' + d + '. Think back to that day.',
+  'past.log':      d => 'Did you have any symptoms on ' + d + '?',
+  'past.symptoms': 'What is the symptom you want to talk about?',
+  'past.day':      'How was that day?',
+  'past.emotions': 'Anything that made you smile that day?'
+});
+Object.assign(I18N.de, {
+  'past.btn':      'Diesen Tag eintragen',
+  'past.add':      'Zu diesem Tag hinzufügen',
+  'past.future':   'Dieser Tag ist noch nicht gekommen.',
+  'past.intro':    d => 'Dieser Check-in ist für ' + d + '. Denk an diesen Tag zurück.',
+  'past.log':      d => 'Hattest du am ' + d + ' Symptome?',
+  'past.symptoms': 'Über welches Symptom möchtest du sprechen?',
+  'past.day':      'Wie war dieser Tag?',
+  'past.emotions': 'Gab es an diesem Tag etwas, das dich zum Lächeln gebracht hat?'
 });
 
 (async function boot(){
