@@ -6,13 +6,13 @@ workflows:
     max_build_duration: 60
     instance_type: mac_mini_m2
     integrations:
-      app_store_connect: bao-key              # <-- CAMBIA: il nome dato alla chiave API in Codemagic
+      app_store_connect: bao-key
     environment:
       ios_signing:
         distribution_type: app_store
-        bundle_identifier: com.sofiasirad.bao # <-- CAMBIA: uguale ad appId in app-ios/capacitor.config.json
+        bundle_identifier: com.sofiasirad.bao 
       vars:
-        APP_STORE_APPLE_ID: 0000000000        # <-- CAMBIA: App Store Connect > la tua app > App Information > Apple ID
+        APP_STORE_APPLE_ID: 6816904374        
       node: 20
       xcode: latest
       cocoapods: default
