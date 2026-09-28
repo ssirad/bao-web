@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-/5iGY50JxZ4mfIn5X5lEeQFMc7svxSYAf0Tg5Pw+E8w='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-QzGKMntIpVXYvr7NVv6CkiPtdCNMzuUSYgVpS7PwGbI='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>BAO &mdash; symptom &amp; wellbeing tracker</title>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -4793,7 +4793,7 @@ async function runConversation(){
   }
 
   entry.day    = await askFeel(t(LOG_DAY ? 'past.day' : 'q.day'), 'happy');
-  entry.emotions = await askFeel(t(LOG_DAY ? 'past.emotions' : 'q.emotions'), 'listening');
+  entry.emotions = await askFeel(emotionsQuestion(entry), 'listening');
 
   await baoSay(t('chat.almost'), '', 'cheer', 700);
   entry.personal = await askFeel(t('q.personal'), 'cheer');
@@ -4815,7 +4815,7 @@ function buildRecap(e){
     symptoms: blocks,
     thoughts: t('recap.thoughts') + '*' + t(e.forDay ? 'past.day' : 'q.day') + '* ' + e.day +
               (e.memory ? '\n*' + t('q.memory') + '* ' + e.memory : ''),
-    feelings: t('recap.feelings') + '*' + t(e.forDay ? 'past.emotions' : 'q.emotions') + '* ' + e.emotions,
+    feelings: t('recap.feelings') + '*' + emotionsQuestion(e) + '* ' + e.emotions,
     personal: t('recap.personal') + e.personal
   };
 }
@@ -5332,7 +5332,7 @@ function renderDayPanel(){
       html += '</div>';
     }
     if (said(e.emotions))
-      html += '<div class="day-sec"><h4>' + t('day.feelings') + '</h4>' + qa(t(e.forDay ? 'past.emotions' : 'q.emotions'), e.emotions) + '</div>';
+      html += '<div class="day-sec"><h4>' + t('day.feelings') + '</h4>' + qa(emotionsQuestion(e), e.emotions) + '</div>';
     if (said(e.personal))
       html += '<div class="day-sec"><h4>' + t('day.personal') + '</h4><div class="day-note">' + para(e.personal) + '</div></div>';
     html += '<button class="day-del" type="button" data-del-entry="' + esc(e.id) + '">' + t(list.length > 1 ? 'del.entryN' : 'del.entry') + '</button>';
@@ -6550,6 +6550,35 @@ Object.assign(I18N.nl, {
   'pw.change': 'Wachtwoord wijzigen', 'pw.sent': 'We hebben je een e-mail gestuurd met een link om je wachtwoord te wijzigen 💌',
   'lang.remove': 'Deze taal verwijderen'
 });
+
+
+// With symptoms: which emotions came with them. Without: which emotions the day brought.
+function emotionsQuestion(e){
+  const n = (e.symptoms || []).filter(x => x.kind !== 'feeling').length;
+  if (n) return t('q.emotionsSym', n);
+  return t(e.forDay ? 'past.emotions' : 'q.emotions');
+}
+Object.assign(I18N.en, {
+  'q.emotionsSym': n => 'What emotions did you feel during the ' + (n > 1 ? 'symptoms' : 'symptom') + '?',
+  'q.emotions': 'What emotions did you feel today?', 'past.emotions': 'What emotions did you feel that day?' });
+Object.assign(I18N.de, {
+  'q.emotionsSym': n => 'Welche Gefühle hattest du während ' + (n > 1 ? 'der Symptome' : 'des Symptoms') + '?',
+  'q.emotions': 'Welche Gefühle hattest du heute?', 'past.emotions': 'Welche Gefühle hattest du an diesem Tag?' });
+Object.assign(I18N.it, {
+  'q.emotionsSym': n => 'Quali emozioni hai provato durante ' + (n > 1 ? 'i sintomi' : 'il sintomo') + '?',
+  'q.emotions': 'Quali emozioni hai provato oggi?', 'past.emotions': 'Quali emozioni hai provato quel giorno?' });
+Object.assign(I18N.fr, {
+  'q.emotionsSym': n => 'Quelles émotions as-tu ressenties pendant ' + (n > 1 ? 'les symptômes' : 'le symptôme') + ' ?',
+  'q.emotions': 'Quelles émotions as-tu ressenties aujourd’hui ?', 'past.emotions': 'Quelles émotions as-tu ressenties ce jour-là ?' });
+Object.assign(I18N.es, {
+  'q.emotionsSym': n => '¿Qué emociones sentiste durante ' + (n > 1 ? 'los síntomas' : 'el síntoma') + '?',
+  'q.emotions': '¿Qué emociones sentiste hoy?', 'past.emotions': '¿Qué emociones sentiste ese día?' });
+Object.assign(I18N.pt, {
+  'q.emotionsSym': n => 'Que emoções você sentiu durante ' + (n > 1 ? 'os sintomas' : 'o sintoma') + '?',
+  'q.emotions': 'Que emoções você sentiu hoje?', 'past.emotions': 'Que emoções você sentiu naquele dia?' });
+Object.assign(I18N.nl, {
+  'q.emotionsSym': n => 'Welke gevoelens had je tijdens ' + (n > 1 ? 'de klachten' : 'de klacht') + '?',
+  'q.emotions': 'Welke gevoelens had je vandaag?', 'past.emotions': 'Welke gevoelens had je die dag?' });
 
 (async function boot(){
   try{
