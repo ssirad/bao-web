@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-QzGKMntIpVXYvr7NVv6CkiPtdCNMzuUSYgVpS7PwGbI='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Nca+frs8YS9TLd/vvf5jbCxmOrFMsfCFQN6rODRYvRU=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-7Hv0gxDf6OS0xpIbjzfQB/MSy5q41afylJ5GOsAL+3A='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>BAO &mdash; symptom &amp; wellbeing tracker</title>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -639,7 +639,23 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
 .lang-options .lang-chip button.lang-x{border:1px solid var(--line);border-left:0;border-radius:0 12px 12px 0;padding:10px 10px;color:#9aa8a6;font-size:12px;background:#fff}
 .lang-options .lang-chip button.lang-x:hover{color:#b4573f}
 .lang-options .lang-chip>button:first-child{border-radius:12px 0 0 12px}
+
+@media(max-width:680px){
+  html.native .topbar{padding-top:10px}
+  html.native .tabbar{padding-bottom:8px}
+  html.native .content{padding-bottom:96px}
+  .tabbar::after{content:"";position:absolute;left:0;right:0;top:100%;height:120px;background:#fff}
+}
+.settings-cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;align-items:stretch}
+.settings-cols>.set-col{display:contents}
+.settings-cols .how-card{grid-column:1/-1}
+.settings-cols .how-card .fact-list{grid-template-columns:1fr 1fr;column-gap:32px}
+.settings-cols .how-card>div:last-child{margin-top:18px!important;padding-top:0}
+.settings-cols>.set-col>.card:last-child{flex:none}
+@media(max-width:1100px){.settings-cols{grid-template-columns:1fr 1fr}.settings-cols .reminder-card{grid-column:1/-1}}
+@media(max-width:930px){.settings-cols{grid-template-columns:1fr}.settings-cols .how-card .fact-list{grid-template-columns:1fr}}
 </style>
+<script>try{ if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) document.documentElement.classList.add('native'); }catch(e){}</script>
 <script>
 /* ---------------------------------------------------------------------------
    RETE DI SICUREZZA. Sta in cima apposta: qualunque cosa si rompa piu' avanti,
@@ -1114,7 +1130,7 @@ const $$ = sel => [...document.querySelectorAll(sel)];
 const wait = ms => new Promise(r => setTimeout(r, ms));
 
 const LANGS = ['en', 'de', 'it', 'fr', 'es', 'pt', 'nl'];
-const EXTRA_LANGS = ['fr', 'es', 'pt', 'nl'];
+const EXTRA_LANGS = ['it', 'fr', 'es', 'pt', 'nl'];
 const ITALIAN_USERS = ['sofia.sirad@gmail.com'];
 let LANG = (() => {
   try{ const s = localStorage.getItem('bao.lang'); if (LANGS.includes(s)) return s; }catch(e){}
@@ -5776,26 +5792,20 @@ $('signOutBtn').addEventListener('click', async () => {
   showLogin();
 });
 
-function itAllowed(){ return ITALIAN_USERS.includes(String(USER || '').trim().toLowerCase()); }
+function itAllowed(){ return true; }
 function addedLangs(){
   if (!USER) return [];
   try{ return JSON.parse(localStorage.getItem('bao.langs.added::' + USER) || '[]').filter(l => EXTRA_LANGS.includes(l)); }catch(e){ return []; }
 }
-function langVisible(l){ return l === 'en' || l === 'de' || (l === 'it' ? itAllowed() : addedLangs().includes(l)); }
+function langVisible(l){ return l === 'en' || l === 'de' || addedLangs().includes(l); }
 function itGate(entering){
-  $$('[data-lang="it"]').forEach(b => b.hidden = !itAllowed());
-  $$('[data-lang="fr"],[data-lang="es"],[data-lang="pt"],[data-lang="nl"]').forEach(b => b.hidden = !langVisible(b.dataset.lang));
-  let off = false;
-  try{ off = localStorage.getItem('bao.itOff::' + USER) === '1'; }catch(e){}
-  if (itAllowed()){ if (entering && !off) setLang('it', true); }
-  else if (LANG === 'it') setLang('en', true);
   if (entering){
     let pref = null;
     try{ pref = localStorage.getItem('bao.lang::' + USER); }catch(e){}
     if (pref && pref !== LANG && langVisible(pref)) setLang(pref, true);
   }
   if (!langVisible(LANG)) setLang('en', true);
-  $$('[data-lang="fr"],[data-lang="es"],[data-lang="pt"],[data-lang="nl"]').forEach(b => b.hidden = !langVisible(b.dataset.lang));
+  $$('[data-lang="it"],[data-lang="fr"],[data-lang="es"],[data-lang="pt"],[data-lang="nl"]').forEach(b => b.hidden = !langVisible(b.dataset.lang));
 }
 function setLang(lang, auto){
   if (!LANGS.includes(lang) || lang === LANG) return;
@@ -6348,7 +6358,7 @@ Object.assign(I18N.de, {
 function paintLangOptions(){
   const LANG_NAMES = { en:'English', de:'Deutsch', it:'Italiano', fr:'Français', es:'Español', pt:'Português', nl:'Nederlands' };
   const host = document.getElementById('langOptions');
-  $$('[data-lang="fr"],[data-lang="es"],[data-lang="pt"],[data-lang="nl"]').forEach(b => b.hidden = !langVisible(b.dataset.lang));
+  $$('[data-lang="it"],[data-lang="fr"],[data-lang="es"],[data-lang="pt"],[data-lang="nl"]').forEach(b => b.hidden = !langVisible(b.dataset.lang));
   if (!host) return;
   const list = LANGS.filter(langVisible);
   const more = EXTRA_LANGS.filter(l => !list.includes(l));
