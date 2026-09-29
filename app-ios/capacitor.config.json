@@ -2,12 +2,14 @@
   "appId": "com.sofiasirad.bao",
   "appName": "BAO",
   "webDir": "www",
+  "appendUserAgent": "BAOApp/2",
   "server": {
     "url": "https://bao-web.pages.dev",
     "cleartext": false
   },
   "ios": {
-    "contentInset": "always",
+    "contentInset": "never",
+    "scrollEnabled": false,
     "backgroundColor": "#f7faf8"
   }
 }

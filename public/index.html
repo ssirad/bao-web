@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Nca+frs8YS9TLd/vvf5jbCxmOrFMsfCFQN6rODRYvRU=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-5V8uDVmm8SaAUnda1LseA4WTQcjeOx7vKeWW4P6QuJA='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-w36MZ43QAzmmk/HVWUhJuj3alNrnDMTP0MWILtoXEZs='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>BAO &mdash; symptom &amp; wellbeing tracker</title>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -609,7 +609,7 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
   .topbar .mobile-menu,.topbar .lang-switch,#pageSub{display:none!important}
   #pageTitle{font-size:20px;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:62vw}
   #newCheckinBtn{font-size:0;width:42px;height:42px;padding:0;border-radius:50%;display:grid;place-items:center;flex:0 0 auto}
-  #newCheckinBtn::before{content:"+";font-size:26px;line-height:1;font-weight:600}
+  #newCheckinBtn::before{content:"";width:18px;height:18px;background:linear-gradient(currentColor,currentColor) center/100% 2.5px no-repeat,linear-gradient(currentColor,currentColor) center/2.5px 100% no-repeat;border-radius:2px}
   .content{padding:20px 16px calc(96px + env(safe-area-inset-bottom,0px))}
   .hero .title{font-size:30px;line-height:1.08}
   .hero{gap:14px}
@@ -663,8 +663,21 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
 .undo-btn.recap-undo [data-i18n],.undo-btn.recap-undo span{display:inline}
 .undo-btn.recap-undo[hidden]{display:none}
 .bao-chat-quick .undo-btn{display:none!important}
+html.shell,html.shell body{height:100%;overflow:hidden;overscroll-behavior:none}
+html.shell .app{height:100%;min-height:0}
+html.shell main{height:100%;display:flex;flex-direction:column;overflow:hidden}
+html.shell .sidebar{height:100%;overflow-y:auto}
+html.shell .topbar{position:relative;top:auto;flex:0 0 auto}
+html.shell .content{flex:1 1 auto;width:100%;max-width:none;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain}
+@media(max-width:680px){
+  html.shell .topbar{padding-top:calc(env(safe-area-inset-top,0px) + 10px)}
+  html.shell .topbar::before{display:none}
+  html.shell .tabbar{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 6px)}
+  html.shell .content{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+  html.shell .bao-chat-form,html.shell .bao-chat-quick{bottom:0}
+}
 </style>
-<script>try{ if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) document.documentElement.classList.add('native'); }catch(e){}</script>
+<script>try{ if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) document.documentElement.classList.add('native'); if (/BAOApp\/2/.test(navigator.userAgent)) document.documentElement.classList.add('shell'); }catch(e){}</script>
 <script>
 /* ---------------------------------------------------------------------------
    RETE DI SICUREZZA. Sta in cima apposta: qualunque cosa si rompa piu' avanti,
@@ -1362,8 +1375,8 @@ const I18N = {
     'cal.aria':       n => n + ' Symptom(e) erfasst',
     'cal.ariaRep':    n => n + ' kam(en) mehr als einmal wieder',
     'cal.ariaEmpty':  'kein Check-in',
-    'day.nothing':    'Hier ist nichts erfasst',
-    'day.nothingSub': 'Das ist in Ordnung. Du kannst es eintragen, wann immer es dir nützt.',
+    'day.nothing':    'Für diesen Tag ist nichts eingetragen',
+    'day.nothingSub': 'Das ist völlig in Ordnung. Du kannst es jederzeit nachtragen, wenn du magst.',
     'day.start':      'Check-in starten',
     'day.meta':       n => n + (n === 1 ? ' Check-in' : ' Check-ins') + ' · alles, was du geschrieben hast',
     'day.peak':       'Höchste Intensität',
@@ -4581,8 +4594,10 @@ const baoForm  = $('baoForm');
 const baoField = $('baoField');
 const stash    = $('checkinStash');
 
+function scroller(){ return document.documentElement.classList.contains('shell') ? document.querySelector('.content') : null; }
+function scrollMain(top){ const sc = scroller(); (sc || window).scrollTo({ top: top === 'end' ? (sc ? sc.scrollHeight : document.documentElement.scrollHeight) : top, behavior:'smooth' }); }
 function scrollToEnd(){
-  requestAnimationFrame(() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior:'smooth' }));
+  requestAnimationFrame(() => scrollMain('end'));
 }
 function face(mood){
   baoHero.className = 'bao bao-' + mood;
@@ -5673,7 +5688,7 @@ function go(id){
   paintTitle(id);
   document.body.classList.toggle('chat-mode', id === 'checkin');
   document.querySelector('.sidebar').classList.remove('open');
-  if (id === 'checkin') startChat(); else window.scrollTo({ top:0, behavior:'smooth' });
+  if (id === 'checkin') startChat(); else scrollMain(0);
   if (id === 'patterns') renderPatterns();
   if (id === 'calendar') renderCalendar();
   if (id === 'report')   renderReport();
@@ -6116,6 +6131,7 @@ async function sendResetLink(){
   try{
     await jpost('/api/auth/forgot', { email: u, lang: LANG });
   }catch(ex){
+    if (ex.status === 429) return loginErr(t('forgot.wait'));
     return loginErr(ex.message && ex.message.indexOf('/api/') !== 0 ? ex.message : t('forgot.fail'));
   }
   loginOk(t('forgot.sent'));
@@ -6515,7 +6531,7 @@ $('pwChange').addEventListener('click', async () => {
   if (MODE !== 'server'){ showToast(t('forgot.needServer')); return; }
   const b = $('pwChange'); b.disabled = true;
   try{ await jpost('/api/auth/forgot', { email: USER, lang: LANG }); showToast(t('pw.sent')); }
-  catch(e){ showToast(t('forgot.fail')); }
+  catch(e){ showToast(t(e.status === 429 ? 'forgot.wait' : 'forgot.fail')); }
   setTimeout(() => { b.disabled = false; }, 4000);
 });
 (function verifiedFromLink(){
@@ -6696,6 +6712,15 @@ Object.assign(I18N.fr, { 'body.sendHint': 'Puis touche Envoyer' });
 Object.assign(I18N.es, { 'body.sendHint': 'Luego pulsa Enviar' });
 Object.assign(I18N.pt, { 'body.sendHint': 'Depois toque em Enviar' });
 Object.assign(I18N.nl, { 'body.sendHint': 'Tik dan op Versturen' });
+
+
+Object.assign(I18N.en, { 'forgot.wait': 'You asked for several emails in a short time. Please wait an hour and try again.' });
+Object.assign(I18N.de, { 'forgot.wait': 'Du hast in kurzer Zeit mehrere E-Mails angefordert. Bitte warte eine Stunde und versuche es dann erneut.' });
+Object.assign(I18N.it, { 'forgot.wait': 'Hai chiesto diverse email in poco tempo. Aspetta un’ora e riprova.' });
+Object.assign(I18N.fr, { 'forgot.wait': 'Tu as demandé plusieurs e-mails en peu de temps. Attends une heure et réessaie.' });
+Object.assign(I18N.es, { 'forgot.wait': 'Has pedido varios correos en poco tiempo. Espera una hora y vuelve a intentarlo.' });
+Object.assign(I18N.pt, { 'forgot.wait': 'Você pediu vários e-mails em pouco tempo. Espere uma hora e tente de novo.' });
+Object.assign(I18N.nl, { 'forgot.wait': 'Je hebt in korte tijd meerdere e-mails aangevraagd. Wacht een uur en probeer het opnieuw.' });
 
 (async function boot(){
   try{

@@ -209,7 +209,9 @@ async function handle(context){
       const email = cleanEmail(b.email);
       const lang = cleanLang(b.lang);
       // Same answer whether or not the account exists.
-      if (email && await limit(env, 'forgot:' + email, 3, 3600)){
+      // Too many requests for the same address: say so (it does not reveal whether the account exists).
+      if (email && !await limit(env, 'forgot:' + email, 5, 3600)) return fail('Too many emails requested. Please wait an hour.', 429);
+      if (email){
         const user = await getJSON(env, 'u:' + email);
         if (user){
           const t = token();
