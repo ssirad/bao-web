@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-FiSB3O/vu0JVhVEhWcOwTsdM1079S4g3vNljn2syxwE='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-mQvmV/ubKA9Tuv9LeYWaYqorXmzsJpknXL1TYhmyb/o='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>BAO &mdash; symptom &amp; wellbeing tracker</title>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -792,6 +792,41 @@ body:not(.pro) .tabbar [data-view=patients]{display:none!important}
 .login-screen{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;place-items:start center;
   padding:calc(env(safe-area-inset-top,0px) + 20px) 16px calc(env(safe-area-inset-bottom,0px) + 28px)}
 .login-screen .login-card{margin:auto 0}
+.name-row{display:flex;gap:8px}
+.name-row .input{min-width:0}
+.name-row #loginName{flex:1 1 auto}
+.title-pick{flex:0 0 auto;width:auto;max-width:42%;padding-right:28px}
+.title-pick[hidden]{display:none}
+.bodymap{padding-top:50px}
+.bodymap:before{right:128px;line-height:1.3}
+.body-key>span>span{border:0;background:none;padding:0;font-size:inherit;color:inherit}
+.rating-widget{padding:4px 2px 0;--rv:4;--rc:#f0a35e}
+.rate-top{display:flex;align-items:center;justify-content:center;gap:10px}
+.rate-face{font-size:30px;line-height:1;transition:transform .2s}
+.rate-num{display:flex;align-items:baseline;gap:2px;color:var(--rc);transition:color .2s}
+.rate-num b{font-size:40px;font-weight:850;line-height:1;min-width:1ch;text-align:center}
+.rate-num small{font-size:15px;font-weight:750;color:#98a7a6}
+.rate-num.pop{animation:ratePop .22s ease}
+@keyframes ratePop{40%{transform:scale(1.18)}}
+.rate-word{text-align:center;font-weight:800;font-size:13px;color:#4f6466;margin:4px 0 12px;min-height:1.2em}
+.rate-range{-webkit-appearance:none;appearance:none;width:100%;height:14px;border-radius:10px;margin:0;touch-action:pan-y;
+  background:linear-gradient(90deg,#8fd0b8 0%,#f2cf6b 45%,#f0a35e 70%,#e0625a 100%)}
+.rate-range::-webkit-slider-thumb{-webkit-appearance:none;width:30px;height:30px;border-radius:50%;background:#fff;border:4px solid var(--rc);box-shadow:0 3px 10px rgba(0,0,0,.18);cursor:grab}
+.rate-range::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:#fff;border:4px solid var(--rc);box-shadow:0 3px 10px rgba(0,0,0,.18);cursor:grab}
+.rate-range:active::-webkit-slider-thumb{transform:scale(1.12)}
+.rate-ticks{display:flex;justify-content:space-between;margin:8px 3px 0}
+.rate-ticks i{font-style:normal;font-size:11px;color:#9fb0ae;width:18px;text-align:center;cursor:pointer;border-radius:6px;font-weight:700}
+.rate-ticks i.on{color:#fff;background:var(--rc)}
+.rating-widget .scale{margin-top:8px;font-size:11px}
+.bao-chat-form{align-items:flex-end}
+.bao-chat-form textarea{flex:1;border:1px solid #cce4df;border-radius:15px;padding:14px 18px;background:#fff;font:inherit;font-size:16px;line-height:1.4;
+  box-shadow:0 6px 18px rgba(39,78,79,.06);resize:none;overflow-y:hidden;max-height:7.2em;min-height:52px;min-width:0;color:inherit}
+.bao-chat-form textarea:focus{outline:3px solid rgba(24,125,120,.22);outline-offset:1px}
+@media(max-width:680px){.bao-chat-form textarea{padding:14px 14px}}
+.bao-chat-quick .btn{white-space:nowrap;padding-left:10px;padding-right:10px}
+.sym-type{display:inline-block;vertical-align:middle;margin-left:6px;font-size:10.5px;font-weight:800;border-radius:20px;padding:2px 8px;letter-spacing:.02em}
+.sym-type.body{background:#fde9e3;color:#a4553f}
+.sym-type.mind{background:#e9e6fb;color:#5d4fa8}
 </style>
 <script>try{ if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) document.documentElement.classList.add('native'); if (/BAOApp\/2/.test(navigator.userAgent)) document.documentElement.classList.add('shell'); }catch(e){}</script>
 <script>
@@ -979,7 +1014,7 @@ body:not(.pro) .tabbar [data-view=patients]{display:none!important}
           <form class="bao-chat-form" id="baoForm">
             <label for="baoField" class="sr-only" data-i18n="chat.label">Your answer</label>
             <button class="undo-btn" type="button" hidden><span aria-hidden="true">↶</span> <span data-i18n="chat.undo">Undo</span></button>
-            <input id="baoField" autocomplete="off" placeholder="Write to Bao…" data-i18n-attr="placeholder|chat.ph">
+            <textarea id="baoField" rows="1" autocomplete="off" enterkeyhint="send" placeholder="Write to Bao…" data-i18n-attr="placeholder|chat.ph"></textarea>
             <button class="btn primary" type="submit" data-i18n="chat.send">Send</button>
           </form>
 
@@ -1337,8 +1372,15 @@ body:not(.pro) .tabbar [data-view=patients]{display:none!important}
         <p class="tiny code-help" data-i18n="code.help">You get this code from your therapist or doctor. It only works with the email address they registered for you. Your check-ins will be visible to them.</p>
         <p class="code-link" id="codeLink" hidden></p>
       </div>
-      <label class="form-label" for="loginName" style="margin-top:12px" data-i18n="login.name">What should Bao call you?</label>
-      <input class="input" id="loginName" maxlength="24" autocomplete="given-name" placeholder="Name">
+      <label class="form-label" for="loginName" style="margin-top:12px" id="nameLabel">What should Bao call you?</label>
+      <div class="name-row">
+        <select class="input title-pick" id="loginTitle" aria-label="Title" data-i18n-attr="aria-label|title.aria">
+          <option value="" data-i18n="title.none">No title</option>
+          <option>Dr.</option><option>Dr. med.</option><option>Drs.</option><option>Dott.</option><option>Dott.ssa</option>
+          <option>Prof.</option><option>Prof. Dr.</option><option>Mag.</option><option>Dipl.-Psych.</option><option>MSc</option><option>PhD</option>
+        </select>
+        <input class="input" id="loginName" maxlength="24" autocomplete="given-name" placeholder="Name">
+      </div>
       <label class="consent">
         <input type="checkbox" id="loginConsent">
         <span data-i18n="login.consent">I agree that BAO stores the health information I write, to keep my diary. I have read the <a href="/privacy.html" target="_blank" rel="noopener">Privacy Policy</a> and the <a href="/terms.html" target="_blank" rel="noopener">Terms</a>.</span>
@@ -4699,7 +4741,7 @@ const BUILTIN_DE = {
       "Temperaturveränderungen zählen auch. Ist es eine Hitzewelle oder eine Kälte, die nicht weggeht?",
       "Notiert. Wie lange hat es gedauert, bis es vorbei war?"]],
     ["müde|erschöpf|keine energie|keine kraft|ausgelaugt|kaputt|schlapp", [
-      "Müdigkeit zählt auch als Symptom. Gut, dass du sie festhältst. Ist der Körper schwer oder der Kopf leer?",
+      "Auch Müdigkeit verdient Beachtung. Gut, dass du sie notierst. Fühlt sich eher der Körper schwer an oder der Kopf leer?",
       "Danke. Erschöpft zu sein ist eine Information, keine Schwäche. Hält es seit Stunden oder seit Tagen an?"]],
     ["nicht schlafen|schlaflos|schlafstörung|schlecht geschlafen|wach gelegen|aufgewacht|albtraum|alptraum", [
       "Schlaf verändert alles andere. Danke, dass du es notierst. Ging es ums Einschlafen oder ums Durchschlafen?",
@@ -4884,6 +4926,17 @@ async function ask(question, mood = 'listening'){
   return waitText();
 }
 var STEP_DONE = null, PH_SAVED = '';
+function fitField(){
+  baoField.style.height = 'auto';
+  const h = Math.min(baoField.scrollHeight + 2, parseFloat(getComputedStyle(baoField).maxHeight) || 200);
+  baoField.style.height = h + 'px';
+  baoField.style.overflowY = baoField.scrollHeight + 2 > h ? 'auto' : 'hidden';
+}
+baoField.addEventListener('input', fitField);
+baoField.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey && !e.isComposing){ e.preventDefault(); baoForm.requestSubmit ? baoForm.requestSubmit() : baoForm.dispatchEvent(new Event('submit', { cancelable:true })); }
+});
+baoForm.addEventListener('submit', () => setTimeout(fitField, 0));
 baoForm.addEventListener('submit', e => {
   e.preventDefault();
   if (STEP_DONE){ baoField.value = ''; const f = STEP_DONE; STEP_DONE = null; f(); return; }
@@ -4986,11 +5039,27 @@ function ratingWidget(){
   const box = document.createElement('div');
   box.className = 'rating-widget';
   box.innerHTML =
-    '<div class="range-line"><input type="range" min="0" max="10" value="4" aria-label="' + t('rate.aria') + '">' +
-    '<div class="score">4</div></div>' +
-    '<div class="scale"><span>' + t('rate.low') + '</span><span>' + t('rate.high') + '</span></div>';
-  const input = box.querySelector('input'), score = box.querySelector('.score');
-  input.addEventListener('input', () => score.textContent = input.value);
+    '<div class="rate-top"><span class="rate-face" aria-hidden="true"></span><span class="rate-num"><b>4</b><small>/10</small></span></div>' +
+    '<div class="rate-word"></div>' +
+    '<input class="rate-range" type="range" min="0" max="10" step="1" value="4" aria-label="' + t('rate.aria') + '">' +
+    '<div class="rate-ticks">' + Array.from({ length: 11 }, (_, i) => '<i>' + i + '</i>').join('') + '</div>' +
+    '<div class="scale"><span>0 · ' + t('rate.low') + '</span><span>' + t('rate.high') + ' · 10</span></div>';
+  const input = box.querySelector('input');
+  let last = null;
+  const paint = () => {
+    const v = Number(input.value);
+    box.style.setProperty('--rv', v);
+    box.style.setProperty('--rc', rateColour(v));
+    box.querySelector('.rate-num b').textContent = v;
+    box.querySelector('.rate-word').textContent = t('rate.word' + rateBand(v));
+    box.querySelector('.rate-face').textContent = ['🙂','🙂','😐','😐','😕','😕','😣','😣','😖','😫','😫'][v];
+    box.querySelectorAll('.rate-ticks i').forEach((x, i) => x.classList.toggle('on', i === v));
+    if (last !== null && last !== v){ haptic(v); const n = box.querySelector('.rate-num'); n.classList.remove('pop'); void n.offsetWidth; n.classList.add('pop'); }
+    last = v;
+  };
+  input.addEventListener('input', paint);
+  box.querySelectorAll('.rate-ticks i').forEach((x, i) => x.addEventListener('click', () => { input.value = i; paint(); }));
+  paint();
   return box;
 }
 
@@ -5051,7 +5120,8 @@ async function runConversation(){
         await feelCheck(detail);
       }
 
-      const { parts, rating } = await captureBodyRating(zone);
+      const type = await askKind(name);
+      const { parts, rating } = await captureBodyRating(zone, null, { noBody: type === 'mind' });
 
       const where     = await askFeel(t('q.situation'), 'thinking');
       const repeated  = await askYesNo(t('q.repeated'), 'thinking');
@@ -5059,14 +5129,16 @@ async function runConversation(){
         ? where + t('chat.multi')
         : where;
 
-      entry.symptoms.push({ name, reflection: reply || '', detail, parts, rating, situation, repeated });
+      entry.symptoms.push({ name, type, reflection: reply || '', detail, parts, rating, situation, repeated });
 
       const more = await askYesNo(t('q.another'), 'checkin');
       if (more !== 'yes') break;
     }
   }
 
+  const feltBefore = feltNow.size;
   entry.day    = await askFeel(t(LOG_DAY ? 'past.day' : 'q.day'), 'happy');
+  if (feltNow.size === feltBefore){ const r = dayReaction(entry.day); if (r) await baoSay(r, '', 'listening', 700); }
   entry.emotions = await askFeel(emotionsQuestion(entry), 'listening');
 
   await baoSay(t('chat.almost'), '', 'cheer', 700);
@@ -5077,7 +5149,7 @@ async function runConversation(){
 
 function buildRecap(e){
   const blocks = e.symptoms.map(s => {
-    let b = t('recap.symptoms') + s.name;
+    let b = t('recap.symptoms') + s.name + (symType(s) ? ' · ' + t('type.' + symType(s)) : '');
     if (s.reflection) b += '\n*' + s.reflection + '*';
     if (s.detail)     b += '\n' + s.detail;
     if (s.parts && s.parts.length) b += '\n' + t('recap.parts') + s.parts.map(partName).join(', ');
@@ -5600,7 +5672,8 @@ function renderDayPanel(){
       html += '<div class="day-sec"><h4>' + t('day.nth', idx + 1) + ' · ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes()) + '</h4></div>';
     }
     (e.symptoms || []).forEach((x, n) => {
-      html += '<div class="sym-card"><div class="sym-head"><strong>' + esc(x.name || ('#' + (n + 1))) + '</strong><span class="sym-tools">' +
+      html += '<div class="sym-card"><div class="sym-head"><strong>' + esc(x.name || ('#' + (n + 1))) +
+        (symType(x) ? ' <span class="sym-type ' + symType(x) + '">' + esc(t('type.' + symType(x))) + '</span>' : '') + '</strong><span class="sym-tools">' +
         (x.rating !== '' && x.rating != null && !isNaN(Number(x.rating))
           ? '<span class="sym-score">' + esc(String(x.rating)) + '/10</span>' : '') +
         '<button class="sym-del" type="button" data-del-sym="' + esc(e.id + '|' + n) + '" title="' + esc(t('del.sym')) + '" aria-label="' + esc(t('del.sym')) + '">&#10005;</button></span></div>';
@@ -6050,7 +6123,8 @@ $('loginForm').addEventListener('submit', async e => {
           REG_EXTRA = { role:'patient', code };
         } else REG_EXTRA = { role:'pro', kind:'therapist' };
       }
-      USER = await auth.register(u, p, nick);
+      const ttl = !$('loginTitle').hidden ? $('loginTitle').value : '';
+      USER = await auth.register(u, p, (ttl ? ttl + ' ' : '') + nick);
     } else {
       USER = await auth.login(u, p);
     }
@@ -6118,7 +6192,7 @@ function setLang(lang, auto){
   const current = document.querySelector('.view.active');
   if (current) paintTitle(current.id);
   renderAll();
-  if (!$('loginScreen').hidden) paintLoginText();
+  if (!$('loginScreen').hidden){ paintLoginText(); paintRole(); }
   // Nothing is saved until the end of a check-in, so an open chat simply restarts in the new language.
   if (convo !== 'idle'){
     resetChat();
@@ -6428,8 +6502,8 @@ Object.assign(I18N.de, {
 });
 
 
-async function captureBodyRating(zone, label){
-  await inlineStep($('bodyCapture'), {
+async function captureBodyRating(zone, label, opts){
+  if (!(opts && opts.noBody)) await inlineStep($('bodyCapture'), {
     marker : t('body.marker'),
     title  : t('body.title'),
     confirm: t('chat.send'),
@@ -6520,7 +6594,7 @@ async function feelingDetour(kind){
   // la risposta vale gia' come situazione: niente seconda domanda
   const repeated = await askYesNo(t('q.feelRepeated'), 'thinking');
   const situation = repeated === 'yes' ? more + t('chat.multi') : more;
-  entry.symptoms.push({ name: t('feel.name.' + kind), kind: 'feeling', reflection: '', detail: '', parts, rating, situation, repeated });
+  entry.symptoms.push({ name: t('feel.name.' + kind), kind: 'feeling', type: 'mind', reflection: '', detail: '', parts, rating, situation, repeated });
   await baoSay(t('feel.back'), '', 'cheer');
 }
 
@@ -6862,6 +6936,8 @@ Object.assign(I18N.nl, {
 
 // With symptoms: which emotions came with them. Without: which emotions the day brought.
 function emotionsQuestion(e){
+  const felt = (e.symptoms || []).filter(x => x.kind === 'feeling').map(x => x.name);
+  if (felt.length) return t('q.emotionsMore', felt.join(', '));
   const n = (e.symptoms || []).filter(x => x.kind !== 'feeling').length;
   if (n) return t('q.emotionsSym', n);
   return t(e.forDay ? 'past.emotions' : 'q.emotions');
@@ -6982,6 +7058,7 @@ function tourVisible(sel){
 function placeTour(){
   const st = TOUR[tourI], holes = $('tourHoles'), rings = $('tourRings'), arrow = $('tourArrow');
   holes.innerHTML = ''; rings.innerHTML = '';
+  document.querySelectorAll('.tour-arrow.extra').forEach(a => a.remove());
   const els = (st.to || []).map(tourVisible).filter(Boolean);
   if (!els.length){ arrow.hidden = true; holes.innerHTML = ''; return; }
   const P = 6, NS = 'http://www.w3.org/2000/svg';
@@ -6994,15 +7071,19 @@ function placeTour(){
     Object.assign(g.style, { left:(r.left - P) + 'px', top:(r.top - P) + 'px', width:(r.width + 2*P) + 'px', height:(r.height + 2*P) + 'px', borderRadius: rad + 'px' });
     rings.appendChild(g);
   });
-  const r = els[0].getBoundingClientRect(), A = 52, cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+  els.forEach((el, i) => {
+  const ar = i === 0 ? arrow : arrow.parentNode.insertBefore(Object.assign(arrow.cloneNode(true), { id:'' }), arrow.nextSibling);
+  if (i) ar.classList.add('extra');
+  const r = el.getBoundingClientRect(), A = 52, cx = r.left + r.width / 2, cy = r.top + r.height / 2;
   let x, y, rot, bx = '0px', by = '0px';
   if (innerWidth > 680 && r.right < 300){ x = r.right + 14; y = cy - A/2; rot = '90deg'; bx = '-8px'; }   // menu a sinistra: freccia che punta a sinistra
   else if (cy > innerHeight / 2){ x = cx - A/2; y = r.top - P - A - 6; rot = '0deg'; by = '8px'; }       // in basso: freccia verso il basso
   else { x = cx - A/2; y = r.bottom + P + 6; rot = '180deg'; by = '-8px'; }                                  // in alto: freccia verso l'alto
   x = Math.max(6, Math.min(innerWidth - A - 6, x));
-  Object.assign(arrow.style, { left:x + 'px', top:y + 'px' });
-  arrow.style.setProperty('--rot', rot); arrow.style.setProperty('--bx', bx); arrow.style.setProperty('--by', by);
-  arrow.hidden = false;
+  Object.assign(ar.style, { left:x + 'px', top:y + 'px' });
+  ar.style.setProperty('--rot', rot); ar.style.setProperty('--bx', bx); ar.style.setProperty('--by', by);
+  ar.hidden = false;
+  });
 }
 let tourI = 0;
 function tourNames(){ return { cal:t('nav.calendar'), pat:t('nav.patterns'), rep:t('nav.report'), set:t('nav.settings') }; }
@@ -7029,7 +7110,7 @@ function openTour(){
   setTimeout(() => { placeTour(); $('tourNext').focus(); }, 350);
 }
 addEventListener('resize', () => { if (!$('tour').hidden) placeTour(); });
-function closeTour(){ $('tour').hidden = true; }
+function closeTour(){ $('tour').hidden = true; document.querySelectorAll('.tour-arrow.extra').forEach(a => a.remove()); }
 $('tourNext').addEventListener('click', () => { if (tourI < TOUR.length - 1){ tourI++; paintTour(); } else closeTour(); });
 $('tourBack').addEventListener('click', () => { if (tourI > 0){ tourI--; paintTour(); } });
 $('tourSkip').addEventListener('click', closeTour);
@@ -7122,6 +7203,9 @@ function paintRole(){
   $('roleField').hidden = !server;
   $('codeField').hidden = !server || ROLE_PICK !== 'patient';
   $$('#roleOpts button').forEach(b => b.classList.toggle('on', b.dataset.role === ROLE_PICK));
+  $('loginTitle').hidden = !server || ROLE_PICK === 'patient';
+  if ($('loginTitle').hidden) $('loginTitle').value = '';
+  $('nameLabel').textContent = t(ROLE_PICK === 'patient' || !server ? 'login.name' : 'title.nameLabel');
 }
 $$('#roleOpts button').forEach(b => b.addEventListener('click', () => { ROLE_PICK = b.dataset.role; paintRole(); }));
 let codeCheckT = null;
@@ -7456,6 +7540,122 @@ Object.assign(I18N.pt, { 'pro.remove':'Remover paciente', 'pro.removeConfirm': n
   'subs.none':'Nenhum código pendente. Os códigos somem assim que um paciente os usa.' });
 Object.assign(I18N.nl, { 'pro.remove':'Patiënt verwijderen', 'pro.removeConfirm': n => n + ' uit je patiënten verwijderen? Je ziet de check-ins dan niet meer. Het eigen account en dagboek blijven bestaan.', 'pro.removed': n => n + ' is verwijderd uit je patiënten.',
   'subs.none':'Geen openstaande codes. Codes verdwijnen zodra een patiënt ze gebruikt.' });
+
+
+if (!('login.name' in I18N.en)) I18N.en['login.name'] = 'What should Bao call you?';
+Object.assign(I18N.en, { 'title.none':'No title', 'title.aria':'Title', 'title.nameLabel':'Your title and name' });
+Object.assign(I18N.it, { 'title.none':'Nessun titolo', 'title.aria':'Titolo', 'title.nameLabel':'Titolo e nome' });
+Object.assign(I18N.de, { 'title.none':'Kein Titel', 'title.aria':'Titel', 'title.nameLabel':'Titel und Name' });
+Object.assign(I18N.fr, { 'title.none':'Sans titre', 'title.aria':'Titre', 'title.nameLabel':'Titre et nom' });
+Object.assign(I18N.es, { 'title.none':'Sin título', 'title.aria':'Título', 'title.nameLabel':'Título y nombre' });
+Object.assign(I18N.pt, { 'title.none':'Sem título', 'title.aria':'Título', 'title.nameLabel':'Título e nome' });
+Object.assign(I18N.nl, { 'title.none':'Geen titel', 'title.aria':'Titel', 'title.nameLabel':'Titel en naam' });
+
+// ---- feedback: intensita', tipo di sintomo, giornata ----
+function rateBand(v){ return v <= 0 ? 0 : v <= 3 ? 1 : v <= 6 ? 2 : v <= 8 ? 3 : 4; }
+function rateColour(v){ return ['#5fb89a','#7cc39a','#a9c86f','#d9c055','#e8b84a','#eda54c','#ec8a4f','#e8784d','#e0654f','#d9534f','#c9443f'][v] || '#e8b84a'; }
+function haptic(v){
+  try{
+    const H = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Haptics;
+    if (H && H.impact){ const p = H.impact({ style: v >= 8 ? 'MEDIUM' : 'LIGHT' }); if (p && p.catch) p.catch(() => {}); return; }
+    if (navigator.vibrate) navigator.vibrate(v >= 8 ? 18 : 8);
+  }catch(e){}
+}
+function symType(x){ return x && (x.type || (x.kind === 'feeling' ? 'mind' : '')) || ''; }
+async function askKind(name){
+  const btns = [...baoQuick.querySelectorAll('button[data-answer]')];
+  const yes = btns.find(b => b.dataset.answer === 'yes'), no = btns.find(b => b.dataset.answer === 'no');
+  yes.dataset.answer = 'body'; yes.textContent = t('ans.body');
+  no.dataset.answer = 'mind';  no.textContent = t('ans.mind');
+  try{ return await askYesNo(t('q.kind', name), 'thinking'); }
+  finally{ yes.dataset.answer = 'yes'; yes.textContent = t('chat.yes'); no.dataset.answer = 'no'; no.textContent = t('chat.no'); }
+}
+const DAY_POS = /\b(good|great|fine|nice|well|lovely|amazing|awesome|happy|relaxed|calm|ok(ay)?|gut|super|schön|toll|entspannt|ruhig|froh|bene|benissimo|bello|bella|ottim[oa]|tranquill[oa]|felice|serena|sereno|bien|génial|super|calme|heureu[sx]e?|buen[oa]|genial|tranquil[oa]|feliz|bom|boa|ótimo|óti?ma|leuk|fijn|goed|prima|rustig|blij)\b/i;
+const DAY_NEG = /\b(bad|awful|terrible|horrible|hard|tough|tiring|tired|exhausting|exhausted|stressful|stressed|sad|awful|worse|sick|pain(ful)?|schlecht|schlimm|anstrengend|müde|erschöpft|stressig|gestresst|traurig|schwer|male|malissimo|brutta|brutto|pesante|stanc[oa]|stressante|stressat[oa]|triste|difficile|dura|duro|mal|mauvaise?|fatigu[ée]e?|dur[e]?|épuisant|malo|mala|cansad[oa]|agotador|difícil|ruim|péssim[oa]|cansativ[oa]|slecht|zwaar|moe|vermoeiend)\b/i;
+const DAY_NOT = /\b(not|no|nicht|kein|non|pas|ne|no|niet|não|nao)\s+(so\s+|very\s+|sehr\s+|molto\s+|très\s+|muy\s+|muito\s+|zo\s+)?$/i;
+function dayReaction(text){
+  const s = String(text || '').trim();
+  if (!s || /^(no|nein|nope|-)$/i.test(s)) return '';
+  let pos = 0, neg = 0;
+  const words = s.split(/[\s,.;!?]+/);
+  words.forEach((w, i) => {
+    const before = words.slice(Math.max(0, i - 2), i).join(' ') + ' ';
+    const negated = DAY_NOT.test(before);
+    if (DAY_POS.test(w)) negated ? neg++ : pos++;
+    else if (DAY_NEG.test(w)) negated ? pos++ : neg++;
+  });
+  if (pos && neg) return t('day.rMix');
+  if (neg) return t('day.rNeg');
+  if (pos) return t('day.rPos');
+  return t('day.rNeutral');
+}
+if (!('chat.yes' in I18N.en)) I18N.en['chat.yes'] = 'Yes';
+if (!('chat.no' in I18N.en)) I18N.en['chat.no'] = 'No';
+Object.assign(I18N.en, {
+  'rate.word0':'Not noticeable','rate.word1':'Mild','rate.word2':'Moderate','rate.word3':'Strong','rate.word4':'Very strong',
+  'q.kind': n => 'Would you say “' + n + '” is more of a physical or a psychological symptom?','ans.body':'🫀 Physical','ans.mind':'🧠 Psychological',
+  'type.body':'physical','type.mind':'psychological',
+  'q.day':'How was your day, overall?',
+  'day.rPos':'I’m glad to hear that 💚','day.rNeg':'I’m sorry it was a heavy day. Thank you for telling me anyway.','day.rMix':'A day with ups and downs, then. Thank you for sharing it.','day.rNeutral':'Thank you for telling me.',
+  'q.emotionsMore':'Besides what you just told me, were there other emotions you felt today?',
+  'feel.back':'Thank you for telling me 💚 I noted it as a psychological symptom.'
+});
+Object.assign(I18N.it, {
+  'rate.word0':'Non si sente','rate.word1':'Lieve','rate.word2':'Moderato','rate.word3':'Forte','rate.word4':'Molto forte',
+  'q.kind': n => 'Diresti che “' + n + '” è più un sintomo fisico o psicologico?','ans.body':'🫀 Fisico','ans.mind':'🧠 Psicologico',
+  'type.body':'fisico','type.mind':'psicologico',
+  'q.day':'Com’è andata la giornata, nel complesso?',
+  'day.rPos':'Che bello sentirlo 💚','day.rNeg':'Mi dispiace che sia stata una giornata pesante. Grazie di avermelo detto comunque.','day.rMix':'Una giornata con alti e bassi, allora. Grazie di averla condivisa.','day.rNeutral':'Grazie di avermelo raccontato.',
+  'q.emotionsMore':'Oltre a quello che mi hai appena detto, hai provato altre emozioni oggi?',
+  'feel.back':'Grazie di avermelo detto 💚 L’ho annotato come sintomo psicologico.'
+});
+Object.assign(I18N.de, {
+  'rate.word0':'Nicht spürbar','rate.word1':'Leicht','rate.word2':'Mittel','rate.word3':'Stark','rate.word4':'Sehr stark',
+  'q.kind': n => 'Ist „' + n + '“ für dich eher ein körperliches oder ein psychisches Symptom?','ans.body':'🫀 Körperlich','ans.mind':'🧠 Psychisch',
+  'type.body':'körperlich','type.mind':'psychisch',
+  'q.day':'Wie war dein Tag insgesamt?',
+  'day.rPos':'Das freut mich zu hören 💚','day.rNeg':'Tut mir leid, dass der Tag schwer war. Danke, dass du es mir trotzdem erzählst.','day.rMix':'Also ein Tag mit Höhen und Tiefen. Danke, dass du ihn mit mir teilst.','day.rNeutral':'Danke, dass du es mir erzählst.',
+  'q.emotionsMore':'Gab es heute außer dem, was du mir gerade erzählt hast, noch andere Gefühle?',
+  'feel.back':'Danke, dass du mir das erzählst 💚 Ich habe es als psychisches Symptom notiert.',
+  'feel.notice.sad':'Es klingt, als wärst du traurig gewesen. Was ist in dem Moment passiert?',
+  'feel.notice.angry':'Es klingt, als hätte dich etwas wütend gemacht. Was ist in dem Moment passiert?'
+});
+Object.assign(I18N.fr, {
+  'rate.word0':'Imperceptible','rate.word1':'Léger','rate.word2':'Modéré','rate.word3':'Fort','rate.word4':'Très fort',
+  'q.kind': n => 'Dirais-tu que « ' + n + ' » est plutôt un symptôme physique ou psychologique ?','ans.body':'🫀 Physique','ans.mind':'🧠 Psychologique',
+  'type.body':'physique','type.mind':'psychologique',
+  'q.day':'Comment s’est passée ta journée, dans l’ensemble ?',
+  'day.rPos':'Ça me fait plaisir de l’entendre 💚','day.rNeg':'Je suis désolé que la journée ait été lourde. Merci de me l’avoir dit quand même.','day.rMix':'Une journée avec des hauts et des bas, alors. Merci de l’avoir partagée.','day.rNeutral':'Merci de me l’avoir raconté.',
+  'q.emotionsMore':'À part ce que tu viens de me dire, as-tu ressenti d’autres émotions aujourd’hui ?',
+  'feel.back':'Merci de me l’avoir dit 💚 Je l’ai noté comme symptôme psychologique.'
+});
+Object.assign(I18N.es, {
+  'rate.word0':'No se nota','rate.word1':'Leve','rate.word2':'Moderado','rate.word3':'Fuerte','rate.word4':'Muy fuerte',
+  'q.kind': n => '¿Dirías que «' + n + '» es más un síntoma físico o psicológico?','ans.body':'🫀 Físico','ans.mind':'🧠 Psicológico',
+  'type.body':'físico','type.mind':'psicológico',
+  'q.day':'¿Qué tal tu día, en general?',
+  'day.rPos':'Me alegra oírlo 💚','day.rNeg':'Siento que haya sido un día pesado. Gracias por contármelo igualmente.','day.rMix':'Un día con altibajos, entonces. Gracias por compartirlo.','day.rNeutral':'Gracias por contármelo.',
+  'q.emotionsMore':'Además de lo que me acabas de contar, ¿sentiste otras emociones hoy?',
+  'feel.back':'Gracias por contármelo 💚 Lo anoté como síntoma psicológico.'
+});
+Object.assign(I18N.pt, {
+  'rate.word0':'Imperceptível','rate.word1':'Leve','rate.word2':'Moderado','rate.word3':'Forte','rate.word4':'Muito forte',
+  'q.kind': n => 'Você diria que “' + n + '” é mais um sintoma físico ou psicológico?','ans.body':'🫀 Físico','ans.mind':'🧠 Psicológico',
+  'type.body':'físico','type.mind':'psicológico',
+  'q.day':'Como foi o seu dia, no geral?',
+  'day.rPos':'Que bom ouvir isso 💚','day.rNeg':'Sinto muito que o dia tenha sido pesado. Obrigado por me contar mesmo assim.','day.rMix':'Um dia com altos e baixos, então. Obrigado por compartilhar.','day.rNeutral':'Obrigado por me contar.',
+  'q.emotionsMore':'Além do que você acabou de me contar, sentiu outras emoções hoje?',
+  'feel.back':'Obrigado por me contar 💚 Anotei como sintoma psicológico.'
+});
+Object.assign(I18N.nl, {
+  'rate.word0':'Niet merkbaar','rate.word1':'Licht','rate.word2':'Matig','rate.word3':'Sterk','rate.word4':'Heel sterk',
+  'q.kind': n => 'Is „' + n + '” voor jou meer een lichamelijke of een psychische klacht?','ans.body':'🫀 Lichamelijk','ans.mind':'🧠 Psychisch',
+  'type.body':'lichamelijk','type.mind':'psychisch',
+  'q.day':'Hoe was je dag, alles bij elkaar?',
+  'day.rPos':'Fijn om te horen 💚','day.rNeg':'Wat vervelend dat het een zware dag was. Dank je dat je het toch vertelt.','day.rMix':'Een dag met ups en downs dus. Dank je dat je hem deelt.','day.rNeutral':'Dank je dat je het vertelt.',
+  'q.emotionsMore':'Had je vandaag naast wat je me net vertelde nog andere gevoelens?',
+  'feel.back':'Dank je dat je het vertelt 💚 Ik heb het genoteerd als psychische klacht.'
+});
 
 (async function boot(){
   try{
