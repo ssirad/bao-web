@@ -789,6 +789,9 @@ body:not(.pro) .tabbar [data-view=patients]{display:none!important}
 .pro-list.big .pt small{font-size:12px}
 .pro-remove{color:#b4573f;border-color:#efd3cb;align-self:flex-start}
 .pro-remove:hover{background:#fbefeb;border-color:#e4b3a6}
+.login-screen{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;place-items:start center;
+  padding:calc(env(safe-area-inset-top,0px) + 20px) 16px calc(env(safe-area-inset-bottom,0px) + 28px)}
+.login-screen .login-card{margin:auto 0}
 </style>
 <script>try{ if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) document.documentElement.classList.add('native'); if (/BAOApp\/2/.test(navigator.userAgent)) document.documentElement.classList.add('shell'); }catch(e){}</script>
 <script>
