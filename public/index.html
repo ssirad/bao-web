@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-mQvmV/ubKA9Tuv9LeYWaYqorXmzsJpknXL1TYhmyb/o='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-oK9k6AyqQJNZ9rF1GOiSTah1XhC2IMUzrmOPUwZdco8='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>BAO &mdash; symptom &amp; wellbeing tracker</title>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -827,6 +827,24 @@ body:not(.pro) .tabbar [data-view=patients]{display:none!important}
 .sym-type{display:inline-block;vertical-align:middle;margin-left:6px;font-size:10.5px;font-weight:800;border-radius:20px;padding:2px 8px;letter-spacing:.02em}
 .sym-type.body{background:#fde9e3;color:#a4553f}
 .sym-type.mind{background:#e9e6fb;color:#5d4fa8}
+.prec-pt{position:absolute;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:var(--coral);border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.2);pointer-events:none;z-index:3;animation:ptIn .18s ease}
+.prec-pt.mini{width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-width:2px;z-index:6}
+@keyframes ptIn{from{transform:scale(.3)}to{transform:none}}
+.precision-body{overflow:visible}
+.air-warn{margin:6px 0 0;background:#fdecea;color:#a3402f;border-radius:10px;padding:8px 10px;font-size:12.5px;font-weight:750}
+.air-warn[hidden]{display:none}
+.air-warn.shake{animation:airShake .35s ease}
+@keyframes airShake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.bao-chat-form.blocked button[type=submit]{opacity:.45}
+.pts-chip{background:#fde9e3!important;color:#a4553f!important}
+.unsaved{position:fixed;inset:0;z-index:1300;display:grid;place-items:center;background:rgba(22,48,47,.45);padding:16px;animation:tourIn .2s ease}
+.unsaved[hidden]{display:none}
+.unsaved-box{background:#fff;border-radius:24px;max-width:380px;width:100%;padding:24px 22px 16px;text-align:center;box-shadow:0 24px 60px rgba(20,60,58,.25);display:flex;flex-direction:column;gap:10px;animation:tourPop .25s ease}
+.unsaved-art{width:92px;height:92px;margin:0 auto}
+.unsaved-box h3{margin:4px 0 0;font-size:20px;color:#1f2f30}
+.unsaved-box p{margin:0 0 8px;color:#56696a;font-size:14.5px;line-height:1.55}
+.unsaved-box .btn{width:100%;padding:13px}
+.unsaved-box .linklike{margin-top:2px}
 </style>
 <script>try{ if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) document.documentElement.classList.add('native'); if (/BAOApp\/2/.test(navigator.userAgent)) document.documentElement.classList.add('shell'); }catch(e){}</script>
 <script>
@@ -866,6 +884,16 @@ body:not(.pro) .tabbar [data-view=patients]{display:none!important}
 </script>
 </head>
 <body>
+<div class="unsaved" id="unsaved" hidden role="dialog" aria-modal="true" aria-labelledby="unsavedTitle">
+  <div class="unsaved-box">
+    <span class="bao bao-thinking unsaved-art"></span>
+    <h3 id="unsavedTitle"></h3>
+    <p id="unsavedText"></p>
+    <button class="btn primary" id="unsavedSave" type="button"></button>
+    <button class="btn outline" id="unsavedDrop" type="button"></button>
+    <button class="linklike" id="unsavedStay" type="button"></button>
+  </div>
+</div>
 <div class="tour" id="tour" hidden role="dialog" aria-modal="true" aria-labelledby="tourTitle">
   <svg class="tour-dim" id="tourDim" aria-hidden="true"><defs><mask id="tourMask"><rect width="100%" height="100%" fill="#fff"/><g id="tourHoles"></g></mask></defs><rect width="100%" height="100%" fill="rgba(22,48,47,.5)" mask="url(#tourMask)"/></svg>
   <div id="tourRings" aria-hidden="true"></div>
@@ -1026,7 +1054,7 @@ body:not(.pro) .tabbar [data-view=patients]{display:none!important}
 
         </div>
 
-        <div id="checkinStash" aria-hidden="true"><div class="bodymap" id="bodyCapture"><div class="body-view-toggle"><button class="active" data-side="front" data-i18n="body.front">Front</button><button data-side="back" data-i18n="body.back">Back</button></div><div class="body-stage" id="bodyStage"><div class="figure front-image" aria-label="Interactive front body map"><button class="body-part front-only" type="button" aria-label="Head" data-part="Head" data-zone="head" style="left:31.00%;top:1.20%;width:38.00%;height:6.30%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Eyes" data-part="Eyes" data-zone="eyes" style="left:32.00%;top:7.50%;width:36.00%;height:4.30%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Jaw" data-part="Jaw" data-zone="jaw" style="left:33.00%;top:11.80%;width:34.00%;height:5.60%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Neck" data-part="Neck" data-zone="neck" style="left:42.00%;top:17.60%;width:16.00%;height:5.00%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Right shoulder" data-part="Right shoulder" data-zone="right shoulder" style="left:16.00%;top:23.50%;width:15.00%;height:7.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Left shoulder" data-part="Left shoulder" data-zone="left shoulder" style="left:69.00%;top:23.50%;width:15.00%;height:7.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Right upper arm" data-part="Right upper arm" data-zone="right upper arm" style="left:15.00%;top:31.00%;width:14.00%;height:9.00%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Left upper arm" data-part="Left upper arm" data-zone="left upper arm" style="left:71.00%;top:31.00%;width:14.00%;height:9.00%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Right elbow" data-part="Right elbow" data-zone="right elbow" style="left:12.00%;top:40.00%;width:14.00%;height:5.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Left elbow" data-part="Left elbow" data-zone="left elbow" style="left:74.00%;top:40.00%;width:14.00%;height:5.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Right forearm" data-part="Right forearm" data-zone="right forearm" style="left:9.00%;top:45.50%;width:13.50%;height:9.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Left forearm" data-part="Left forearm" data-zone="left forearm" style="left:77.50%;top:45.50%;width:13.50%;height:9.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Right hand" data-part="Right hand" data-zone="right hand" style="left:1.50%;top:55.00%;width:15.00%;height:10.00%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Left hand" data-part="Left hand" data-zone="left hand" style="left:83.50%;top:55.00%;width:15.00%;height:10.00%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Chest" data-part="Chest" data-zone="chest" style="left:31.00%;top:24.00%;width:38.00%;height:10.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Stomach" data-part="Stomach" data-zone="stomach" style="left:30.00%;top:34.50%;width:40.00%;height:8.00%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Lower belly" data-part="Lower belly" data-zone="lower belly" style="left:29.00%;top:42.50%;width:42.00%;height:7.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Hips" data-part="Hips" data-zone="hips" style="left:25.00%;top:50.50%;width:50.00%;height:13.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Right thigh" data-part="Right thigh" data-zone="right thigh" style="left:26.50%;top:64.50%;width:19.00%;height:10.00%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Left thigh" data-part="Left thigh" data-zone="left thigh" style="left:54.50%;top:64.50%;width:19.00%;height:10.00%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Right knee" data-part="Right knee" data-zone="right knee" style="left:27.00%;top:74.50%;width:18.00%;height:6.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Left knee" data-part="Left knee" data-zone="left knee" style="left:55.00%;top:74.50%;width:18.00%;height:6.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Right lower leg" data-part="Right lower leg" data-zone="right lower leg" style="left:28.00%;top:81.00%;width:17.00%;height:6.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Left lower leg" data-part="Left lower leg" data-zone="left lower leg" style="left:55.00%;top:81.00%;width:17.00%;height:6.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Right foot" data-part="Right foot" data-zone="right foot" style="left:24.50%;top:87.50%;width:19.00%;height:12.00%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Left foot" data-part="Left foot" data-zone="left foot" style="left:56.50%;top:87.50%;width:19.00%;height:12.00%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Back of head" data-part="Back of head" data-zone="back of head" style="left:31.00%;top:1.20%;width:38.00%;height:15.50%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Neck" data-part="Neck" data-zone="neck" style="left:41.00%;top:17.00%;width:18.00%;height:6.00%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Left shoulder" data-part="Left shoulder" data-zone="left shoulder" style="left:16.00%;top:23.50%;width:15.00%;height:7.50%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Right shoulder" data-part="Right shoulder" data-zone="right shoulder" style="left:69.00%;top:23.50%;width:15.00%;height:7.50%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Left upper arm" data-part="Left upper arm" data-zone="left upper arm" style="left:15.00%;top:31.00%;width:14.00%;height:9.00%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Right upper arm" data-part="Right upper arm" data-zone="right upper arm" style="left:71.00%;top:31.00%;width:14.00%;height:9.00%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Left elbow" data-part="Left elbow" data-zone="left elbow" style="left:12.00%;top:40.00%;width:14.00%;height:5.50%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Right elbow" data-part="Right elbow" data-zone="right elbow" style="left:74.00%;top:40.00%;width:14.00%;height:5.50%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Left forearm" data-part="Left forearm" data-zone="left forearm" style="left:9.00%;top:45.50%;width:13.50%;height:9.50%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Right forearm" data-part="Right forearm" data-zone="right forearm" style="left:77.50%;top:45.50%;width:13.50%;height:9.50%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Left hand" data-part="Left hand" data-zone="left hand" style="left:1.50%;top:55.00%;width:15.00%;height:10.00%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Right hand" data-part="Right hand" data-zone="right hand" style="left:83.50%;top:55.00%;width:15.00%;height:10.00%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Upper back" data-part="Upper back" data-zone="upper back" style="left:31.00%;top:24.00%;width:38.00%;height:11.00%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Middle back" data-part="Middle back" data-zone="middle back" style="left:30.00%;top:35.00%;width:40.00%;height:8.00%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Lower back" data-part="Lower back" data-zone="lower back" style="left:29.00%;top:43.00%;width:42.00%;height:8.50%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Buttocks" data-part="Buttocks" data-zone="buttocks" style="left:25.00%;top:51.50%;width:50.00%;height:12.50%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Back of left thigh" data-part="Back of left thigh" data-zone="back of left thigh" style="left:26.50%;top:64.50%;width:19.00%;height:10.00%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Back of right thigh" data-part="Back of right thigh" data-zone="back of right thigh" style="left:54.50%;top:64.50%;width:19.00%;height:10.00%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Back of left knee" data-part="Back of left knee" data-zone="back of left knee" style="left:27.00%;top:74.50%;width:18.00%;height:6.50%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Back of right knee" data-part="Back of right knee" data-zone="back of right knee" style="left:55.00%;top:74.50%;width:18.00%;height:6.50%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Left calf" data-part="Left calf" data-zone="left calf" style="left:28.00%;top:81.00%;width:17.00%;height:6.50%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Right calf" data-part="Right calf" data-zone="right calf" style="left:55.00%;top:81.00%;width:17.00%;height:6.50%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Left heel" data-part="Left heel" data-zone="left heel" style="left:24.50%;top:87.50%;width:19.00%;height:12.00%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Right heel" data-part="Right heel" data-zone="right heel" style="left:56.50%;top:87.50%;width:19.00%;height:12.00%;border-radius:45%"></button></div></div><div class="body-key"><span><b>●</b> <span data-i18n="key.sel">selected</span></span><span data-i18n="key.view">Front / back view</span><span data-i18n="key.zoom">Any area opens a zoomed view</span></div><div class="precision-panel" id="headPrecision"><div class="precision-head"><strong><span data-i18n="prec.a">Pinpoint the</span> <span id="precisionRegion">body</span> <span data-i18n="prec.b">area</span></strong><button class="btn ghost" id="closePrecision" data-i18n="prec.close">Close</button></div><div class="precision-map"><div class="precision-viewport" id="precisionViewport"><div class="precision-body" id="precisionBody"></div><span class="precision-dot" id="precisionDot"></span></div></div><p class="precision-help" data-i18n="prec.help">Click exactly where you feel it. You can move the marker to adjust.</p></div></div></div>
+        <div id="checkinStash" aria-hidden="true"><div class="bodymap" id="bodyCapture"><div class="body-view-toggle"><button class="active" data-side="front" data-i18n="body.front">Front</button><button data-side="back" data-i18n="body.back">Back</button></div><div class="body-stage" id="bodyStage"><div class="figure front-image" aria-label="Interactive front body map"><button class="body-part front-only" type="button" aria-label="Head" data-part="Head" data-zone="head" style="left:34.00%;top:0.80%;width:32.00%;height:5.60%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Forehead" data-part="Forehead" data-zone="forehead" style="left:34.00%;top:6.40%;width:32.00%;height:3.30%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Eyes" data-part="Eyes" data-zone="eyes" style="left:34.00%;top:9.70%;width:32.00%;height:2.60%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Right ear" data-part="Right ear" data-zone="right ear" style="left:27.50%;top:9.50%;width:7.00%;height:6.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Left ear" data-part="Left ear" data-zone="left ear" style="left:65.50%;top:9.50%;width:7.00%;height:6.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Jaw" data-part="Jaw" data-zone="jaw" style="left:35.00%;top:12.30%;width:30.00%;height:5.20%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Neck" data-part="Neck" data-zone="neck" style="left:42.00%;top:17.50%;width:16.00%;height:5.00%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Right shoulder" data-part="Right shoulder" data-zone="right shoulder" style="left:16.00%;top:23.50%;width:15.00%;height:7.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Left shoulder" data-part="Left shoulder" data-zone="left shoulder" style="left:69.00%;top:23.50%;width:15.00%;height:7.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Right upper arm" data-part="Right upper arm" data-zone="right upper arm" style="left:15.00%;top:31.00%;width:14.00%;height:9.00%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Left upper arm" data-part="Left upper arm" data-zone="left upper arm" style="left:71.00%;top:31.00%;width:14.00%;height:9.00%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Right elbow" data-part="Right elbow" data-zone="right elbow" style="left:12.00%;top:40.00%;width:14.00%;height:5.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Left elbow" data-part="Left elbow" data-zone="left elbow" style="left:74.00%;top:40.00%;width:14.00%;height:5.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Right forearm" data-part="Right forearm" data-zone="right forearm" style="left:9.00%;top:45.50%;width:13.50%;height:5.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Left forearm" data-part="Left forearm" data-zone="left forearm" style="left:77.50%;top:45.50%;width:13.50%;height:5.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Right wrist" data-part="Right wrist" data-zone="right wrist" style="left:5.00%;top:51.00%;width:13.00%;height:4.00%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Left wrist" data-part="Left wrist" data-zone="left wrist" style="left:82.00%;top:51.00%;width:13.00%;height:4.00%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Right hand" data-part="Right hand" data-zone="right hand" style="left:1.00%;top:55.00%;width:16.00%;height:9.00%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Left hand" data-part="Left hand" data-zone="left hand" style="left:83.00%;top:55.00%;width:16.00%;height:9.00%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Chest" data-part="Chest" data-zone="chest" style="left:31.00%;top:24.00%;width:38.00%;height:7.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Right ribs" data-part="Right ribs" data-zone="right ribs" style="left:29.00%;top:31.50%;width:13.00%;height:8.00%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Stomach" data-part="Stomach" data-zone="stomach" style="left:42.00%;top:31.50%;width:16.00%;height:8.00%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Left ribs" data-part="Left ribs" data-zone="left ribs" style="left:58.00%;top:31.50%;width:13.00%;height:8.00%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Lower belly" data-part="Lower belly" data-zone="lower belly" style="left:30.00%;top:39.50%;width:40.00%;height:10.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Hips" data-part="Hips" data-zone="hips" style="left:25.00%;top:50.00%;width:50.00%;height:13.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Right thigh" data-part="Right thigh" data-zone="right thigh" style="left:26.50%;top:64.00%;width:19.00%;height:10.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Left thigh" data-part="Left thigh" data-zone="left thigh" style="left:54.50%;top:64.00%;width:19.00%;height:10.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Right knee" data-part="Right knee" data-zone="right knee" style="left:27.00%;top:74.50%;width:18.00%;height:6.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Left knee" data-part="Left knee" data-zone="left knee" style="left:55.00%;top:74.50%;width:18.00%;height:6.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Right lower leg" data-part="Right lower leg" data-zone="right lower leg" style="left:28.00%;top:81.00%;width:17.00%;height:5.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Left lower leg" data-part="Left lower leg" data-zone="left lower leg" style="left:55.00%;top:81.00%;width:17.00%;height:5.50%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Right ankle" data-part="Right ankle" data-zone="right ankle" style="left:28.00%;top:86.50%;width:16.00%;height:4.00%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Left ankle" data-part="Left ankle" data-zone="left ankle" style="left:56.00%;top:86.50%;width:16.00%;height:4.00%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Right foot" data-part="Right foot" data-zone="right foot" style="left:24.50%;top:90.50%;width:19.00%;height:9.00%;border-radius:45%"></button><button class="body-part front-only" type="button" aria-label="Left foot" data-part="Left foot" data-zone="left foot" style="left:56.50%;top:90.50%;width:19.00%;height:9.00%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Back of head" data-part="Back of head" data-zone="back of head" style="left:31.00%;top:1.20%;width:38.00%;height:15.50%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Neck" data-part="Neck" data-zone="neck" style="left:41.00%;top:17.00%;width:18.00%;height:6.00%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Left shoulder" data-part="Left shoulder" data-zone="left shoulder" style="left:16.00%;top:23.50%;width:15.00%;height:7.50%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Right shoulder" data-part="Right shoulder" data-zone="right shoulder" style="left:69.00%;top:23.50%;width:15.00%;height:7.50%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Left upper arm" data-part="Left upper arm" data-zone="left upper arm" style="left:15.00%;top:31.00%;width:14.00%;height:9.00%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Right upper arm" data-part="Right upper arm" data-zone="right upper arm" style="left:71.00%;top:31.00%;width:14.00%;height:9.00%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Left elbow" data-part="Left elbow" data-zone="left elbow" style="left:12.00%;top:40.00%;width:14.00%;height:5.50%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Right elbow" data-part="Right elbow" data-zone="right elbow" style="left:74.00%;top:40.00%;width:14.00%;height:5.50%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Left forearm" data-part="Left forearm" data-zone="left forearm" style="left:9.00%;top:45.50%;width:13.50%;height:5.50%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Right forearm" data-part="Right forearm" data-zone="right forearm" style="left:77.50%;top:45.50%;width:13.50%;height:5.50%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Left wrist" data-part="Left wrist" data-zone="left wrist" style="left:5.00%;top:51.00%;width:13.00%;height:4.00%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Right wrist" data-part="Right wrist" data-zone="right wrist" style="left:82.00%;top:51.00%;width:13.00%;height:4.00%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Left hand" data-part="Left hand" data-zone="left hand" style="left:1.00%;top:55.00%;width:16.00%;height:9.00%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Right hand" data-part="Right hand" data-zone="right hand" style="left:83.00%;top:55.00%;width:16.00%;height:9.00%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Upper back" data-part="Upper back" data-zone="upper back" style="left:31.00%;top:24.00%;width:38.00%;height:6.00%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Left shoulder blade" data-part="Left shoulder blade" data-zone="left shoulder blade" style="left:31.00%;top:30.00%;width:19.00%;height:6.00%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Right shoulder blade" data-part="Right shoulder blade" data-zone="right shoulder blade" style="left:50.00%;top:30.00%;width:19.00%;height:6.00%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Middle back" data-part="Middle back" data-zone="middle back" style="left:30.00%;top:36.00%;width:40.00%;height:7.00%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Lower back" data-part="Lower back" data-zone="lower back" style="left:29.00%;top:43.00%;width:42.00%;height:8.00%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Buttocks" data-part="Buttocks" data-zone="buttocks" style="left:25.00%;top:51.00%;width:50.00%;height:12.50%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Back of left thigh" data-part="Back of left thigh" data-zone="back of left thigh" style="left:26.50%;top:64.00%;width:19.00%;height:10.50%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Back of right thigh" data-part="Back of right thigh" data-zone="back of right thigh" style="left:54.50%;top:64.00%;width:19.00%;height:10.50%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Back of left knee" data-part="Back of left knee" data-zone="back of left knee" style="left:27.00%;top:74.50%;width:18.00%;height:6.50%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Back of right knee" data-part="Back of right knee" data-zone="back of right knee" style="left:55.00%;top:74.50%;width:18.00%;height:6.50%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Left calf" data-part="Left calf" data-zone="left calf" style="left:28.00%;top:81.00%;width:17.00%;height:5.50%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Right calf" data-part="Right calf" data-zone="right calf" style="left:55.00%;top:81.00%;width:17.00%;height:5.50%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Left ankle" data-part="Left ankle" data-zone="left ankle" style="left:28.00%;top:86.50%;width:16.00%;height:4.00%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Right ankle" data-part="Right ankle" data-zone="right ankle" style="left:56.00%;top:86.50%;width:16.00%;height:4.00%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Left heel" data-part="Left heel" data-zone="left heel" style="left:24.50%;top:90.50%;width:19.00%;height:9.00%;border-radius:45%"></button><button class="body-part back-only" type="button" aria-label="Right heel" data-part="Right heel" data-zone="right heel" style="left:56.50%;top:90.50%;width:19.00%;height:9.00%;border-radius:45%"></button></div></div><div class="body-key"><span><b>●</b> <span data-i18n="key.sel">selected</span></span><span data-i18n="key.view">Front / back view</span><span data-i18n="key.zoom">Any area opens a zoomed view</span></div><div class="precision-panel" id="headPrecision"><div class="precision-head"><strong><span data-i18n="prec.a">Pinpoint the</span> <span id="precisionRegion">body</span> <span data-i18n="prec.b">area</span></strong><button class="btn ghost" id="closePrecision" data-i18n="prec.close">Close</button></div><div class="precision-map"><div class="precision-viewport" id="precisionViewport"><div class="precision-body" id="precisionBody"></div><span class="precision-dot" id="precisionDot"></span></div></div><p class="precision-help" data-i18n="prec.help">Tap every spot where you feel it. Tap a dot again to remove it.</p><p class="air-warn" id="airWarn" hidden></p></div></div></div>
       </section>
 
       <section class="view" id="patterns">
@@ -4939,7 +4967,7 @@ baoField.addEventListener('keydown', e => {
 baoForm.addEventListener('submit', () => setTimeout(fitField, 0));
 baoForm.addEventListener('submit', e => {
   e.preventDefault();
-  if (STEP_DONE){ baoField.value = ''; const f = STEP_DONE; STEP_DONE = null; f(); return; }
+  if (STEP_DONE){ if (STEP_BLOCK && STEP_BLOCK()) return; baoField.value = ''; const f = STEP_DONE; STEP_DONE = null; STEP_BLOCK = null; f(); return; }
   const v = baoField.value.trim();
   if (!v) return;
   baoField.value = '';
@@ -5018,15 +5046,16 @@ async function inlineStep(node, opts){
     if (node.id === 'bodyCapture'){
       resetBody();
       (rv.parts || []).forEach(p => $$('.body-part').filter(b => b.dataset.part === p).forEach(b => b.classList.add('selected')));
+      POINTS = (rv.points || []).slice(); paintPoints();
     }
     const inp = node.querySelector('input[type=range]');
     if (inp && rv.val != null){ inp.value = rv.val; inp.dispatchEvent(new Event('input', { bubbles:true })); }
   } else {
-    if (opts.viaForm){ STEP_DONE = () => done.click(); PH_SAVED = baoField.placeholder; baoField.placeholder = t('body.sendHint'); }
+    if (opts.viaForm){ STEP_BLOCK = opts.block || null; STEP_DONE = () => done.click(); PH_SAVED = baoField.placeholder; baoField.placeholder = t('body.sendHint'); }
     await new Promise(res => done.addEventListener('click', res, { once:true }));
     STEP_DONE = null; if (PH_SAVED){ baoField.placeholder = PH_SAVED; PH_SAVED = ''; }
   }
-  record({ t:'step', parts: node.id === 'bodyCapture' ? selectedParts() : [], val: (node.querySelector('input[type=range]') || {}).value });
+  record({ t:'step', parts: node.id === 'bodyCapture' ? selectedParts() : [], points: node.id === 'bodyCapture' ? POINTS.slice() : [], val: (node.querySelector('input[type=range]') || {}).value });
 
   if (opts.back) stash.appendChild(node);
   row.classList.add('closing');
@@ -5066,6 +5095,7 @@ function ratingWidget(){
 function selectedParts(){ return [...new Set($$('.body-part.selected').map(b => b.dataset.part))]; }
 function resetBody(){
   $$('.body-part.selected').forEach(b => b.classList.remove('selected'));
+  if (typeof POINTS !== 'undefined'){ POINTS = []; AIR_BAD = false; paintPoints(); }
   $('headPrecision').classList.remove('open');
   $('precisionDot').style.display = 'none';
 }
@@ -5120,8 +5150,10 @@ async function runConversation(){
         await feelCheck(detail);
       }
 
-      const type = await askKind(name);
+      LAST_POINTS = [];
+      const type = guessKind(name, zone) || await askKind(name);
       const { parts, rating } = await captureBodyRating(zone, null, { noBody: type === 'mind' });
+      const points = LAST_POINTS.slice();
 
       const where     = await askFeel(t('q.situation'), 'thinking');
       const repeated  = await askYesNo(t('q.repeated'), 'thinking');
@@ -5129,7 +5161,7 @@ async function runConversation(){
         ? where + t('chat.multi')
         : where;
 
-      entry.symptoms.push({ name, type, reflection: reply || '', detail, parts, rating, situation, repeated });
+      entry.symptoms.push({ name, type, reflection: reply || '', detail, parts, points, rating, situation, repeated });
 
       const more = await askYesNo(t('q.another'), 'checkin');
       if (more !== 'yes') break;
@@ -5223,7 +5255,7 @@ async function showRecap(){
       else go('home');
     }, 900);
   });
-  again.addEventListener('click', restartChat);
+  again.addEventListener('click', () => restartChat());
 }
 
 function resetChat(){
@@ -5297,17 +5329,31 @@ function openPrecision(btn, zone){
   pBody.style.transform = 'translate(' + tx + 'px,' + ty + 'px)';
   $('precisionRegion').textContent = partName(zone);
   pDot.style.display = 'none';
+  PREC_PART = btn.dataset.part || PREC_PART;
+  paintPoints();
 }
 $$('.body-part').forEach(b => b.addEventListener('click', () => {
   b.classList.toggle('selected');
+  PREC_PART = b.dataset.part;
+  if (!b.classList.contains('selected')){ POINTS = POINTS.filter(p => p.part !== b.dataset.part); AIR_BAD = false; hideAir(); paintPoints(); }
   openPrecision(b, b.dataset.zone || b.dataset.part.toLowerCase());
 }));
 $('closePrecision').addEventListener('click', () => $('headPrecision').classList.remove('open'));
 pView.addEventListener('click', e => {
-  const r = pView.getBoundingClientRect();
-  pDot.style.left = ((e.clientX - r.left) / r.width * 100) + '%';
-  pDot.style.top  = ((e.clientY - r.top) / r.height * 100) + '%';
-  pDot.style.display = 'block';
+  const r = pBody.getBoundingClientRect();
+  const fx = (e.clientX - r.left) / r.width, fy = (e.clientY - r.top) / r.height;
+  const side = curSide();
+  // tocco vicino a un punto: lo toglie
+  const hit = POINTS.findIndex(p => p.side === side && Math.hypot((p.x - fx) * r.width, (p.y - fy) * r.height) < 16);
+  if (hit >= 0){ POINTS.splice(hit, 1); AIR_BAD = false; hideAir(); paintPoints(); haptic(1); return; }
+  onBody(side, fx, fy).then(ok => {
+    if (!ok){ AIR_BAD = true; airWarn(); return; }
+    AIR_BAD = false; hideAir();
+    POINTS.push({ side, part: PREC_PART, x: +fx.toFixed(4), y: +fy.toFixed(4) });
+    const b = $$('.body-part').find(x => x.dataset.part === PREC_PART && x.classList.contains(side + '-only'));
+    if (b) b.classList.add('selected');
+    paintPoints(); haptic(3);
+  });
 });
 
 const MONTHS    = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
@@ -5678,7 +5724,8 @@ function renderDayPanel(){
           ? '<span class="sym-score">' + esc(String(x.rating)) + '/10</span>' : '') +
         '<button class="sym-del" type="button" data-del-sym="' + esc(e.id + '|' + n) + '" title="' + esc(t('del.sym')) + '" aria-label="' + esc(t('del.sym')) + '">&#10005;</button></span></div>';
       if (x.parts && x.parts.length)
-        html += '<div class="chiprow" style="margin-top:8px">' + x.parts.map(pt => '<span>' + esc(partName(pt)) + '</span>').join('') + '</div>';
+        html += '<div class="chiprow" style="margin-top:8px">' + x.parts.map(pt => '<span>' + esc(partName(pt)) + '</span>').join('') +
+          (x.points && x.points.length ? '<span class="pts-chip">📍 ' + esc(t('pts.n', x.points.length)) + '</span>' : '') + '</div>';
       if (said(x.detail))     html += qa(t('day.added'), x.detail);
       if (said(x.situation))  html += qa(t(x.kind === 'feeling' ? 'q.feelSituation' : 'q.situation'), x.situation);
       if (x.repeated)         html += qa(t(x.kind === 'feeling' ? 'q.feelRepeated' : 'q.repeated'), x.repeated === 'yes' ? t('day.yes') : t('day.no'));
@@ -6508,6 +6555,7 @@ async function captureBodyRating(zone, label, opts){
     title  : t('body.title'),
     confirm: t('chat.send'),
     viaForm: true,
+    block  : () => { if (!AIR_BAD) return false; airWarn(); return true; },
     back   : true,
     onShow : async box => {
       const counter = box.querySelector('.widget-count');
@@ -6528,14 +6576,16 @@ async function captureBodyRating(zone, label, opts){
     }
   });
   const parts = selectedParts();
-  if (parts.length) say(t('recap.parts') + parts.map(partName).join(', '), 'bao', 'recap', 'checkin');
+  LAST_POINTS = POINTS.slice();
+  if (parts.length) say(t('recap.parts') + parts.map(partName).join(', ') + (LAST_POINTS.length ? ' · 📍 ' + t('pts.n', LAST_POINTS.length) : ''), 'bao', 'recap', 'checkin');
   resetBody();
 
   const rateBox = ratingWidget();
   await inlineStep(rateBox, {
     marker : t('rate.marker'),
     title  : t('rate.title'),
-    confirm: t('rate.confirm')
+    confirm: t('rate.confirm'),
+    viaForm: true
   });
   const rating = rateBox.querySelector('input').value;
   say(t(label || 'recap.rating') + rating + ' / 10', 'bao', 'recap', 'checkin');
@@ -7656,6 +7706,141 @@ Object.assign(I18N.nl, {
   'q.emotionsMore':'Had je vandaag naast wat je me net vertelde nog andere gevoelens?',
   'feel.back':'Dank je dat je het vertelt 💚 Ik heb het genoteerd als psychische klacht.'
 });
+
+// ---- punti precisi sul corpo ----
+var POINTS = [], AIR_BAD = false, PREC_PART = '', LAST_POINTS = [], STEP_BLOCK = null;
+function curSide(){ const f = $('bodyStage').querySelector('.figure'); return f && f.classList.contains('back-image') ? 'back' : 'front'; }
+const BODY_ALPHA = {};
+function bodyAlpha(side){
+  if (BODY_ALPHA[side]) return BODY_ALPHA[side];
+  if (curSide() !== side) return Promise.resolve(null);
+  return (BODY_ALPHA[side] = new Promise(res => {
+    const fig = $('bodyStage').querySelector('.figure');
+    const m = /url\(["']?(.*?)["']?\)$/.exec(getComputedStyle(fig).backgroundImage || '');
+    if (!m) return res(null);
+    const img = new Image();
+    img.onload = () => { const c = document.createElement('canvas'); c.width = img.naturalWidth; c.height = img.naturalHeight;
+      const x = c.getContext('2d'); x.drawImage(img, 0, 0); try{ res({ w:c.width, h:c.height, d:x.getImageData(0, 0, c.width, c.height).data }); }catch(e){ res(null); } };
+    img.onerror = () => res(null);
+    img.src = m[1];
+  }));
+}
+async function onBody(side, fx, fy){
+  if (fx < 0 || fy < 0 || fx > 1 || fy > 1) return false;
+  const a = await bodyAlpha(side);
+  if (!a) return true;
+  // guarda un piccolo intorno: basta toccare il bordo del corpo
+  const cx = Math.round(fx * (a.w - 1)), cy = Math.round(fy * (a.h - 1)), R = 3;
+  for (let dy = -R; dy <= R; dy++) for (let dx = -R; dx <= R; dx++){
+    const x = cx + dx, y = cy + dy; if (x < 0 || y < 0 || x >= a.w || y >= a.h) continue;
+    if (a.d[(y * a.w + x) * 4 + 3] > 120) return true;
+  }
+  return false;
+}
+function airWarn(){
+  const w = $('airWarn'); w.textContent = t('air.warn'); w.hidden = false;
+  w.classList.remove('shake'); void w.offsetWidth; w.classList.add('shake');
+  baoForm.classList.add('blocked');
+  try{ if (navigator.vibrate) navigator.vibrate([20, 40, 20]); }catch(e){}
+}
+function hideAir(){ $('airWarn').hidden = true; baoForm.classList.remove('blocked'); }
+function paintPoints(){
+  const side = curSide();
+  pBody.querySelectorAll('.prec-pt').forEach(x => x.remove());
+  const fig = $('bodyStage').querySelector('.figure');
+  fig.querySelectorAll('.prec-pt').forEach(x => x.remove());
+  POINTS.filter(p => p.side === side).forEach(p => {
+    const a = document.createElement('span'); a.className = 'prec-pt'; a.style.left = (p.x * 100) + '%'; a.style.top = (p.y * 100) + '%'; pBody.appendChild(a);
+    const b = document.createElement('span'); b.className = 'prec-pt mini'; b.style.left = (p.x * 100) + '%'; b.style.top = (p.y * 100) + '%'; fig.appendChild(b);
+  });
+  if (!POINTS.length && !AIR_BAD) hideAir();
+}
+$$('.body-view-toggle button').forEach(b => b.addEventListener('click', () => setTimeout(paintPoints, 0)));
+
+// ---- fisico o psicologico, riconosciuto dalle parole ----
+const MIND_RE = /(anxi|panic|stress|sad|depress|worr|nervous|irritab|angry|anger|lonel|overwhelm|fear|scared|mood|burn ?out|grief|guilt|shame|angst|panik|traurig|gestresst|sorge|nervös|wütend|wut\b|einsam|überfordert|niedergeschlagen|ansia|ansios|panico|trist|stressat|preoccup|nervos|arrabbiat|rabbia|solitudin|sopraffatt|anxiét|anxieu|paniqu|stressé|inquiet|colère|solitude|ansiedad|pánico|estresad|preocupad|enfad|soledad|ansiedade|pânico|estressad|raiva|solidão|paniek|verdrietig|gestrest|zorgen|boos|eenzaam|somber)/i;
+const BODY_RE = /(pain|ache|hurt|sore|cramp|nause|dizz|itch|rash|cough|fever|headache|migraine|stomach|back|tension|stiff|burn|sting|numb|tingl|schmerz|weh|übel|schwindel|krampf|juck|husten|fieber|kopf|bauch|rücken|verspann|dolor|dolore|mal di|nause|vertig|crampo|prurit|tosse|febbre|testa|pancia|schiena|douleur|mal au|mal à|nausée|vertige|crampe|toux|fièvre|tête|ventre|dos|dolor|náusea|mareo|calambre|picor|fiebre|cabeza|barriga|espalda|dor|enjoo|tontura|cãibra|coceira|febre|cabeça|barriga|costas|pijn|zeer|misselijk|duizelig|kramp|jeuk|hoest|koorts|hoofd|buik|rug)/i;
+function guessKind(name, zone){
+  const n = String(name || '');
+  const mind = MIND_RE.test(n), body = !!zone || BODY_RE.test(n);
+  if (mind && !body) return 'mind';
+  if (body && !mind) return 'body';
+  return null;
+}
+// zone nuove riconosciute nel testo
+const _zoneLocal0 = zoneLocal;
+zoneLocal = function(text){
+  const t0 = (text || '').toLowerCase();
+  const extra = [
+    [/(forehead|stirn|fronte|frente|voorhoofd)/, 'forehead'],
+    [/(\bear|ohr|orecchi|oreille|oreja|orelha|\boor\b|oorpijn)/, 'right ear'],
+    [/(wrist|handgelenk|polso|poignet|muñeca|pulso|\bpols\b)/, 'right wrist'],
+    [/(ankle|knöchel|caviglia|cheville|tobillo|tornozelo|enkel)/, 'right ankle'],
+    [/(\bribs?\b|rippe|costol|côte|costilla|costela|\bribben)/, 'right ribs'],
+    [/(shoulder blade|schulterblatt|scapol|omoplate|omóplato|escápula|schouderblad)/, 'left shoulder blade']
+  ];
+  for (const [re, z] of extra) if (re.test(t0)) return z;
+  return _zoneLocal0(text);
+};
+
+Object.assign(PART_DE, { 'forehead':'Stirn','right ear':'Rechtes Ohr','left ear':'Linkes Ohr','right ribs':'Rechte Rippen','left ribs':'Linke Rippen','right wrist':'Rechtes Handgelenk','left wrist':'Linkes Handgelenk','right ankle':'Rechter Knöchel','left ankle':'Linker Knöchel','left shoulder blade':'Linkes Schulterblatt','right shoulder blade':'Rechtes Schulterblatt' });
+Object.assign(PART_IT, { 'forehead':'Fronte','right ear':'Orecchio destro','left ear':'Orecchio sinistro','right ribs':'Costole destre','left ribs':'Costole sinistre','right wrist':'Polso destro','left wrist':'Polso sinistro','right ankle':'Caviglia destra','left ankle':'Caviglia sinistra','left shoulder blade':'Scapola sinistra','right shoulder blade':'Scapola destra' });
+Object.assign(PART_FR, { 'forehead':'Front','right ear':'Oreille droite','left ear':'Oreille gauche','right ribs':'Côtes droites','left ribs':'Côtes gauches','right wrist':'Poignet droit','left wrist':'Poignet gauche','right ankle':'Cheville droite','left ankle':'Cheville gauche','left shoulder blade':'Omoplate gauche','right shoulder blade':'Omoplate droite' });
+Object.assign(PART_ES, { 'forehead':'Frente','right ear':'Oreja derecha','left ear':'Oreja izquierda','right ribs':'Costillas derechas','left ribs':'Costillas izquierdas','right wrist':'Muñeca derecha','left wrist':'Muñeca izquierda','right ankle':'Tobillo derecho','left ankle':'Tobillo izquierdo','left shoulder blade':'Omóplato izquierdo','right shoulder blade':'Omóplato derecho' });
+Object.assign(PART_PT, { 'forehead':'Testa','right ear':'Orelha direita','left ear':'Orelha esquerda','right ribs':'Costelas direitas','left ribs':'Costelas esquerdas','right wrist':'Pulso direito','left wrist':'Pulso esquerdo','right ankle':'Tornozelo direito','left ankle':'Tornozelo esquerdo','left shoulder blade':'Escápula esquerda','right shoulder blade':'Escápula direita' });
+Object.assign(PART_NL, { 'forehead':'Voorhoofd','right ear':'Rechteroor','left ear':'Linkeroor','right ribs':'Rechterribben','left ribs':'Linkerribben','right wrist':'Rechterpols','left wrist':'Linkerpols','right ankle':'Rechterenkel','left ankle':'Linkerenkel','left shoulder blade':'Linkerschouderblad','right shoulder blade':'Rechterschouderblad' });
+
+Object.assign(I18N.en, { 'prec.help':'Tap every spot where you feel it. Tap a dot again to remove it.', 'air.warn':'That spot is outside the body. Tap on the body to continue.', 'pts.n': n => n + (n === 1 ? ' precise spot' : ' precise spots') });
+Object.assign(I18N.it, { 'prec.help':'Tocca tutti i punti dove lo senti. Tocca di nuovo un punto per toglierlo.', 'air.warn':'Quel punto è fuori dal corpo. Tocca sul corpo per andare avanti.', 'pts.n': n => n + (n === 1 ? ' punto preciso' : ' punti precisi') });
+Object.assign(I18N.de, { 'prec.help':'Tippe auf jede Stelle, an der du es spürst. Tippe erneut auf einen Punkt, um ihn zu entfernen.', 'air.warn':'Diese Stelle liegt außerhalb des Körpers. Tippe auf den Körper, um weiterzumachen.', 'pts.n': n => n + (n === 1 ? ' genaue Stelle' : ' genaue Stellen') });
+Object.assign(I18N.fr, { 'prec.help':'Touche chaque endroit où tu le ressens. Touche un point à nouveau pour le retirer.', 'air.warn':'Cet endroit est hors du corps. Touche le corps pour continuer.', 'pts.n': n => n + (n === 1 ? ' point précis' : ' points précis') });
+Object.assign(I18N.es, { 'prec.help':'Toca cada punto donde lo sientes. Toca un punto otra vez para quitarlo.', 'air.warn':'Ese punto está fuera del cuerpo. Toca el cuerpo para continuar.', 'pts.n': n => n + (n === 1 ? ' punto preciso' : ' puntos precisos') });
+Object.assign(I18N.pt, { 'prec.help':'Toque em cada ponto onde sente. Toque de novo num ponto para removê-lo.', 'air.warn':'Esse ponto está fora do corpo. Toque no corpo para continuar.', 'pts.n': n => n + (n === 1 ? ' ponto preciso' : ' pontos precisos') });
+Object.assign(I18N.nl, { 'prec.help':'Tik op elke plek waar je het voelt. Tik nog eens op een punt om het weg te halen.', 'air.warn':'Die plek ligt buiten het lichaam. Tik op het lichaam om verder te gaan.', 'pts.n': n => n + (n === 1 ? ' precieze plek' : ' precieze plekken') });
+
+
+// ---- check-in finito ma non salvato ----
+function unsavedCheckin(){ return convo === 'done' && !RECAP_SAVED && entry && document.body && !document.body.classList.contains('pro'); }
+let UNSAVED_NEXT = null;
+function askUnsaved(next){
+  UNSAVED_NEXT = next;
+  $('unsavedTitle').textContent = t('uns.title');
+  $('unsavedText').textContent = t('uns.text');
+  $('unsavedSave').textContent = t('uns.save');
+  $('unsavedDrop').textContent = t('uns.drop');
+  $('unsavedStay').textContent = t('uns.stay');
+  $('unsaved').hidden = false;
+  setTimeout(() => $('unsavedSave').focus(), 50);
+}
+function closeUnsaved(){ $('unsaved').hidden = true; UNSAVED_NEXT = null; }
+$('unsavedSave').addEventListener('click', () => {
+  closeUnsaved();
+  const b = [...document.querySelectorAll('#baoLog .widget-done')].find(x => !x.classList.contains('undo-btn') && !x.disabled);
+  if (b) b.click();
+});
+$('unsavedDrop').addEventListener('click', () => { const n = UNSAVED_NEXT; closeUnsaved(); RECAP_SAVED = true; paintUndo(); if (n) n(); });
+$('unsavedStay').addEventListener('click', () => { closeUnsaved(); go('checkin'); });
+$('unsaved').addEventListener('click', e => { if (e.target === $('unsaved')) closeUnsaved(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('unsaved').hidden) closeUnsaved(); });
+const _go0 = go;
+go = function(id){ if (id !== 'checkin' && unsavedCheckin()) return askUnsaved(() => _go0(id)); return _go0(id); };
+const _logFor0 = logFor;
+logFor = function(key, fresh){ if (unsavedCheckin() && (fresh || key)) return askUnsaved(() => _logFor0(key, fresh)); return _logFor0(key, fresh); };
+const _restart0 = restartChat;
+restartChat = function(){ if (unsavedCheckin()) return askUnsaved(() => _restart0()); return _restart0(); };
+$('signOutBtn').addEventListener('click', e => {
+  if (!unsavedCheckin()) return;
+  e.stopImmediatePropagation(); e.preventDefault();
+  askUnsaved(() => $('signOutBtn').click());
+}, true);
+addEventListener('beforeunload', e => { if (unsavedCheckin()){ e.preventDefault(); e.returnValue = ''; } });
+Object.assign(I18N.en, { 'uns.title':'Save your check-in?', 'uns.text':'Are you sure you don’t want to save this check-in? What you wrote today will be lost.', 'uns.save':'Save my check-in', 'uns.drop':'Don’t save', 'uns.stay':'Back to the check-in' });
+Object.assign(I18N.it, { 'uns.title':'Salvi il check-in?', 'uns.text':'Sei sicura di non voler salvare il check-in? Quello che hai scritto andrà perso.', 'uns.save':'Salva il check-in', 'uns.drop':'Non salvare', 'uns.stay':'Torna al check-in' });
+Object.assign(I18N.de, { 'uns.title':'Check-in speichern?', 'uns.text':'Bist du sicher, dass du diesen Check-in nicht speichern möchtest? Was du geschrieben hast, geht verloren.', 'uns.save':'Check-in speichern', 'uns.drop':'Nicht speichern', 'uns.stay':'Zurück zum Check-in' });
+Object.assign(I18N.fr, { 'uns.title':'Enregistrer ton check-in ?', 'uns.text':'Es-tu sûr·e de ne pas vouloir enregistrer ce check-in ? Ce que tu as écrit sera perdu.', 'uns.save':'Enregistrer le check-in', 'uns.drop':'Ne pas enregistrer', 'uns.stay':'Revenir au check-in' });
+Object.assign(I18N.es, { 'uns.title':'¿Guardar tu check-in?', 'uns.text':'¿Seguro que no quieres guardar este check-in? Lo que escribiste se perderá.', 'uns.save':'Guardar el check-in', 'uns.drop':'No guardar', 'uns.stay':'Volver al check-in' });
+Object.assign(I18N.pt, { 'uns.title':'Salvar seu check-in?', 'uns.text':'Tem certeza de que não quer salvar este check-in? O que você escreveu será perdido.', 'uns.save':'Salvar o check-in', 'uns.drop':'Não salvar', 'uns.stay':'Voltar ao check-in' });
+Object.assign(I18N.nl, { 'uns.title':'Check-in bewaren?', 'uns.text':'Weet je zeker dat je deze check-in niet wilt bewaren? Wat je hebt geschreven gaat verloren.', 'uns.save':'Check-in bewaren', 'uns.drop':'Niet bewaren', 'uns.stay':'Terug naar de check-in' });
 
 (async function boot(){
   try{
