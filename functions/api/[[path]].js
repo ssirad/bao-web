@@ -113,16 +113,19 @@ const cleanCode = v => String(v || '').toUpperCase().replace(/[^A-Z0-9]/g, '').r
 async function proState(env, pro){
   const st = await getJSON(env, 'tp:' + pro.email, { plan: '', codes: [] });
   const codes = [];
+  let pruned = false;
   for (const c of st.codes){
     const k = await getJSON(env, 'k:' + c);
     if (!k) continue;
     let patient = null;
     if (k.used){
       const pu = await getJSON(env, 'u:' + k.email);
-      patient = pu && pu.therapist === pro.email ? { email: pu.email, name: pu.name || '' } : { email: k.email, name: '', gone: true };
+      if (!pu || pu.therapist !== pro.email){ await env.BAO.delete('k:' + c); pruned = true; continue; }   // patient gone: free the place
+      patient = { email: pu.email, name: pu.name || '' };
     }
     codes.push({ code: c, email: k.email, created: k.created, used: !!k.used, usedAt: k.usedAt || null, patient });
   }
+  if (pruned){ st.codes = codes.map(x => x.code); await putJSON(env, 'tp:' + pro.email, st); }
   return { st, codes };
 }
 
@@ -446,6 +449,27 @@ async function handle(context){
       await env.BAO.delete('k:' + code);
       const st = await getJSON(env, 'tp:' + u.email, { plan: '', codes: [] });
       st.codes = st.codes.filter(c => c !== code);
+      await putJSON(env, 'tp:' + u.email, st);
+      return json({ ok: true });
+    }
+
+    case 'POST /api/pro/unlink': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      if (u.role !== 'pro') return fail('Only for therapists and doctors.', 403);
+      const email = cleanEmail((await readBody(request)).email);
+      const st = await getJSON(env, 'tp:' + u.email, { plan: '', codes: [] });
+      let found = false;
+      for (const c of st.codes.slice()){
+        const k = await getJSON(env, 'k:' + c);
+        if (!k || k.email !== email || !k.used) continue;
+        const pu = await getJSON(env, 'u:' + email);
+        if (pu && pu.therapist === u.email){ delete pu.therapist; await putJSON(env, 'u:' + pu.email, pu); }
+        await env.BAO.delete('k:' + c);
+        st.codes = st.codes.filter(x => x !== c);
+        found = true;
+      }
+      if (!found) return fail('Not found.', 404);
       await putJSON(env, 'tp:' + u.email, st);
       return json({ ok: true });
     }

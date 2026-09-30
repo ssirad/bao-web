@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-7D5j029jzdfr9UZ6Al3j+xW7IKoLcJ5MlSDTUJJ2tz4='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-FiSB3O/vu0JVhVEhWcOwTsdM1079S4g3vNljn2syxwE='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>BAO &mdash; symptom &amp; wellbeing tracker</title>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -787,6 +787,8 @@ body:not(.pro) .tabbar [data-view=patients]{display:none!important}
 .pro-list.big .pa{width:40px;height:40px;font-size:16px}
 .pro-list.big .pt b{font-size:15px}
 .pro-list.big .pt small{font-size:12px}
+.pro-remove{color:#b4573f;border-color:#efd3cb;align-self:flex-start}
+.pro-remove:hover{background:#fbefeb;border-color:#e4b3a6}
 </style>
 <script>try{ if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) document.documentElement.classList.add('native'); if (/BAOApp\/2/.test(navigator.userAgent)) document.documentElement.classList.add('shell'); }catch(e){}</script>
 <script>
@@ -1051,6 +1053,7 @@ body:not(.pro) .tabbar [data-view=patients]{display:none!important}
             <h2 class="title" id="proName">—</h2>
             <p class="lede" id="proLede"></p>
           </div>
+          <button class="btn outline pro-remove" id="proRemove" type="button" data-i18n="pro.remove">Remove patient</button>
         </div>
         <div class="cal-wrap">
           <div class="card">
@@ -7221,7 +7224,10 @@ function renderSubs(){
   const plan = SUBS_PICK || SUBS.plan, lim = plan && plans[plan] ? plans[plan].patients : 0;
   $('codeUsage').textContent = plan ? t('subs.usage', SUBS.codes.length, lim, t('plan.' + plan)) : t('subs.noPlan');
   $('codeForm').hidden = !plan;
-  $('codeList').innerHTML = SUBS.codes.length ? SUBS.codes.slice().reverse().map(c => {
+  const waiting = SUBS.codes.filter(c => !c.used);
+  const shown = $('codeNew').querySelector('.code-big');
+  if (shown && !waiting.some(c => c.code === shown.textContent)) $('codeNew').hidden = true;
+  $('codeList').innerHTML = waiting.length ? waiting.slice().reverse().map(c => {
     const st = c.patient && !c.patient.gone ? '<span class="c-st ok">' + esc(t('subs.linked')) + ': ' + esc(c.patient.name || c.email) + '</span>'
              : c.patient && c.patient.gone ? '<span class="c-st gone">' + esc(t('subs.gone')) + '</span>'
              : '<span class="c-st">' + esc(t('subs.waiting')) + '</span>';
@@ -7422,6 +7428,31 @@ Object.assign(I18N.pt, { 'pro.patients':'Pacientes', 'pro.search':'Buscar pacien
 Object.assign(I18N.nl, { 'pro.patients':'Patiënten', 'pro.search':'Patiënt zoeken…', 'pro.noPatients':'Je patiënten verschijnen hier zodra ze zich met hun code registreren.', 'pro.noMatch':'Geen patiënt gevonden.',
   'pro.entries': n => n + ' check-in' + (n === 1 ? '' : 's'), 'pro.last': d => 'laatst: ' + d, 'pro.patientEyebrow':'Patiënt', 'pro.patientLede': e => e + ' · tik op een dag om te lezen wat er geschreven is.',
   'tab.patients':'Patiënten', 'title.patients':['Patiënten','Zoek een patiënt en open de kalender'], 'pats.eyebrow':'Je patiënten', 'pats.h':'Zoek een patiënt,<br><em>open de kalender.</em>' });
+
+
+$('proRemove').addEventListener('click', async () => {
+  const p = proCurrent(); if (!p) return;
+  if (!confirm(t('pro.removeConfirm', p.name || p.email))) return;
+  try{ await jpost('/api/pro/unlink', { email: p.email }); }catch(e){ showToast(t('err.generic')); return; }
+  showToast(t('pro.removed', p.name || p.email));
+  PRO_CUR = '';
+  await loadPro();
+  go('subs');
+});
+Object.assign(I18N.en, { 'pro.remove':'Remove patient', 'pro.removeConfirm': n => 'Remove ' + n + ' from your patients? You will no longer see their check-ins. Their own account and diary stay as they are.', 'pro.removed': n => n + ' was removed from your patients.',
+  'subs.none':'No open codes. Codes disappear once a patient has used them.' });
+Object.assign(I18N.it, { 'pro.remove':'Togli paziente', 'pro.removeConfirm': n => 'Togliere ' + n + ' dai tuoi pazienti? Non vedrai più i suoi check-in. Il suo account e il suo diario restano come sono.', 'pro.removed': n => n + ' è stato tolto dai tuoi pazienti.',
+  'subs.none':'Nessun codice in attesa. I codici spariscono appena un paziente li usa.' });
+Object.assign(I18N.de, { 'pro.remove':'Patient:in entfernen', 'pro.removeConfirm': n => n + ' aus deinen Patient:innen entfernen? Du siehst die Check-ins dann nicht mehr. Das eigene Konto und Tagebuch bleiben bestehen.', 'pro.removed': n => n + ' wurde entfernt.',
+  'subs.none':'Keine offenen Codes. Codes verschwinden, sobald sie benutzt wurden.' });
+Object.assign(I18N.fr, { 'pro.remove':'Retirer le patient', 'pro.removeConfirm': n => 'Retirer ' + n + ' de tes patients ? Tu ne verras plus ses check-ins. Son compte et son journal restent tels quels.', 'pro.removed': n => n + ' a été retiré de tes patients.',
+  'subs.none':'Aucun code en attente. Les codes disparaissent dès qu’un patient les utilise.' });
+Object.assign(I18N.es, { 'pro.remove':'Quitar paciente', 'pro.removeConfirm': n => '¿Quitar a ' + n + ' de tus pacientes? Dejarás de ver sus check-ins. Su cuenta y su diario siguen igual.', 'pro.removed': n => n + ' se quitó de tus pacientes.',
+  'subs.none':'No hay códigos pendientes. Los códigos desaparecen en cuanto un paciente los usa.' });
+Object.assign(I18N.pt, { 'pro.remove':'Remover paciente', 'pro.removeConfirm': n => 'Remover ' + n + ' dos seus pacientes? Você não verá mais os check-ins. A conta e o diário da pessoa continuam como estão.', 'pro.removed': n => n + ' foi removido dos seus pacientes.',
+  'subs.none':'Nenhum código pendente. Os códigos somem assim que um paciente os usa.' });
+Object.assign(I18N.nl, { 'pro.remove':'Patiënt verwijderen', 'pro.removeConfirm': n => n + ' uit je patiënten verwijderen? Je ziet de check-ins dan niet meer. Het eigen account en dagboek blijven bestaan.', 'pro.removed': n => n + ' is verwijderd uit je patiënten.',
+  'subs.none':'Geen openstaande codes. Codes verdwijnen zodra een patiënt ze gebruikt.' });
 
 (async function boot(){
   try{
