@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-PW7p4r4Fgzpj93CK9NeYh+BL/MI1/fGHf5DR1B4wnlw='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-8/DN1RvTWKR8uniq5zj2HeehUbS76q2pD0r7gzDB/uU='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>BAO &mdash; symptom &amp; wellbeing tracker</title>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -678,9 +678,17 @@ html.shell .content{flex:1 1 auto;width:100%;max-width:none;overflow-y:auto;-web
   html.shell .bao-chat-form,html.shell .bao-chat-quick{bottom:0}
 }
 
-.tour{position:fixed;inset:0;z-index:1200;display:grid;place-items:center;background:rgba(22,48,47,.42);
+.tour{position:fixed;inset:0;z-index:1200;display:grid;place-items:center;background:transparent;
   padding:calc(env(safe-area-inset-top,0px) + 16px) 16px calc(env(safe-area-inset-bottom,0px) + 16px);animation:tourIn .22s ease}
 .tour[hidden]{display:none}
+.tour-dim{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
+.tour-ring{position:fixed;border-radius:16px;box-shadow:0 0 0 3px #fff,0 0 0 7px rgba(24,125,120,.55);pointer-events:none;animation:tourRing 1.6s ease-in-out infinite}
+@keyframes tourRing{50%{box-shadow:0 0 0 3px #fff,0 0 0 12px rgba(24,125,120,.25)}}
+.tour-arrow{position:fixed;width:52px;height:52px;pointer-events:none;z-index:3;filter:drop-shadow(0 3px 6px rgba(0,0,0,.18))}
+.tour-arrow[hidden]{display:none}
+.tour-arrow svg{width:100%;height:100%;transform:rotate(var(--rot,0deg));animation:tourBob 1s ease-in-out infinite}
+@keyframes tourBob{50%{translate:var(--bx,0) var(--by,8px)}}
+.tour-box{position:relative;z-index:4}
 @keyframes tourIn{from{opacity:0}to{opacity:1}}
 .tour-box{background:#fff;border-radius:26px;width:100%;max-width:420px;padding:26px 24px 16px;text-align:center;
   box-shadow:0 24px 60px rgba(20,60,58,.22);animation:tourPop .28s cubic-bezier(.2,.9,.3,1.2)}
@@ -709,6 +717,55 @@ html.shell .content{flex:1 1 auto;width:100%;max-width:none;overflow-y:auto;-web
 }
 @media(max-width:1100px){.settings-cols .tour-card{grid-column:1/-1}}
 @media(max-width:680px){.tour-card-in .btn{width:100%}}
+
+body:not(.pro) .pro-only{display:none!important}
+body.pro .nav [data-view=home],body.pro .nav [data-view=checkin],body.pro .nav [data-view=patterns],body.pro .nav [data-view=report],
+body.pro .tabbar [data-view=home],body.pro .tabbar [data-view=checkin],body.pro .tabbar [data-view=patterns],body.pro .tabbar [data-view=report],
+body.pro #newCheckinBtn,body.pro #calendar>.hero:not(.pro-only),body.pro .sym-del,body.pro .day-del,body.pro [data-log-day],
+body.pro #dayPanel .bao-side,body.pro [data-i18n="cal.foot"],body.pro .day-empty p:nth-of-type(2),body.pro .how-card,body.pro .pet-card,body.pro .reminder-card,body.pro .tour-card{display:none!important}
+body.pro .settings-cols .acc-card{grid-row:auto}
+.role-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.role-opts button{border:1px solid var(--line);background:#fff;color:#4f6163;border-radius:12px;padding:10px 6px;font-weight:750;font-size:13px;cursor:pointer}
+.role-opts button.on{background:var(--teal);border-color:var(--teal);color:#fff}
+#roleField[hidden],#codeField[hidden],.code-link[hidden]{display:none}
+.code-input{text-transform:uppercase;letter-spacing:.08em;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.code-help{margin:6px 0 0;text-align:left;line-height:1.45}
+.code-link{margin:8px 0 0;background:var(--mint);color:var(--teal-dark);border-radius:10px;padding:8px 10px;font-size:12.5px;font-weight:700;text-align:left}
+.pro-filter{min-width:240px}
+.pro-filter select{width:100%}
+.pro-empty{margin-bottom:18px}
+.pro-who{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin:16px 0 6px;padding:8px 12px;border-radius:12px;background:#eef6f3;color:var(--teal-dark);font-weight:800;font-size:14px}
+.pro-who small{font-weight:600;color:#7a8b8c;font-size:11.5px}
+.plan-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-bottom:20px}
+.plan{position:relative;background:#fff;border:1px solid var(--line);border-radius:22px;padding:22px 20px 20px;display:flex;flex-direction:column;gap:6px}
+.plan.best{border-color:var(--teal);box-shadow:0 10px 30px rgba(24,125,120,.12)}
+.plan.cur{outline:3px solid rgba(24,125,120,.25)}
+.plan h3{margin:0;font-size:20px}
+.plan .plan-d{color:#6b7c7d;font-size:13px;margin:0 0 6px}
+.plan .plan-price{font-size:26px;font-weight:800;color:#1f2f30}
+.plan .plan-price s{color:#9aa9a8;font-size:18px;font-weight:700;margin-right:6px}
+.plan .plan-price small{font-size:13px;font-weight:700;color:#8a9a9b}
+.plan .plan-free{display:inline-block;align-self:flex-start;background:var(--mint);color:var(--teal-dark);border-radius:20px;padding:3px 10px;font-size:11.5px;font-weight:800}
+.plan .plan-n{margin:8px 0 14px;color:#34494a;font-weight:700;font-size:14px}
+.plan .btn{margin-top:auto}
+.plan .plan-tag{position:absolute;top:-11px;right:16px;background:var(--teal);color:#fff;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:800}
+.plan .plan-tag.cur{background:#34494a}
+.code-form{margin:6px 0 14px}
+.code-form[hidden],.code-new[hidden]{display:none}
+.code-new{background:#f3faf8;border:1px dashed #9fd0c7;border-radius:16px;padding:16px;margin:4px 0 16px;text-align:center}
+.code-new .code-big{font:800 26px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;color:var(--teal-dark);margin:6px 0}
+.code-new p{margin:6px 0 10px;color:#5b6d6e;font-size:13px}
+.code-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 0;border-top:1px solid var(--line)}
+.code-row .c-code{font:800 14px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.05em;color:#1f2f30;min-width:130px}
+.code-row .c-mail{flex:1 1 180px;min-width:0;color:#5b6d6e;font-size:13px;overflow:hidden;text-overflow:ellipsis}
+.code-row .c-st{font-size:11.5px;font-weight:800;border-radius:20px;padding:3px 10px;background:#fff4e2;color:#8a6420}
+.code-row .c-st.ok{background:var(--mint);color:var(--teal-dark)}
+.code-row .c-st.gone{background:#f4ecec;color:#9a5b5b}
+.code-row button{border:0;background:none;color:#187d78;font-weight:750;font-size:12.5px;cursor:pointer;padding:4px 6px}
+.code-row button.rm{color:#b4573f}
+.share-note{margin:10px 0 0;background:#eef6f3;border-radius:10px;padding:8px 10px;font-size:12.5px;color:var(--teal-dark);font-weight:700}
+.share-note[hidden]{display:none}
+@media(max-width:930px){.plan-grid{grid-template-columns:1fr}}
 </style>
 <script>try{ if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) document.documentElement.classList.add('native'); if (/BAOApp\/2/.test(navigator.userAgent)) document.documentElement.classList.add('shell'); }catch(e){}</script>
 <script>
@@ -749,6 +806,9 @@ html.shell .content{flex:1 1 auto;width:100%;max-width:none;overflow-y:auto;-web
 </head>
 <body>
 <div class="tour" id="tour" hidden role="dialog" aria-modal="true" aria-labelledby="tourTitle">
+  <svg class="tour-dim" id="tourDim" aria-hidden="true"><defs><mask id="tourMask"><rect width="100%" height="100%" fill="#fff"/><g id="tourHoles"></g></mask></defs><rect width="100%" height="100%" fill="rgba(22,48,47,.5)" mask="url(#tourMask)"/></svg>
+  <div id="tourRings" aria-hidden="true"></div>
+  <div class="tour-arrow" id="tourArrow" hidden aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 5v29M11 23l13 14 13-14" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 5v29M11 23l13 14 13-14" fill="none" stroke="#187d78" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
   <div class="tour-box">
     <div class="tour-art"><span class="bao bao-cheer" id="tourArt"></span></div>
     <div class="tour-step" id="tourStep"></div>
@@ -772,6 +832,7 @@ html.shell .content{flex:1 1 auto;width:100%;max-width:none;overflow-y:auto;-web
       <button data-view="patterns"><svg viewBox="0 0 24 24"><path d="M4 18V6m0 12h16M7 15l3-4 3 2 4-6"/></svg><span data-i18n="nav.patterns">Patterns</span></button>
       <button data-view="calendar"><svg viewBox="0 0 24 24"><path d="M4 7.5h16v13H4zM4 7.5V5.5h16v2M8.5 3.5v3M15.5 3.5v3M4 11h16"/></svg><span data-i18n="nav.calendar">Calendar</span></button>
       <button data-view="report"><svg viewBox="0 0 24 24"><path d="M7 3h8l3 3v15H7zM15 3v4h4M9.5 12h6M9.5 16h6M9.5 8h2"/></svg><span data-i18n="nav.report">My report</span></button>
+      <button data-view="subs" class="pro-only"><svg viewBox="0 0 24 24"><path d="M4 7h16v12H4zM4 11h16M8 15h3M9 4h6v3H9z"/></svg><span data-i18n="nav.subs">Subscriptions</span></button>
       <button data-view="settings"><svg viewBox="0 0 24 24"><path d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z"/><path d="m19.2 13.4 1.1.8-1.8 3.1-1.3-.4a2.1 2.1 0 0 0-1.1.6l-.3 1.4h-3.6l-.3-1.4a2.1 2.1 0 0 0-1.1-.6l-1.3.4-1.8-3.1 1.1-.8a4.4 4.4 0 0 0 0-1.3l-1.1-.8 1.8-3.1 1.3.4a2.1 2.1 0 0 0 1.1-.6l.3-1.4h3.6l.3 1.4a2.1 2.1 0 0 0 1.1.6l1.3-.4 1.8 3.1-1.1.8a4.4 4.4 0 0 1 0 1.3Z"/></svg><span data-i18n="nav.settings">Settings</span></button>
     </nav>
     <div class="side-note">
@@ -801,6 +862,7 @@ html.shell .content{flex:1 1 auto;width:100%;max-width:none;overflow-y:auto;-web
       <button data-view="calendar"><svg viewBox="0 0 24 24"><path d="M4 7.5h16v13H4zM4 7.5V5.5h16v2M8.5 3.5v3M15.5 3.5v3M4 11h16"/></svg><span data-i18n="tab.calendar">Calendar</span></button>
       <button data-view="patterns"><svg viewBox="0 0 24 24"><path d="M4 18V6m0 12h16M7 15l3-4 3 2 4-6"/></svg><span data-i18n="tab.patterns">Patterns</span></button>
       <button data-view="report"><svg viewBox="0 0 24 24"><path d="M7 3h8l3 3v15H7zM15 3v4h4M9.5 12h6M9.5 16h6M9.5 8h2"/></svg><span data-i18n="tab.report">Report</span></button>
+      <button data-view="subs" class="pro-only"><svg viewBox="0 0 24 24"><path d="M4 7h16v12H4zM4 11h16M8 15h3M9 4h6v3H9z"/></svg><span data-i18n="tab.subs">Plans</span></button>
       <button data-view="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M5.6 18.4l1.8-1.8M16.6 7.4l1.8-1.8"/></svg><span data-i18n="tab.settings">Settings</span></button>
     </nav>
 
@@ -956,6 +1018,18 @@ html.shell .content{flex:1 1 auto;width:100%;max-width:none;overflow-y:auto;-web
           </div>
         </div>
 
+        <div class="hero pro-only">
+          <div>
+            <div class="eyebrow" data-i18n="proCal.eyebrow">Your patients</div>
+            <h2 class="title" data-i18n="proCal.h">Every symptom,<br><em>day by day.</em></h2>
+            <p class="lede" data-i18n="proCal.lede">Choose a patient or see everyone together. Tap a day to read what was written.</p>
+          </div>
+          <div class="pro-filter">
+            <label class="form-label" for="proPatient" data-i18n="proCal.filter">Patient</label>
+            <select class="input" id="proPatient"><option value="all">All patients</option></select>
+          </div>
+        </div>
+        <div class="callout pro-only pro-empty" id="proEmpty" hidden data-i18n="proCal.none">No patients yet. Open “Subscriptions”, create a code and give it to your patient.</div>
         <div class="cal-wrap">
           <div class="card">
             <div class="cal-head">
@@ -1015,6 +1089,30 @@ html.shell .content{flex:1 1 auto;width:100%;max-width:none;overflow-y:auto;-web
         </div>
       </section>
 
+      <section class="view" id="subs">
+        <div class="hero">
+          <div>
+            <div class="eyebrow" data-i18n="subs.eyebrow">Your practice</div>
+            <h2 class="title" data-i18n="subs.h">Plans and<br><em>patient codes.</em></h2>
+            <p class="lede" data-i18n="subs.lede">Choose a plan and create a code for each patient. Payments are not active yet: every plan is free for now.</p>
+          </div>
+        </div>
+        <div class="plan-grid" id="planGrid"></div>
+        <div class="card code-card" id="codeCard">
+          <div class="card-head"><div><h2 data-i18n="subs.codesTitle">Patient codes</h2><div class="muted" id="codeUsage"></div></div></div>
+          <div class="code-form" id="codeForm" hidden>
+            <label class="form-label" for="codeEmail" data-i18n="subs.emailLabel">Patient’s email</label>
+            <div class="inline-form small">
+              <input class="input" id="codeEmail" type="email" autocomplete="off" placeholder="patient@example.com">
+              <button class="btn primary" id="codeMake" type="button" data-i18n="subs.create">Create code</button>
+            </div>
+            <div class="login-error" id="codeErr" hidden></div>
+          </div>
+          <div class="code-new" id="codeNew" hidden></div>
+          <div class="code-list" id="codeList"></div>
+        </div>
+      </section>
+
       <section class="view" id="settings">
         <div class="hero">
           <div>
@@ -1060,6 +1158,7 @@ html.shell .content{flex:1 1 auto;width:100%;max-width:none;overflow-y:auto;-web
             </div>
 
             <div class="verify-box" id="verifyBox" hidden><span data-i18n="ver.note">📩 Please confirm your email: we sent you a link.</span> <button class="linklike" id="verifyResend" type="button" data-i18n="ver.resend">Send it again</button></div>
+            <p class="share-note" id="shareNote" hidden></p>
             <div class="acc-actions"><button class="btn outline" id="pwChange" type="button" data-i18n="pw.change">Change password</button></div>
             <div class="signout-row mobile-only"><button class="btn outline" id="signOut2" type="button" data-i18n="side.signout">Sign out</button></div>
             <button class="linklike danger" id="delOpen" type="button" data-i18n="acc.delete">Delete my account</button>
@@ -1184,6 +1283,19 @@ html.shell .content{flex:1 1 auto;width:100%;max-width:none;overflow-y:auto;-web
     </div>
 
     <div id="nameField" hidden>
+      <div id="roleField">
+        <div class="form-label" style="margin-top:12px" data-i18n="role.label">I am…</div>
+        <div class="role-opts" id="roleOpts">
+          <button type="button" data-role="patient" class="on" data-i18n="role.patient">Patient</button>
+          <button type="button" data-role="therapist" data-i18n="role.therapist">Therapist / Doctor</button>
+        </div>
+      </div>
+      <div id="codeField">
+        <label class="form-label" for="loginCode" style="margin-top:12px" data-i18n="code.label">Patient code</label>
+        <input class="input code-input" id="loginCode" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="BAO-XXXX-XXXX">
+        <p class="tiny code-help" data-i18n="code.help">You get this code from your therapist or doctor. It only works with the email address they registered for you. Your check-ins will be visible to them.</p>
+        <p class="code-link" id="codeLink" hidden></p>
+      </div>
       <label class="form-label" for="loginName" style="margin-top:12px" data-i18n="login.name">What should Bao call you?</label>
       <input class="input" id="loginName" maxlength="24" autocomplete="given-name" placeholder="Name">
       <label class="consent">
@@ -4102,7 +4214,7 @@ const store = {
 const LS_USERS = 'somatic.users.v2', LS_THROTTLE = 'somatic.throttle.v1';
 let USER = null;
 let USER_NAME = '';
-let USER_VERIFIED = true, JUST_REGISTERED = false, TOUR_PENDING = false;
+let USER_VERIFIED = true, JUST_REGISTERED = false, TOUR_PENDING = false, USER_ROLE = 'patient', USER_SHARED = '', REG_EXTRA = {};
 
 const own = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 function localUsers(){
@@ -4256,6 +4368,7 @@ const auth = {
       try{
         const r = await jget('/api/auth/me');
         USER_NAME = r.name || '';
+        USER_ROLE = r.role === 'pro' ? 'pro' : 'patient'; USER_SHARED = r.shared || '';
       USER_VERIFIED = r.verified !== false;
         USER_VERIFIED = r.verified !== false;
         if (r.user) await resumeSession(r.user);   // unlocks the encrypted local backup, if this tab has the key
@@ -4275,6 +4388,8 @@ const auth = {
         throw err;
       }
       USER_NAME = r.name || '';
+      USER_ROLE = r.role === 'pro' ? 'pro' : 'patient';
+      try{ const me = await jget('/api/auth/me'); USER_SHARED = me.shared || ''; }catch(e){}
       const rec = own(localUsers(), r.user) ? localUsers()[r.user] : null;
       let made = rec ? await openRecord(rec, p) : null;
       if (made && made.rec) storeRecord(r.user, made.rec);
@@ -4303,8 +4418,10 @@ const auth = {
   async register(u, p, name){
     if (!cryptoReady()) throw new Error(t('err.noCrypto'));
     if (MODE === 'server'){
-      const r = await jpost('/api/auth/register', { username:u, password:p, name, lang: LANG });
+      const r = await jpost('/api/auth/register', Object.assign({ username:u, password:p, name, lang: LANG }, REG_EXTRA));
       USER_NAME = r.name || name;
+      USER_ROLE = r.role === 'pro' ? 'pro' : 'patient';
+      try{ const me = await jget('/api/auth/me'); USER_SHARED = me.shared || ''; }catch(e){}
       USER_VERIFIED = r.verified !== false;
       JUST_REGISTERED = true;
       const prev = own(localUsers(), r.user) ? localUsers()[r.user] : null;
@@ -5436,6 +5553,7 @@ function renderDayPanel(){
       areas.map(a => '<span>' + esc(partName(a)) + '</span>').join('') + '</div></div>';
 
   list.forEach((e, idx) => {
+    if (e.patient) html += '<div class="pro-who">👤 ' + esc(e.patient.name || e.patient.email) + ' <small>' + esc(e.patient.email) + '</small></div>';
     if (list.length > 1){
       const d = dOf(e);
       html += '<div class="day-sec"><h4>' + t('day.nth', idx + 1) + ' · ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes()) + '</h4></div>';
@@ -5738,11 +5856,15 @@ function renderPetStudio(){
 }
 
 function paintTitle(id){
-  const [title, sub] = t('title.' + id);
+  const [title, sub] = t('title.' + (document.body.classList.contains('pro') && id === 'calendar' ? 'proCal' : id));
   $('pageTitle').textContent = title;
   $('pageSub').textContent   = sub;
 }
 function go(id){
+  const pro = document.body.classList.contains('pro');
+  if (pro && ['home', 'checkin', 'patterns', 'report'].includes(id)) id = 'calendar';
+  if (pro && id === 'calendar') loadPro();
+  if (pro && id === 'subs') loadSubs();
   $$('.view').forEach(v => v.classList.toggle('active', v.id === id));
   $$('.nav button, .tabbar button').forEach(b => b.classList.toggle('active', b.dataset.view === id));
   paintTitle(id);
@@ -5814,12 +5936,14 @@ function paintLogin(){
   paintLoginText();
   $('loginPass').setAttribute('autocomplete', loginMode === 'create' ? 'new-password' : 'current-password');
   $('nameField').hidden = loginMode !== 'create';
+  paintRole();
   recoverFields();
   $('loginError').hidden = true;
   setTimeout(() => $('loginUser').focus(), 60);
 }
 function showLogin(){
   itGate(false);
+  document.body.classList.remove('pro'); USER_ROLE = 'patient'; USER_SHARED = ''; if (typeof ROLE_PICK !== 'undefined') ROLE_PICK = 'patient';
   loginMode = 'signin';
   document.querySelector('.app').classList.add('locked');
   $('loginScreen').hidden = false;
@@ -5839,7 +5963,10 @@ async function enterApp(){
   await store.init();
   await loadPatterns();
   await loadPet();
+  document.body.classList.toggle('pro', USER_ROLE === 'pro');
+  $('shareNote').hidden = !USER_SHARED; if (USER_SHARED) $('shareNote').textContent = '🔗 ' + t('share.with', USER_SHARED);
   renderAll();
+  if (USER_ROLE === 'pro'){ await loadPro(); TOUR_PENDING = false; }
   go('home');
   if (TOUR_PENDING){ TOUR_PENDING = false; setTimeout(openTour, 700); }
   applyReminder();
@@ -5868,6 +5995,14 @@ $('loginForm').addEventListener('submit', async e => {
       const nick = $('loginName').value.trim().slice(0, 24);
       if (nick.length < 1) return loginErr(t('err.name'));
       if (!$('loginConsent').checked) return loginErr(t('err.consent'));
+      REG_EXTRA = {};
+      if (MODE === 'server'){
+        if (ROLE_PICK === 'patient'){
+          const code = $('loginCode').value.trim();
+          if (!code) return loginErr(t('err.code'));
+          REG_EXTRA = { role:'patient', code };
+        } else REG_EXTRA = { role:'pro', kind:'therapist' };
+      }
       USER = await auth.register(u, p, nick);
     } else {
       USER = await auth.login(u, p);
@@ -5876,7 +6011,8 @@ $('loginForm').addEventListener('submit', async e => {
     await enterApp();
     showToast(t('login.welcome', displayName()));
   }catch(ex){
-    loginErr(ex.message || t('err.generic'));
+    const why = ex && ex.data && ex.data.reason ? t('why.' + ex.data.reason) : '';
+    loginErr(why && why.indexOf('why.') !== 0 ? why : (ex.message || t('err.generic')));
   }finally{
     $('loginSubmit').disabled = false;
   }
@@ -6787,12 +6923,40 @@ Object.assign(I18N.nl, { 'forgot.wait': 'Je hebt in korte tijd meerdere e-mails 
 // ---- tutorial ----
 const TOUR = [
   { art:'cheer',     k:'tour.s1' },
-  { art:'checkin',   k:'tour.s2' },
-  { art:'listening', k:'tour.s3' },
-  { art:'thinking',  k:'tour.s4' },
-  { art:'phone',     k:'tour.s5' },
-  { art:'happy',     k:'tour.s6' }
+  { art:'checkin',   k:'tour.s2', to:['#newCheckinBtn'] },
+  { art:'listening', k:'tour.s3', to:['#newCheckinBtn'] },
+  { art:'thinking',  k:'tour.s4', to:['[data-view=calendar]'] },
+  { art:'phone',     k:'tour.s5', to:['[data-view=patterns]', '[data-view=report]'] },
+  { art:'happy',     k:'tour.s6', to:['[data-view=settings]'] }
 ];
+function tourVisible(sel){
+  return [...document.querySelectorAll(sel)].find(el => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(el).visibility !== 'hidden'; });
+}
+function placeTour(){
+  const st = TOUR[tourI], holes = $('tourHoles'), rings = $('tourRings'), arrow = $('tourArrow');
+  holes.innerHTML = ''; rings.innerHTML = '';
+  const els = (st.to || []).map(tourVisible).filter(Boolean);
+  if (!els.length){ arrow.hidden = true; holes.innerHTML = ''; return; }
+  const P = 6, NS = 'http://www.w3.org/2000/svg';
+  els.forEach(el => {
+    const r = el.getBoundingClientRect(), rad = Math.min(16, r.height / 2 + P);
+    const h = document.createElementNS(NS, 'rect');
+    h.setAttribute('x', r.left - P); h.setAttribute('y', r.top - P); h.setAttribute('width', r.width + 2*P); h.setAttribute('height', r.height + 2*P);
+    h.setAttribute('rx', rad); h.setAttribute('fill', '#000'); holes.appendChild(h);
+    const g = document.createElement('div'); g.className = 'tour-ring';
+    Object.assign(g.style, { left:(r.left - P) + 'px', top:(r.top - P) + 'px', width:(r.width + 2*P) + 'px', height:(r.height + 2*P) + 'px', borderRadius: rad + 'px' });
+    rings.appendChild(g);
+  });
+  const r = els[0].getBoundingClientRect(), A = 52, cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+  let x, y, rot, bx = '0px', by = '0px';
+  if (innerWidth > 680 && r.right < 300){ x = r.right + 14; y = cy - A/2; rot = '90deg'; bx = '-8px'; }   // menu a sinistra: freccia che punta a sinistra
+  else if (cy > innerHeight / 2){ x = cx - A/2; y = r.top - P - A - 6; rot = '0deg'; by = '8px'; }       // in basso: freccia verso il basso
+  else { x = cx - A/2; y = r.bottom + P + 6; rot = '180deg'; by = '-8px'; }                                  // in alto: freccia verso l'alto
+  x = Math.max(6, Math.min(innerWidth - A - 6, x));
+  Object.assign(arrow.style, { left:x + 'px', top:y + 'px' });
+  arrow.style.setProperty('--rot', rot); arrow.style.setProperty('--bx', bx); arrow.style.setProperty('--by', by);
+  arrow.hidden = false;
+}
 let tourI = 0;
 function tourNames(){ return { cal:t('nav.calendar'), pat:t('nav.patterns'), rep:t('nav.report'), set:t('nav.settings') }; }
 function paintTour(){
@@ -6807,8 +6971,17 @@ function paintTour(){
   $('tourNext').textContent = last ? t('tour.done') : (tourI === 0 ? t('tour.go') : t('tour.next'));
   $('tourSkip').textContent = t('tour.skip');
   $('tourSkip').hidden = last;
+  placeTour();
 }
-function openTour(){ tourI = 0; paintTour(); $('tour').hidden = false; setTimeout(() => $('tourNext').focus(), 50); }
+function openTour(){
+  // parte sempre dalla pagina Panoramica, in cima, con il menu chiuso
+  go('home');
+  document.querySelector('.sidebar').classList.remove('open');
+  const sc = typeof scroller === 'function' && scroller(); if (sc) sc.scrollTop = 0; window.scrollTo(0, 0);
+  tourI = 0; $('tour').hidden = false; paintTour();
+  setTimeout(() => { placeTour(); $('tourNext').focus(); }, 350);
+}
+addEventListener('resize', () => { if (!$('tour').hidden) placeTour(); });
 function closeTour(){ $('tour').hidden = true; }
 $('tourNext').addEventListener('click', () => { if (tourI < TOUR.length - 1){ tourI++; paintTour(); } else closeTour(); });
 $('tourBack').addEventListener('click', () => { if (tourI > 0){ tourI--; paintTour(); } });
@@ -6892,6 +7065,262 @@ Object.assign(I18N.nl, {
   'tour.s4h': () => 'Je kalender', 'tour.s4p': n => 'In „' + n.cal + '” zie je elke dag in één oogopslag. Tik op een dag om hem terug te lezen, een vergeten check-in toe te voegen of er een te verwijderen.',
   'tour.s5h': () => 'Patronen en rapport', 'tour.s5p': n => '„' + n.pat + '” laat zien wat het vaakst terugkomt. „' + n.rep + '” maakt een samenvatting voor je arts. Ik stel nooit een diagnose.',
   'tour.s6h': () => 'Maak het van jou', 'tour.s6p': n => 'In „' + n.set + '” ontwerp je je avatar, kies je je taal, stel je een zachte dagelijkse herinnering in en kun je deze uitleg opnieuw bekijken.'
+});
+
+
+// ---- ruoli alla registrazione ----
+let ROLE_PICK = 'patient';
+function paintRole(){
+  const server = MODE === 'server';
+  $('roleField').hidden = !server;
+  $('codeField').hidden = !server || ROLE_PICK !== 'patient';
+  $$('#roleOpts button').forEach(b => b.classList.toggle('on', b.dataset.role === ROLE_PICK));
+}
+$$('#roleOpts button').forEach(b => b.addEventListener('click', () => { ROLE_PICK = b.dataset.role; paintRole(); }));
+let codeCheckT = null;
+function checkCode(){
+  clearTimeout(codeCheckT);
+  const code = $('loginCode').value.trim(), email = $('loginUser').value.trim().toLowerCase();
+  $('codeLink').hidden = true;
+  if (code.replace(/[^a-z0-9]/gi, '').length < 11) return;
+  codeCheckT = setTimeout(async () => {
+    try{
+      const r = await jpost('/api/code/check', { code, email });
+      if (r && r.pro && r.pro.name){ $('codeLink').textContent = '🔗 ' + t('code.link', r.pro.name); $('codeLink').hidden = false; }
+    }catch(ex){
+      const why = ex && ex.data && ex.data.reason ? t('why.' + ex.data.reason) : '';
+      if (why && why.indexOf('why.') !== 0){ $('codeLink').textContent = why; $('codeLink').hidden = false; }
+    }
+  }, 450);
+}
+$('loginCode').addEventListener('input', checkCode);
+$('loginUser').addEventListener('change', () => { if (ROLE_PICK === 'patient' && loginMode === 'create') checkCode(); });
+
+// ---- calendario pazienti ----
+let PRO_ALL = [], PRO_PATIENTS = [];
+async function loadPro(){
+  try{ const r = await jget('/api/pro/checkins'); PRO_PATIENTS = r.patients || []; PRO_ALL = r.checkins || []; }
+  catch(e){ PRO_PATIENTS = []; PRO_ALL = []; }
+  const sel = $('proPatient'), cur = sel.value || 'all';
+  sel.innerHTML = '<option value="all">' + esc(t('proCal.all')) + ' (' + PRO_PATIENTS.length + ')</option>' +
+    PRO_PATIENTS.map(p => '<option value="' + esc(p.email) + '">' + esc((p.name || p.email) + ' · ' + p.email) + '</option>').join('');
+  sel.value = PRO_PATIENTS.some(p => p.email === cur) ? cur : 'all';
+  applyProFilter();
+}
+function applyProFilter(){
+  const v = $('proPatient').value;
+  DATA = v === 'all' ? PRO_ALL.slice() : PRO_ALL.filter(e => e.patient && e.patient.email === v);
+  $('proEmpty').hidden = PRO_PATIENTS.length > 0;
+  renderCalendar();
+}
+$('proPatient').addEventListener('change', applyProFilter);
+
+// ---- abbonamenti e codici ----
+const PLAN_ORDER = ['starter', 'practice', 'clinic'];
+let SUBS = { plan:'', plans:{}, codes:[] }, SUBS_PICK = '';
+async function loadSubs(){
+  try{ SUBS = await jget('/api/pro'); }catch(e){}
+  if (!SUBS_PICK) SUBS_PICK = SUBS.plan || '';
+  renderSubs();
+}
+function renderSubs(){
+  const plans = SUBS.plans || {};
+  $('planGrid').innerHTML = PLAN_ORDER.filter(id => plans[id]).map(id => {
+    const p = plans[id], cur = SUBS.plan === id, pick = SUBS_PICK === id;
+    return '<div class="plan' + (id === 'practice' ? ' best' : '') + (pick ? ' cur' : '') + '">' +
+      (cur ? '<span class="plan-tag cur">' + esc(t('subs.current')) + '</span>' : id === 'practice' ? '<span class="plan-tag">' + esc(t('subs.popular')) + '</span>' : '') +
+      '<h3>' + esc(t('plan.' + id)) + '</h3><p class="plan-d">' + esc(t('plan.' + id + 'D')) + '</p>' +
+      '<div class="plan-price">' + (p.price ? '<s>€' + p.price + '</s>€0 <small>' + esc(t('subs.per')) + '</small>' : esc(t('subs.freeAlways'))) + '</div>' +
+      (p.price ? '<span class="plan-free">' + esc(t('subs.free')) + '</span>' : '') +
+      '<div class="plan-n">✓ ' + esc(t('subs.patients', p.patients)) + '</div>' +
+      '<button class="btn ' + (pick ? 'primary' : 'outline') + '" type="button" data-plan="' + id + '">' + esc(t('subs.get')) + '</button></div>';
+  }).join('');
+  $$('#planGrid [data-plan]').forEach(b => b.addEventListener('click', () => {
+    SUBS_PICK = b.dataset.plan; renderSubs();
+    $('codeCard').scrollIntoView({ behavior:'smooth', block:'start' });
+    setTimeout(() => $('codeEmail').focus(), 400);
+  }));
+  const plan = SUBS_PICK || SUBS.plan, lim = plan && plans[plan] ? plans[plan].patients : 0;
+  $('codeUsage').textContent = plan ? t('subs.usage', SUBS.codes.length, lim, t('plan.' + plan)) : t('subs.noPlan');
+  $('codeForm').hidden = !plan;
+  $('codeList').innerHTML = SUBS.codes.length ? SUBS.codes.slice().reverse().map(c => {
+    const st = c.patient && !c.patient.gone ? '<span class="c-st ok">' + esc(t('subs.linked')) + ': ' + esc(c.patient.name || c.email) + '</span>'
+             : c.patient && c.patient.gone ? '<span class="c-st gone">' + esc(t('subs.gone')) + '</span>'
+             : '<span class="c-st">' + esc(t('subs.waiting')) + '</span>';
+    return '<div class="code-row"><span class="c-code">' + esc(c.code) + '</span><span class="c-mail">' + esc(c.email) + '</span>' + st +
+      '<button type="button" data-copy="' + esc(c.code) + '">' + esc(t('subs.copy')) + '</button>' +
+      '<button type="button" class="rm" data-rm="' + esc(c.code) + '">' + esc(t('subs.remove')) + '</button></div>';
+  }).join('') : '<p class="muted" style="margin:6px 0 0">' + esc(t('subs.none')) + '</p>';
+  wireCopy($('codeList'));
+  $$('#codeList [data-rm]').forEach(b => b.addEventListener('click', async () => {
+    if (!confirm(t('subs.confirm'))) return;
+    try{ await jpost('/api/pro/code/delete', { code: b.dataset.rm }); }catch(e){}
+    $('codeNew').hidden = true;
+    loadSubs();
+  }));
+}
+function wireCopy(root){
+  root.querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', async () => {
+    const txt = b.dataset.copy;
+    try{ await navigator.clipboard.writeText(txt); }
+    catch(e){ const ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); }catch(_){} ta.remove(); }
+    const old = b.textContent; b.textContent = t('subs.copied'); setTimeout(() => { b.textContent = old; }, 1400);
+  }));
+}
+$('codeMake').addEventListener('click', async () => {
+  const email = $('codeEmail').value.trim().toLowerCase();
+  $('codeErr').hidden = true;
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){ $('codeErr').textContent = t('why.email_bad'); $('codeErr').hidden = false; return; }
+  $('codeMake').disabled = true;
+  try{
+    const r = await jpost('/api/pro/code', { email, plan: SUBS_PICK || SUBS.plan });
+    $('codeNew').innerHTML = '<div class="muted">' + esc(t('subs.codeFor', email)) + '</div><div class="code-big">' + esc(r.code) + '</div>' +
+      '<p>' + esc(t('subs.give')) + '</p><button class="btn primary" type="button" data-copy="' + esc(r.code) + '">' + esc(t('subs.copy')) + '</button>';
+    $('codeNew').hidden = false;
+    wireCopy($('codeNew'));
+    $('codeEmail').value = '';
+    SUBS_PICK = r.plan || SUBS_PICK;
+    await loadSubs();
+  }catch(ex){
+    const why = ex && ex.data && ex.data.reason ? t('why.' + ex.data.reason) : '';
+    $('codeErr').textContent = why && why.indexOf('why.') !== 0 ? why : (ex.message || t('err.generic'));
+    $('codeErr').hidden = false;
+  }finally{ $('codeMake').disabled = false; }
+});
+$('codeEmail').addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); $('codeMake').click(); } });
+
+Object.assign(I18N.en, {
+  'role.label':'I am…','role.patient':'Patient','role.therapist':'Therapist / Doctor','role.doctor':'Doctor',
+  'code.label':'Patient code','code.help':'You get this code from your therapist or doctor. It only works with the email address they registered for you. Your check-ins will be visible to them.',
+  'code.link': name => 'This code links you to ' + name + '.','err.code':'Please enter the patient code you received.',
+  'why.code_bad':'This patient code does not exist. Check it and try again.','why.code_used':'This patient code was already used.','why.code_email':'This code belongs to a different email address. Use the email your therapist or doctor registered.',
+  'why.plan_none':'Choose a plan first.','why.plan_full':'This plan is full. Choose a bigger plan.','why.email_bad':'Please write the patient’s email address.','why.email_taken':'This email already has a BAO account.','why.plan_small':'You have more patients than this plan allows.',
+  'nav.subs':'Subscriptions','tab.subs':'Plans',
+  'title.proCal':['Patients’ calendar','Every symptom your patients logged'],'title.subs':['Subscriptions','Plans and patient codes'],
+  'proCal.eyebrow':'Your patients','proCal.h':'Every symptom,<br><em>day by day.</em>','proCal.lede':'Choose a patient or see everyone together. Tap a day to read what was written.',
+  'proCal.filter':'Patient','proCal.all':'All patients','proCal.none':'No patients yet. Open “Subscriptions”, create a code and give it to your patient.',
+  'subs.eyebrow':'Your practice','subs.h':'Plans and<br><em>patient codes.</em>','subs.lede':'Choose a plan and create a code for each patient. Payments are not active yet: every plan is free for now.',
+  'plan.starter':'Starter','plan.starterD':'To try BAO with a few patients.','plan.practice':'Practice','plan.practiceD':'For a private practice.','plan.clinic':'Clinic','plan.clinicD':'For teams and clinics.',
+  'subs.per':'/ month','subs.free':'Free during the beta','subs.freeAlways':'Free','subs.patients': n => 'Up to ' + n + ' patients','subs.get':'Get a patient code','subs.current':'Current plan','subs.popular':'Most chosen',
+  'subs.codesTitle':'Patient codes','subs.usage': (u, n, p) => u + ' of ' + n + ' patients · ' + p,'subs.noPlan':'Choose a plan above to create codes.',
+  'subs.emailLabel':'Patient’s email','subs.create':'Create code','subs.codeFor': e => 'Code for ' + e,'subs.give':'Give this code to your patient. They enter it when they create their BAO account, with this same email address.',
+  'subs.copy':'Copy','subs.copied':'Copied!','subs.waiting':'Waiting for sign-up','subs.linked':'Linked','subs.gone':'Account deleted','subs.remove':'Remove','subs.none':'No codes yet.',
+  'subs.confirm':'Remove this code? If the patient is already linked, you will no longer see their check-ins.',
+  'share.with': n => 'Your check-ins are shared with ' + n + '.'
+});
+Object.assign(I18N.it, {
+  'role.label':'Sono…','role.patient':'Paziente','role.therapist':'Terapeuta / Medico',
+  'code.label':'Codice paziente','code.help':'Te lo dà il tuo terapeuta o medico. Funziona solo con l’indirizzo email che ha registrato per te. I tuoi check-in saranno visibili a lui o lei.',
+  'code.link': name => 'Questo codice ti collega a ' + name + '.','err.code':'Inserisci il codice paziente che hai ricevuto.',
+  'why.code_bad':'Questo codice paziente non esiste. Controllalo e riprova.','why.code_used':'Questo codice paziente è già stato usato.','why.code_email':'Questo codice appartiene a un altro indirizzo email. Usa l’email che ha registrato il tuo terapeuta o medico.',
+  'why.plan_none':'Scegli prima un piano.','why.plan_full':'Questo piano è pieno. Scegline uno più grande.','why.email_bad':'Scrivi l’indirizzo email del paziente.','why.email_taken':'Questa email ha già un account BAO.','why.plan_small':'Hai più pazienti di quanti ne permetta questo piano.',
+  'nav.subs':'Abbonamenti','tab.subs':'Piani',
+  'title.proCal':['Calendario pazienti','Tutti i sintomi registrati dai tuoi pazienti'],'title.subs':['Abbonamenti','Piani e codici paziente'],
+  'proCal.eyebrow':'I tuoi pazienti','proCal.h':'Ogni sintomo,<br><em>giorno per giorno.</em>','proCal.lede':'Scegli un paziente o guardali tutti insieme. Tocca un giorno per leggere cosa è stato scritto.',
+  'proCal.filter':'Paziente','proCal.all':'Tutti i pazienti','proCal.none':'Nessun paziente per ora. Apri “Abbonamenti”, crea un codice e dallo al tuo paziente.',
+  'subs.eyebrow':'Il tuo studio','subs.h':'Piani e<br><em>codici paziente.</em>','subs.lede':'Scegli un piano e crea un codice per ogni paziente. I pagamenti non sono ancora attivi: per ora ogni piano è gratuito.',
+  'plan.starter':'Starter','plan.starterD':'Per provare BAO con pochi pazienti.','plan.practice':'Studio','plan.practiceD':'Per uno studio privato.','plan.clinic':'Clinica','plan.clinicD':'Per team e cliniche.',
+  'subs.per':'/ mese','subs.free':'Gratis durante la beta','subs.freeAlways':'Gratis','subs.patients': n => 'Fino a ' + n + ' pazienti','subs.get':'Ottieni un codice paziente','subs.current':'Piano attuale','subs.popular':'Il più scelto',
+  'subs.codesTitle':'Codici paziente','subs.usage': (u, n, p) => u + ' di ' + n + ' pazienti · ' + p,'subs.noPlan':'Scegli un piano qui sopra per creare i codici.',
+  'subs.emailLabel':'Email del paziente','subs.create':'Crea il codice','subs.codeFor': e => 'Codice per ' + e,'subs.give':'Dai questo codice al tuo paziente. Lo inserisce quando crea il suo account BAO, con questa stessa email.',
+  'subs.copy':'Copia','subs.copied':'Copiato!','subs.waiting':'In attesa di registrazione','subs.linked':'Collegato','subs.gone':'Account eliminato','subs.remove':'Rimuovi','subs.none':'Ancora nessun codice.',
+  'subs.confirm':'Rimuovere questo codice? Se il paziente è già collegato, non vedrai più i suoi check-in.',
+  'share.with': n => 'I tuoi check-in sono condivisi con ' + n + '.'
+});
+Object.assign(I18N.de, {
+  'role.label':'Ich bin…','role.patient':'Patient:in','role.therapist':'Therapeut:in / Ärzt:in',
+  'code.label':'Patientencode','code.help':'Du bekommst ihn von deiner Therapeutin, deinem Therapeuten oder deiner Ärztin. Er funktioniert nur mit der E-Mail-Adresse, die für dich eingetragen wurde. Deine Check-ins sind für diese Person sichtbar.',
+  'code.link': name => 'Dieser Code verbindet dich mit ' + name + '.','err.code':'Bitte gib den Patientencode ein, den du bekommen hast.',
+  'why.code_bad':'Diesen Patientencode gibt es nicht. Prüfe ihn und versuche es erneut.','why.code_used':'Dieser Patientencode wurde schon benutzt.','why.code_email':'Dieser Code gehört zu einer anderen E-Mail-Adresse. Nutze die E-Mail, die für dich eingetragen wurde.',
+  'why.plan_none':'Wähle zuerst einen Plan.','why.plan_full':'Dieser Plan ist voll. Wähle einen größeren Plan.','why.email_bad':'Bitte gib die E-Mail-Adresse der Patientin oder des Patienten ein.','why.email_taken':'Diese E-Mail hat schon ein BAO-Konto.','why.plan_small':'Du hast mehr Patient:innen, als dieser Plan erlaubt.',
+  'nav.subs':'Abonnements','tab.subs':'Pläne',
+  'title.proCal':['Patientenkalender','Alle Symptome deiner Patient:innen'],'title.subs':['Abonnements','Pläne und Patientencodes'],
+  'proCal.eyebrow':'Deine Patient:innen','proCal.h':'Jedes Symptom,<br><em>Tag für Tag.</em>','proCal.lede':'Wähle eine Person oder sieh alle zusammen. Tippe auf einen Tag, um zu lesen, was geschrieben wurde.',
+  'proCal.filter':'Patient:in','proCal.all':'Alle Patient:innen','proCal.none':'Noch keine Patient:innen. Öffne „Abonnements“, erstelle einen Code und gib ihn weiter.',
+  'subs.eyebrow':'Deine Praxis','subs.h':'Pläne und<br><em>Patientencodes.</em>','subs.lede':'Wähle einen Plan und erstelle für jede Person einen Code. Zahlungen sind noch nicht aktiv: Alle Pläne sind vorerst kostenlos.',
+  'plan.starter':'Starter','plan.starterD':'Um BAO mit wenigen Patient:innen zu testen.','plan.practice':'Praxis','plan.practiceD':'Für eine eigene Praxis.','plan.clinic':'Klinik','plan.clinicD':'Für Teams und Kliniken.',
+  'subs.per':'/ Monat','subs.free':'Kostenlos in der Beta','subs.freeAlways':'Kostenlos','subs.patients': n => 'Bis zu ' + n + ' Patient:innen','subs.get':'Patientencode holen','subs.current':'Aktueller Plan','subs.popular':'Am häufigsten gewählt',
+  'subs.codesTitle':'Patientencodes','subs.usage': (u, n, p) => u + ' von ' + n + ' Patient:innen · ' + p,'subs.noPlan':'Wähle oben einen Plan, um Codes zu erstellen.',
+  'subs.emailLabel':'E-Mail der Patientin / des Patienten','subs.create':'Code erstellen','subs.codeFor': e => 'Code für ' + e,'subs.give':'Gib diesen Code weiter. Er wird beim Erstellen des BAO-Kontos eingegeben, mit genau dieser E-Mail-Adresse.',
+  'subs.copy':'Kopieren','subs.copied':'Kopiert!','subs.waiting':'Wartet auf Registrierung','subs.linked':'Verbunden','subs.gone':'Konto gelöscht','subs.remove':'Entfernen','subs.none':'Noch keine Codes.',
+  'subs.confirm':'Diesen Code entfernen? Ist die Person schon verbunden, siehst du ihre Check-ins nicht mehr.',
+  'share.with': n => 'Deine Check-ins werden mit ' + n + ' geteilt.'
+});
+Object.assign(I18N.fr, {
+  'role.label':'Je suis…','role.patient':'Patient·e','role.therapist':'Thérapeute / Médecin',
+  'code.label':'Code patient','code.help':'Tu le reçois de ton ou ta thérapeute ou médecin. Il ne marche qu’avec l’adresse e-mail enregistrée pour toi. Tes check-ins lui seront visibles.',
+  'code.link': name => 'Ce code te relie à ' + name + '.','err.code':'Entre le code patient que tu as reçu.',
+  'why.code_bad':'Ce code patient n’existe pas. Vérifie-le et réessaie.','why.code_used':'Ce code patient a déjà été utilisé.','why.code_email':'Ce code appartient à une autre adresse e-mail. Utilise celle enregistrée par ton ou ta thérapeute.',
+  'why.plan_none':'Choisis d’abord une formule.','why.plan_full':'Cette formule est complète. Choisis-en une plus grande.','why.email_bad':'Écris l’adresse e-mail du patient.','why.email_taken':'Cette adresse a déjà un compte BAO.','why.plan_small':'Tu as plus de patients que cette formule ne le permet.',
+  'nav.subs':'Abonnements','tab.subs':'Formules',
+  'title.proCal':['Calendrier patients','Tous les symptômes notés par tes patients'],'title.subs':['Abonnements','Formules et codes patient'],
+  'proCal.eyebrow':'Tes patients','proCal.h':'Chaque symptôme,<br><em>jour après jour.</em>','proCal.lede':'Choisis un patient ou vois-les tous ensemble. Touche un jour pour lire ce qui a été écrit.',
+  'proCal.filter':'Patient','proCal.all':'Tous les patients','proCal.none':'Pas encore de patients. Ouvre « Abonnements », crée un code et donne-le à ton patient.',
+  'subs.eyebrow':'Ton cabinet','subs.h':'Formules et<br><em>codes patient.</em>','subs.lede':'Choisis une formule et crée un code pour chaque patient. Les paiements ne sont pas encore actifs : toutes les formules sont gratuites pour l’instant.',
+  'plan.starter':'Starter','plan.starterD':'Pour essayer BAO avec quelques patients.','plan.practice':'Cabinet','plan.practiceD':'Pour un cabinet privé.','plan.clinic':'Clinique','plan.clinicD':'Pour les équipes et les cliniques.',
+  'subs.per':'/ mois','subs.free':'Gratuit pendant la bêta','subs.freeAlways':'Gratuit','subs.patients': n => 'Jusqu’à ' + n + ' patients','subs.get':'Obtenir un code patient','subs.current':'Formule actuelle','subs.popular':'La plus choisie',
+  'subs.codesTitle':'Codes patient','subs.usage': (u, n, p) => u + ' sur ' + n + ' patients · ' + p,'subs.noPlan':'Choisis une formule ci-dessus pour créer des codes.',
+  'subs.emailLabel':'E-mail du patient','subs.create':'Créer le code','subs.codeFor': e => 'Code pour ' + e,'subs.give':'Donne ce code à ton patient. Il le saisit en créant son compte BAO, avec cette même adresse e-mail.',
+  'subs.copy':'Copier','subs.copied':'Copié !','subs.waiting':'En attente d’inscription','subs.linked':'Relié','subs.gone':'Compte supprimé','subs.remove':'Retirer','subs.none':'Pas encore de codes.',
+  'subs.confirm':'Retirer ce code ? Si le patient est déjà relié, tu ne verras plus ses check-ins.',
+  'share.with': n => 'Tes check-ins sont partagés avec ' + n + '.'
+});
+Object.assign(I18N.es, {
+  'role.label':'Soy…','role.patient':'Paciente','role.therapist':'Terapeuta / Médico',
+  'code.label':'Código de paciente','code.help':'Te lo da tu terapeuta o médico. Solo funciona con el correo que registró para ti. Tus check-ins serán visibles para esa persona.',
+  'code.link': name => 'Este código te conecta con ' + name + '.','err.code':'Introduce el código de paciente que recibiste.',
+  'why.code_bad':'Este código de paciente no existe. Revísalo e inténtalo de nuevo.','why.code_used':'Este código de paciente ya se usó.','why.code_email':'Este código pertenece a otro correo. Usa el correo que registró tu terapeuta o médico.',
+  'why.plan_none':'Elige primero un plan.','why.plan_full':'Este plan está completo. Elige uno más grande.','why.email_bad':'Escribe el correo del paciente.','why.email_taken':'Este correo ya tiene una cuenta BAO.','why.plan_small':'Tienes más pacientes de los que permite este plan.',
+  'nav.subs':'Suscripciones','tab.subs':'Planes',
+  'title.proCal':['Calendario de pacientes','Todos los síntomas de tus pacientes'],'title.subs':['Suscripciones','Planes y códigos de paciente'],
+  'proCal.eyebrow':'Tus pacientes','proCal.h':'Cada síntoma,<br><em>día a día.</em>','proCal.lede':'Elige un paciente o velos a todos juntos. Toca un día para leer lo que se escribió.',
+  'proCal.filter':'Paciente','proCal.all':'Todos los pacientes','proCal.none':'Aún no hay pacientes. Abre «Suscripciones», crea un código y dáselo a tu paciente.',
+  'subs.eyebrow':'Tu consulta','subs.h':'Planes y<br><em>códigos de paciente.</em>','subs.lede':'Elige un plan y crea un código para cada paciente. Los pagos aún no están activos: por ahora todos los planes son gratis.',
+  'plan.starter':'Starter','plan.starterD':'Para probar BAO con pocos pacientes.','plan.practice':'Consulta','plan.practiceD':'Para una consulta privada.','plan.clinic':'Clínica','plan.clinicD':'Para equipos y clínicas.',
+  'subs.per':'/ mes','subs.free':'Gratis durante la beta','subs.freeAlways':'Gratis','subs.patients': n => 'Hasta ' + n + ' pacientes','subs.get':'Obtener un código de paciente','subs.current':'Plan actual','subs.popular':'El más elegido',
+  'subs.codesTitle':'Códigos de paciente','subs.usage': (u, n, p) => u + ' de ' + n + ' pacientes · ' + p,'subs.noPlan':'Elige un plan arriba para crear códigos.',
+  'subs.emailLabel':'Correo del paciente','subs.create':'Crear código','subs.codeFor': e => 'Código para ' + e,'subs.give':'Da este código a tu paciente. Lo introduce al crear su cuenta BAO, con este mismo correo.',
+  'subs.copy':'Copiar','subs.copied':'¡Copiado!','subs.waiting':'Esperando registro','subs.linked':'Conectado','subs.gone':'Cuenta eliminada','subs.remove':'Quitar','subs.none':'Aún no hay códigos.',
+  'subs.confirm':'¿Quitar este código? Si el paciente ya está conectado, dejarás de ver sus check-ins.',
+  'share.with': n => 'Tus check-ins se comparten con ' + n + '.'
+});
+Object.assign(I18N.pt, {
+  'role.label':'Eu sou…','role.patient':'Paciente','role.therapist':'Terapeuta / Médico',
+  'code.label':'Código de paciente','code.help':'Você recebe do seu terapeuta ou médico. Só funciona com o e-mail que ele registrou para você. Seus check-ins ficarão visíveis para essa pessoa.',
+  'code.link': name => 'Este código conecta você a ' + name + '.','err.code':'Digite o código de paciente que você recebeu.',
+  'why.code_bad':'Este código de paciente não existe. Confira e tente de novo.','why.code_used':'Este código de paciente já foi usado.','why.code_email':'Este código pertence a outro e-mail. Use o e-mail registrado pelo seu terapeuta ou médico.',
+  'why.plan_none':'Escolha um plano primeiro.','why.plan_full':'Este plano está cheio. Escolha um maior.','why.email_bad':'Escreva o e-mail do paciente.','why.email_taken':'Este e-mail já tem uma conta BAO.','why.plan_small':'Você tem mais pacientes do que este plano permite.',
+  'nav.subs':'Assinaturas','tab.subs':'Planos',
+  'title.proCal':['Calendário de pacientes','Todos os sintomas dos seus pacientes'],'title.subs':['Assinaturas','Planos e códigos de paciente'],
+  'proCal.eyebrow':'Seus pacientes','proCal.h':'Cada sintoma,<br><em>dia a dia.</em>','proCal.lede':'Escolha um paciente ou veja todos juntos. Toque num dia para ler o que foi escrito.',
+  'proCal.filter':'Paciente','proCal.all':'Todos os pacientes','proCal.none':'Ainda sem pacientes. Abra “Assinaturas”, crie um código e entregue ao seu paciente.',
+  'subs.eyebrow':'Seu consultório','subs.h':'Planos e<br><em>códigos de paciente.</em>','subs.lede':'Escolha um plano e crie um código para cada paciente. Os pagamentos ainda não estão ativos: por enquanto todos os planos são grátis.',
+  'plan.starter':'Starter','plan.starterD':'Para testar o BAO com poucos pacientes.','plan.practice':'Consultório','plan.practiceD':'Para um consultório particular.','plan.clinic':'Clínica','plan.clinicD':'Para equipes e clínicas.',
+  'subs.per':'/ mês','subs.free':'Grátis durante o beta','subs.freeAlways':'Grátis','subs.patients': n => 'Até ' + n + ' pacientes','subs.get':'Obter um código de paciente','subs.current':'Plano atual','subs.popular':'O mais escolhido',
+  'subs.codesTitle':'Códigos de paciente','subs.usage': (u, n, p) => u + ' de ' + n + ' pacientes · ' + p,'subs.noPlan':'Escolha um plano acima para criar códigos.',
+  'subs.emailLabel':'E-mail do paciente','subs.create':'Criar código','subs.codeFor': e => 'Código para ' + e,'subs.give':'Entregue este código ao seu paciente. Ele digita ao criar a conta BAO, com este mesmo e-mail.',
+  'subs.copy':'Copiar','subs.copied':'Copiado!','subs.waiting':'Aguardando cadastro','subs.linked':'Conectado','subs.gone':'Conta excluída','subs.remove':'Remover','subs.none':'Ainda sem códigos.',
+  'subs.confirm':'Remover este código? Se o paciente já estiver conectado, você deixará de ver os check-ins dele.',
+  'share.with': n => 'Seus check-ins são compartilhados com ' + n + '.'
+});
+Object.assign(I18N.nl, {
+  'role.label':'Ik ben…','role.patient':'Patiënt','role.therapist':'Therapeut / Arts',
+  'code.label':'Patiëntcode','code.help':'Je krijgt deze code van je therapeut of arts. Hij werkt alleen met het e-mailadres dat voor jou is ingevoerd. Je check-ins zijn zichtbaar voor die persoon.',
+  'code.link': name => 'Deze code verbindt je met ' + name + '.','err.code':'Vul de patiëntcode in die je hebt gekregen.',
+  'why.code_bad':'Deze patiëntcode bestaat niet. Controleer hem en probeer opnieuw.','why.code_used':'Deze patiëntcode is al gebruikt.','why.code_email':'Deze code hoort bij een ander e-mailadres. Gebruik het e-mailadres dat je therapeut of arts heeft ingevoerd.',
+  'why.plan_none':'Kies eerst een abonnement.','why.plan_full':'Dit abonnement is vol. Kies een groter abonnement.','why.email_bad':'Vul het e-mailadres van de patiënt in.','why.email_taken':'Dit e-mailadres heeft al een BAO-account.','why.plan_small':'Je hebt meer patiënten dan dit abonnement toestaat.',
+  'nav.subs':'Abonnementen','tab.subs':'Abonnementen',
+  'title.proCal':['Patiëntenkalender','Alle klachten van je patiënten'],'title.subs':['Abonnementen','Abonnementen en patiëntcodes'],
+  'proCal.eyebrow':'Je patiënten','proCal.h':'Elke klacht,<br><em>dag voor dag.</em>','proCal.lede':'Kies een patiënt of bekijk iedereen samen. Tik op een dag om te lezen wat er geschreven is.',
+  'proCal.filter':'Patiënt','proCal.all':'Alle patiënten','proCal.none':'Nog geen patiënten. Open „Abonnementen”, maak een code en geef die aan je patiënt.',
+  'subs.eyebrow':'Je praktijk','subs.h':'Abonnementen en<br><em>patiëntcodes.</em>','subs.lede':'Kies een abonnement en maak voor elke patiënt een code. Betalingen zijn nog niet actief: alle abonnementen zijn voorlopig gratis.',
+  'plan.starter':'Starter','plan.starterD':'Om BAO met een paar patiënten te proberen.','plan.practice':'Praktijk','plan.practiceD':'Voor een eigen praktijk.','plan.clinic':'Kliniek','plan.clinicD':'Voor teams en klinieken.',
+  'subs.per':'/ maand','subs.free':'Gratis tijdens de bèta','subs.freeAlways':'Gratis','subs.patients': n => 'Tot ' + n + ' patiënten','subs.get':'Patiëntcode aanvragen','subs.current':'Huidig abonnement','subs.popular':'Meest gekozen',
+  'subs.codesTitle':'Patiëntcodes','subs.usage': (u, n, p) => u + ' van ' + n + ' patiënten · ' + p,'subs.noPlan':'Kies hierboven een abonnement om codes te maken.',
+  'subs.emailLabel':'E-mail van de patiënt','subs.create':'Code maken','subs.codeFor': e => 'Code voor ' + e,'subs.give':'Geef deze code aan je patiënt. Hij vult hem in bij het maken van een BAO-account, met hetzelfde e-mailadres.',
+  'subs.copy':'Kopiëren','subs.copied':'Gekopieerd!','subs.waiting':'Wacht op registratie','subs.linked':'Verbonden','subs.gone':'Account verwijderd','subs.remove':'Verwijderen','subs.none':'Nog geen codes.',
+  'subs.confirm':'Deze code verwijderen? Als de patiënt al verbonden is, zie je zijn check-ins niet meer.',
+  'share.with': n => 'Je check-ins worden gedeeld met ' + n + '.'
 });
 
 (async function boot(){

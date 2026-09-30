@@ -91,7 +91,40 @@ async function limit(env, key, max, seconds){
 function appUrl(env, request){
   return (env.APP_URL || new URL(request.url).origin).replace(/\/+$/, '');
 }
-const publicUser = u => ({ user: u.email, name: u.name || '', verified: !!u.verified });
+const publicUser = (u, extra) => ({ user: u.email, name: u.name || '', verified: !!u.verified,
+  role: u.role === 'pro' ? 'pro' : 'patient', kind: u.kind || '', ...(extra || {}) });
+const failWhy = (msg, status, reason) => json({ error: msg, reason }, status);
+
+// ---- therapists / doctors ("pro") ----
+//   tp:<email>   { plan, codes:[CODE...] }        the pro's plan and the codes they created
+//   k:<CODE>     { pro, email, created, used, usedAt }  one patient code, bound to one patient email
+const PLANS = {
+  starter:  { patients: 3,  price: 0 },
+  practice: { patients: 15, price: 19 },
+  clinic:   { patients: 60, price: 49 }
+};
+const CODE_ABC = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+function newCode(){
+  const b = crypto.getRandomValues(new Uint8Array(8));
+  const c = [...b].map(x => CODE_ABC[x % CODE_ABC.length]).join('');
+  return 'BAO-' + c.slice(0, 4) + '-' + c.slice(4);
+}
+const cleanCode = v => String(v || '').toUpperCase().replace(/[^A-Z0-9]/g, '').replace(/^BAO/, '').replace(/^(.{4})(.{4})$/, 'BAO-$1-$2');
+async function proState(env, pro){
+  const st = await getJSON(env, 'tp:' + pro.email, { plan: '', codes: [] });
+  const codes = [];
+  for (const c of st.codes){
+    const k = await getJSON(env, 'k:' + c);
+    if (!k) continue;
+    let patient = null;
+    if (k.used){
+      const pu = await getJSON(env, 'u:' + k.email);
+      patient = pu && pu.therapist === pro.email ? { email: pu.email, name: pu.name || '' } : { email: k.email, name: '', gone: true };
+    }
+    codes.push({ code: c, email: k.email, created: k.created, used: !!k.used, usedAt: k.usedAt || null, patient });
+  }
+  return { st, codes };
+}
 
 async function sendConfirmation(env, request, user, lang){
   const t = token();
@@ -132,11 +165,14 @@ async function handle(context){
     switch (route){
 
     case 'GET /api/version':
-      return json({ version: 'bao-server 2026-09-28 18:20' });
+      return json({ version: 'bao-server 2026-09-30 pro' });
 
     case 'GET /api/auth/me': {
       const u = await currentUser(env, request);
-      return u ? json(publicUser(u)) : fail('Not signed in.', 401);
+      if (!u) return fail('Not signed in.', 401);
+      let shared = '';
+      if (u.therapist){ const p = await getJSON(env, 'u:' + u.therapist); shared = p ? (p.name || '') : ''; }
+      return json(publicUser(u, { shared }));
     }
 
     case 'POST /api/auth/register': {
@@ -150,7 +186,18 @@ async function handle(context){
       if (!name) return fail('Please write a name.');
       if (!await limit(env, 'reg:' + (request.headers.get('CF-Connecting-IP') || 'x'), 10, 3600)) return fail('Too many new accounts from here. Try again later.', 429);
       if (await env.BAO.get('u:' + email)) return fail('That email is already registered. Sign in instead.', 409);
+      const role = b.role === 'pro' ? 'pro' : 'patient';
+      let codeRec = null, code = '';
+      if (role === 'patient'){
+        code = cleanCode(b.code);
+        codeRec = code ? await getJSON(env, 'k:' + code) : null;
+        if (!codeRec) return failWhy('This patient code does not exist.', 400, 'code_bad');
+        if (codeRec.used) return failWhy('This patient code was already used.', 400, 'code_used');
+        if (codeRec.email !== email) return failWhy('This patient code belongs to a different email address.', 400, 'code_email');
+      }
       const user = { email, name, lang, verified: false, created: new Date().toISOString(), ...(await newPassword(pw)), sessions: [] };
+      if (role === 'pro'){ user.role = 'pro'; user.kind = b.kind === 'doctor' ? 'doctor' : 'therapist'; }
+      else { user.therapist = codeRec.pro; codeRec.used = true; codeRec.usedAt = user.created; await putJSON(env, 'k:' + code, codeRec); }
       const cookie = await startSession(env, user);
       later(context, sendConfirmation(env, request, user, lang));
       return json(publicUser(user), 200, { 'Set-Cookie': cookie });
@@ -200,6 +247,15 @@ async function handle(context){
       const pw = String((await readBody(request)).password || '');
       if (!sameString(await hashPassword(pw, u.salt), u.hash)) return fail('The password is not right.', 403);
       await endAllSessions(env, u);
+      if (u.role === 'pro'){
+        const st = await getJSON(env, 'tp:' + u.email, { codes: [] });
+        for (const c of st.codes){
+          const k = await getJSON(env, 'k:' + c);
+          if (k && k.used){ const pu = await getJSON(env, 'u:' + k.email); if (pu && pu.therapist === u.email){ delete pu.therapist; await putJSON(env, 'u:' + pu.email, pu); } }
+          await env.BAO.delete('k:' + c);
+        }
+        await env.BAO.delete('tp:' + u.email);
+      }
       await Promise.all(['u:', 'c:', 'p:'].map(k => env.BAO.delete(k + u.email)));
       return json({ ok: true }, 200, { 'Set-Cookie': sessionCookie('', 0) });
     }
@@ -316,6 +372,96 @@ async function handle(context){
       if (pet && typeof pet === 'object' && JSON.stringify(pet).length < 4000) await putJSON(env, 'p:' + u.email, pet);
       else await env.BAO.delete('p:' + u.email);
       return json({ ok: true });
+    }
+
+    case 'POST /api/code/check': {
+      const b = await readBody(request);
+      if (!await limit(env, 'code:' + (request.headers.get('CF-Connecting-IP') || 'x'), 30, 3600)) return fail('Please wait a little before trying again.', 429);
+      const code = cleanCode(b.code), email = cleanEmail(b.email);
+      const k = code ? await getJSON(env, 'k:' + code) : null;
+      if (!k) return failWhy('This patient code does not exist.', 404, 'code_bad');
+      if (k.used) return failWhy('This patient code was already used.', 400, 'code_used');
+      if (email && k.email !== email) return failWhy('This patient code belongs to a different email address.', 400, 'code_email');
+      const pro = await getJSON(env, 'u:' + k.pro);
+      return json({ ok: true, pro: pro ? { name: pro.name || '', kind: pro.kind || 'therapist' } : null });
+    }
+
+    case 'GET /api/pro': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      if (u.role !== 'pro') return fail('Only for therapists and doctors.', 403);
+      const { st, codes } = await proState(env, u);
+      return json({ plan: st.plan || '', plans: PLANS, codes });
+    }
+
+    case 'POST /api/pro/code': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      if (u.role !== 'pro') return fail('Only for therapists and doctors.', 403);
+      const b = await readBody(request);
+      const email = cleanEmail(b.email);
+      if (!email) return failWhy('Please write the patient’s email address.', 400, 'email_bad');
+      if (email === u.email) return failWhy('Please write the patient’s email address.', 400, 'email_bad');
+      const st = await getJSON(env, 'tp:' + u.email, { plan: '', codes: [] });
+      if (b.plan && PLANS[b.plan]) st.plan = b.plan;
+      if (!PLANS[st.plan]) return failWhy('Choose a plan first.', 400, 'plan_none');
+      if (await env.BAO.get('u:' + email)) return failWhy('This email already has a BAO account.', 409, 'email_taken');
+      const live = [];
+      for (const c of st.codes){ const k = await getJSON(env, 'k:' + c); if (k){ live.push(c); if (!k.used && k.email === email) return json({ ok: true, code: c, plan: st.plan, again: true }); } }
+      st.codes = live;
+      if (live.length >= PLANS[st.plan].patients) return failWhy('This plan is full.', 400, 'plan_full');
+      let code = newCode();
+      while (await env.BAO.get('k:' + code)) code = newCode();
+      await putJSON(env, 'k:' + code, { pro: u.email, email, created: new Date().toISOString(), used: false });
+      st.codes.push(code);
+      await putJSON(env, 'tp:' + u.email, st);
+      return json({ ok: true, code, plan: st.plan });
+    }
+
+    case 'POST /api/pro/plan': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      if (u.role !== 'pro') return fail('Only for therapists and doctors.', 403);
+      const plan = String((await readBody(request)).plan || '');
+      if (!PLANS[plan]) return fail('Unknown plan.');
+      const st = await getJSON(env, 'tp:' + u.email, { plan: '', codes: [] });
+      let n = 0; for (const c of st.codes) if (await env.BAO.get('k:' + c)) n++;
+      if (n > PLANS[plan].patients) return failWhy('You have more patients than this plan allows.', 400, 'plan_small');
+      st.plan = plan;
+      await putJSON(env, 'tp:' + u.email, st);
+      return json({ ok: true, plan });
+    }
+
+    case 'POST /api/pro/code/delete': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      if (u.role !== 'pro') return fail('Only for therapists and doctors.', 403);
+      const code = cleanCode((await readBody(request)).code);
+      const k = await getJSON(env, 'k:' + code);
+      if (!k || k.pro !== u.email) return fail('Not found.', 404);
+      if (k.used){
+        const pu = await getJSON(env, 'u:' + k.email);
+        if (pu && pu.therapist === u.email){ delete pu.therapist; await putJSON(env, 'u:' + pu.email, pu); }
+      }
+      await env.BAO.delete('k:' + code);
+      const st = await getJSON(env, 'tp:' + u.email, { plan: '', codes: [] });
+      st.codes = st.codes.filter(c => c !== code);
+      await putJSON(env, 'tp:' + u.email, st);
+      return json({ ok: true });
+    }
+
+    case 'GET /api/pro/checkins': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      if (u.role !== 'pro') return fail('Only for therapists and doctors.', 403);
+      const { codes } = await proState(env, u);
+      const patients = [], checkins = [];
+      for (const c of codes){
+        if (!c.patient || c.patient.gone) continue;
+        patients.push(c.patient);
+        for (const e of await getJSON(env, 'c:' + c.patient.email, [])) checkins.push({ ...e, patient: c.patient });
+      }
+      return json({ patients, checkins });
     }
 
     default:
