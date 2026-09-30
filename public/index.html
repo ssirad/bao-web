@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-8/DN1RvTWKR8uniq5zj2HeehUbS76q2pD0r7gzDB/uU='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-7D5j029jzdfr9UZ6Al3j+xW7IKoLcJ5MlSDTUJJ2tz4='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>BAO &mdash; symptom &amp; wellbeing tracker</title>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -766,6 +766,27 @@ body.pro .settings-cols .acc-card{grid-row:auto}
 .share-note{margin:10px 0 0;background:#eef6f3;border-radius:10px;padding:8px 10px;font-size:12.5px;color:var(--teal-dark);font-weight:700}
 .share-note[hidden]{display:none}
 @media(max-width:930px){.plan-grid{grid-template-columns:1fr}}
+
+body.pro .nav [data-view=calendar],body.pro .tabbar [data-view=calendar],.nav [data-view=patients]{display:none!important}
+body:not(.pro) .tabbar [data-view=patients]{display:none!important}
+.pro-who{display:none!important}
+.pro-side{display:flex;flex-direction:column;gap:8px;min-height:0;flex:1 1 auto;margin-top:-10px}
+.pro-side-h{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#7a8b8c;font-weight:800;padding:0 4px}
+.pro-search{padding:10px 12px;font-size:13px;border-radius:12px}
+.pro-list{display:flex;flex-direction:column;gap:4px;overflow-y:auto;min-height:0}
+.pro-list button{border:0;background:transparent;text-align:left;display:flex;align-items:center;gap:10px;padding:8px 9px;border-radius:12px;cursor:pointer;color:#34494a;min-width:0}
+.pro-list button:hover{background:rgba(24,125,120,.07)}
+.pro-list button.on{background:#dcefea;color:var(--teal-dark)}
+.pro-list .pa{width:30px;height:30px;border-radius:50%;background:#cfe6e0;color:var(--teal-dark);display:grid;place-items:center;font-weight:800;font-size:13px;flex:0 0 auto}
+.pro-list .pt{display:flex;flex-direction:column;min-width:0}
+.pro-list .pt b{font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pro-list .pt small{font-size:11px;color:#7f9091;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pro-list .pe{font-size:12px;color:#7f9091;padding:4px 6px;line-height:1.4}
+.pro-list.big{margin-top:12px;gap:2px}
+.pro-list.big button{padding:12px 10px;border-bottom:1px solid var(--line);border-radius:10px}
+.pro-list.big .pa{width:40px;height:40px;font-size:16px}
+.pro-list.big .pt b{font-size:15px}
+.pro-list.big .pt small{font-size:12px}
 </style>
 <script>try{ if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) document.documentElement.classList.add('native'); if (/BAOApp\/2/.test(navigator.userAgent)) document.documentElement.classList.add('shell'); }catch(e){}</script>
 <script>
@@ -835,6 +856,11 @@ body.pro .settings-cols .acc-card{grid-row:auto}
       <button data-view="subs" class="pro-only"><svg viewBox="0 0 24 24"><path d="M4 7h16v12H4zM4 11h16M8 15h3M9 4h6v3H9z"/></svg><span data-i18n="nav.subs">Subscriptions</span></button>
       <button data-view="settings"><svg viewBox="0 0 24 24"><path d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z"/><path d="m19.2 13.4 1.1.8-1.8 3.1-1.3-.4a2.1 2.1 0 0 0-1.1.6l-.3 1.4h-3.6l-.3-1.4a2.1 2.1 0 0 0-1.1-.6l-1.3.4-1.8-3.1 1.1-.8a4.4 4.4 0 0 0 0-1.3l-1.1-.8 1.8-3.1 1.3.4a2.1 2.1 0 0 0 1.1-.6l.3-1.4h3.6l.3 1.4a2.1 2.1 0 0 0 1.1.6l1.3-.4 1.8 3.1-1.1.8a4.4 4.4 0 0 1 0 1.3Z"/></svg><span data-i18n="nav.settings">Settings</span></button>
     </nav>
+    <div class="pro-side pro-only">
+      <div class="pro-side-h" data-i18n="pro.patients">Patients</div>
+      <input class="input pro-search" id="proSearch" type="search" autocomplete="off" data-i18n-attr="placeholder|pro.search" placeholder="Search patient…">
+      <div class="pro-list" id="proList"></div>
+    </div>
     <div class="side-note">
       <strong><span class="privacy-dot"></span><span data-i18n="side.title">Your data stays yours</span></strong>
       <span id="storageNote">Checking where your check-ins are stored…</span>
@@ -863,6 +889,7 @@ body.pro .settings-cols .acc-card{grid-row:auto}
       <button data-view="patterns"><svg viewBox="0 0 24 24"><path d="M4 18V6m0 12h16M7 15l3-4 3 2 4-6"/></svg><span data-i18n="tab.patterns">Patterns</span></button>
       <button data-view="report"><svg viewBox="0 0 24 24"><path d="M7 3h8l3 3v15H7zM15 3v4h4M9.5 12h6M9.5 16h6M9.5 8h2"/></svg><span data-i18n="tab.report">Report</span></button>
       <button data-view="subs" class="pro-only"><svg viewBox="0 0 24 24"><path d="M4 7h16v12H4zM4 11h16M8 15h3M9 4h6v3H9z"/></svg><span data-i18n="tab.subs">Plans</span></button>
+      <button data-view="patients" class="pro-only"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5M15.5 5.2a3 3 0 0 1 0 5.6M17 14c2 .5 3.2 2.2 3.5 5"/></svg><span data-i18n="tab.patients">Patients</span></button>
       <button data-view="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M5.6 18.4l1.8-1.8M16.6 7.4l1.8-1.8"/></svg><span data-i18n="tab.settings">Settings</span></button>
     </nav>
 
@@ -1020,16 +1047,11 @@ body.pro .settings-cols .acc-card{grid-row:auto}
 
         <div class="hero pro-only">
           <div>
-            <div class="eyebrow" data-i18n="proCal.eyebrow">Your patients</div>
-            <h2 class="title" data-i18n="proCal.h">Every symptom,<br><em>day by day.</em></h2>
-            <p class="lede" data-i18n="proCal.lede">Choose a patient or see everyone together. Tap a day to read what was written.</p>
-          </div>
-          <div class="pro-filter">
-            <label class="form-label" for="proPatient" data-i18n="proCal.filter">Patient</label>
-            <select class="input" id="proPatient"><option value="all">All patients</option></select>
+            <div class="eyebrow" data-i18n="pro.patientEyebrow">Patient</div>
+            <h2 class="title" id="proName">—</h2>
+            <p class="lede" id="proLede"></p>
           </div>
         </div>
-        <div class="callout pro-only pro-empty" id="proEmpty" hidden data-i18n="proCal.none">No patients yet. Open “Subscriptions”, create a code and give it to your patient.</div>
         <div class="cal-wrap">
           <div class="card">
             <div class="cal-head">
@@ -1086,6 +1108,19 @@ body.pro .settings-cols .acc-card{grid-row:auto}
             </div>
             <p class="tiny" style="margin-top:20px" data-i18n="rep.nothingSent"><span class="privacy-dot"></span>Nothing is sent anywhere. Printing happens on your device.</p>
           </div>
+        </div>
+      </section>
+
+      <section class="view" id="patients">
+        <div class="hero">
+          <div>
+            <div class="eyebrow" data-i18n="pats.eyebrow">Your patients</div>
+            <h2 class="title" data-i18n="pats.h">Find a patient,<br><em>open their calendar.</em></h2>
+          </div>
+        </div>
+        <div class="card">
+          <input class="input pro-search" id="proSearch2" type="search" autocomplete="off" data-i18n-attr="placeholder|pro.search" placeholder="Search patient…">
+          <div class="pro-list big" id="proList2"></div>
         </div>
       </section>
 
@@ -5856,15 +5891,20 @@ function renderPetStudio(){
 }
 
 function paintTitle(id){
+  if (document.body.classList.contains('pro') && id === 'calendar' && typeof proCurrent === 'function' && proCurrent()){
+    const p = proCurrent(); $('pageTitle').textContent = p.name || p.email; $('pageSub').textContent = p.email; return;
+  }
   const [title, sub] = t('title.' + (document.body.classList.contains('pro') && id === 'calendar' ? 'proCal' : id));
   $('pageTitle').textContent = title;
   $('pageSub').textContent   = sub;
 }
 function go(id){
   const pro = document.body.classList.contains('pro');
-  if (pro && ['home', 'checkin', 'patterns', 'report'].includes(id)) id = 'calendar';
-  if (pro && id === 'calendar') loadPro();
-  if (pro && id === 'subs') loadSubs();
+  if (pro && ['home', 'checkin', 'patterns', 'report'].includes(id)) id = 'subs';
+  if (pro && id === 'calendar' && !PRO_CUR) id = 'subs';
+  if (pro && id === 'subs'){ loadSubs(); loadPro(); }
+  if (pro && id === 'patients'){ const q = $('proSearch2'); if (q) q.value = ''; loadPro(); }
+  if (pro) setTimeout(paintProList, 0);
   $$('.view').forEach(v => v.classList.toggle('active', v.id === id));
   $$('.nav button, .tabbar button').forEach(b => b.classList.toggle('active', b.dataset.view === id));
   paintTitle(id);
@@ -5943,6 +5983,7 @@ function paintLogin(){
 }
 function showLogin(){
   itGate(false);
+  if (typeof PRO_CUR !== 'undefined'){ PRO_CUR = ''; PRO_PATIENTS = []; PRO_ALL = []; }
   document.body.classList.remove('pro'); USER_ROLE = 'patient'; USER_SHARED = ''; if (typeof ROLE_PICK !== 'undefined') ROLE_PICK = 'patient';
   loginMode = 'signin';
   document.querySelector('.app').classList.add('locked');
@@ -7101,19 +7142,56 @@ let PRO_ALL = [], PRO_PATIENTS = [];
 async function loadPro(){
   try{ const r = await jget('/api/pro/checkins'); PRO_PATIENTS = r.patients || []; PRO_ALL = r.checkins || []; }
   catch(e){ PRO_PATIENTS = []; PRO_ALL = []; }
-  const sel = $('proPatient'), cur = sel.value || 'all';
-  sel.innerHTML = '<option value="all">' + esc(t('proCal.all')) + ' (' + PRO_PATIENTS.length + ')</option>' +
-    PRO_PATIENTS.map(p => '<option value="' + esc(p.email) + '">' + esc((p.name || p.email) + ' · ' + p.email) + '</option>').join('');
-  sel.value = PRO_PATIENTS.some(p => p.email === cur) ? cur : 'all';
+  if (PRO_CUR && !PRO_PATIENTS.some(p => p.email === PRO_CUR)) PRO_CUR = '';
+  paintProList();
   applyProFilter();
 }
+let PRO_CUR = '';
+function proCurrent(){ return PRO_PATIENTS.find(p => p.email === PRO_CUR) || null; }
 function applyProFilter(){
-  const v = $('proPatient').value;
-  DATA = v === 'all' ? PRO_ALL.slice() : PRO_ALL.filter(e => e.patient && e.patient.email === v);
-  $('proEmpty').hidden = PRO_PATIENTS.length > 0;
+  DATA = PRO_CUR ? PRO_ALL.filter(e => e.patient && e.patient.email === PRO_CUR) : [];
+  const p = proCurrent();
+  $('proName').textContent = p ? (p.name || p.email) : '—';
+  $('proLede').textContent = p ? t('pro.patientLede', p.email) : '';
   renderCalendar();
 }
-$('proPatient').addEventListener('change', applyProFilter);
+function openPatient(email){
+  PRO_CUR = email;
+  calSel = localKey(new Date()); const n = new Date(); calY = n.getFullYear(); calM = n.getMonth();
+  applyProFilter();
+  go('calendar');
+}
+function proMatches(q){
+  q = (q || '').trim().toLowerCase();
+  return PRO_PATIENTS.filter(p => !q || (p.name || '').toLowerCase().includes(q) || p.email.toLowerCase().includes(q));
+}
+function proStats(email){
+  const list = PRO_ALL.filter(e => e.patient && e.patient.email === email);
+  const last = list.reduce((m, e) => { const d = dOf(e); return !m || d > m ? d : m; }, null);
+  return { n: list.length, last };
+}
+function paintProList(){
+  const active = document.querySelector('.view.active');
+  const onCal = active && active.id === 'calendar';
+  const tb = document.querySelector('.tabbar [data-view=patients]'); if (tb && onCal) tb.classList.add('active');
+  [['proList', 'proSearch', false], ['proList2', 'proSearch2', true]].forEach(([lid, sid, big]) => {
+    const box = $(lid); if (!box) return;
+    if (!PRO_PATIENTS.length){ box.innerHTML = '<div class="pe">' + esc(t('pro.noPatients')) + '</div>'; return; }
+    const list = proMatches($(sid).value);
+    if (!list.length){ box.innerHTML = '<div class="pe">' + esc(t('pro.noMatch')) + '</div>'; return; }
+    box.innerHTML = list.map(p => {
+      const st = proStats(p.email), nm = p.name || p.email;
+      const sub = big ? t('pro.entries', st.n) + (st.last ? ' · ' + t('pro.last', prettyKey(localKey(st.last))) : '') + ' · ' + p.email : p.email;
+      return '<button type="button" data-patient="' + esc(p.email) + '" class="' + (onCal && p.email === PRO_CUR ? 'on' : '') + '">' +
+        '<span class="pa">' + esc(nm.trim().charAt(0).toUpperCase() || '?') + '</span><span class="pt"><b>' + esc(nm) + '</b><small>' + esc(sub) + '</small></span></button>';
+    }).join('');
+    box.querySelectorAll('[data-patient]').forEach(b => b.addEventListener('click', () => openPatient(b.dataset.patient)));
+  });
+}
+['proSearch', 'proSearch2'].forEach(id => {
+  $(id).addEventListener('input', paintProList);
+  $(id).addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); const m = proMatches($(id).value); if (m.length) openPatient(m[0].email); } });
+});
 
 // ---- abbonamenti e codici ----
 const PLAN_ORDER = ['starter', 'practice', 'clinic'];
@@ -7322,6 +7400,28 @@ Object.assign(I18N.nl, {
   'subs.confirm':'Deze code verwijderen? Als de patiënt al verbonden is, zie je zijn check-ins niet meer.',
   'share.with': n => 'Je check-ins worden gedeeld met ' + n + '.'
 });
+
+Object.assign(I18N.en, { 'pro.patients':'Patients', 'pro.search':'Search patient…', 'pro.noPatients':'Your patients appear here as soon as they sign up with their code.', 'pro.noMatch':'No patient found.',
+  'pro.entries': n => n + (n === 1 ? ' check-in' : ' check-ins'), 'pro.last': d => 'last: ' + d, 'pro.patientEyebrow':'Patient', 'pro.patientLede': e => e + ' · tap a day to read what was written.',
+  'tab.patients':'Patients', 'title.patients':['Patients','Find a patient and open their calendar'], 'pats.eyebrow':'Your patients', 'pats.h':'Find a patient,<br><em>open their calendar.</em>' });
+Object.assign(I18N.it, { 'pro.patients':'Pazienti', 'pro.search':'Cerca paziente…', 'pro.noPatients':'I tuoi pazienti compaiono qui appena si registrano con il loro codice.', 'pro.noMatch':'Nessun paziente trovato.',
+  'pro.entries': n => n + (n === 1 ? ' check-in' : ' check-in'), 'pro.last': d => 'ultimo: ' + d, 'pro.patientEyebrow':'Paziente', 'pro.patientLede': e => e + ' · tocca un giorno per leggere cosa è stato scritto.',
+  'tab.patients':'Pazienti', 'title.patients':['Pazienti','Trova un paziente e apri il suo calendario'], 'pats.eyebrow':'I tuoi pazienti', 'pats.h':'Trova un paziente,<br><em>apri il suo calendario.</em>' });
+Object.assign(I18N.de, { 'pro.patients':'Patient:innen', 'pro.search':'Patient:in suchen…', 'pro.noPatients':'Deine Patient:innen erscheinen hier, sobald sie sich mit ihrem Code registrieren.', 'pro.noMatch':'Niemand gefunden.',
+  'pro.entries': n => n + (n === 1 ? ' Check-in' : ' Check-ins'), 'pro.last': d => 'zuletzt: ' + d, 'pro.patientEyebrow':'Patient:in', 'pro.patientLede': e => e + ' · tippe auf einen Tag, um zu lesen, was geschrieben wurde.',
+  'tab.patients':'Patient:innen', 'title.patients':['Patient:innen','Person suchen und Kalender öffnen'], 'pats.eyebrow':'Deine Patient:innen', 'pats.h':'Person suchen,<br><em>Kalender öffnen.</em>' });
+Object.assign(I18N.fr, { 'pro.patients':'Patients', 'pro.search':'Chercher un patient…', 'pro.noPatients':'Tes patients apparaissent ici dès qu’ils s’inscrivent avec leur code.', 'pro.noMatch':'Aucun patient trouvé.',
+  'pro.entries': n => n + ' check-in' + (n === 1 ? '' : 's'), 'pro.last': d => 'dernier : ' + d, 'pro.patientEyebrow':'Patient', 'pro.patientLede': e => e + ' · touche un jour pour lire ce qui a été écrit.',
+  'tab.patients':'Patients', 'title.patients':['Patients','Trouve un patient et ouvre son calendrier'], 'pats.eyebrow':'Tes patients', 'pats.h':'Trouve un patient,<br><em>ouvre son calendrier.</em>' });
+Object.assign(I18N.es, { 'pro.patients':'Pacientes', 'pro.search':'Buscar paciente…', 'pro.noPatients':'Tus pacientes aparecen aquí en cuanto se registran con su código.', 'pro.noMatch':'Ningún paciente encontrado.',
+  'pro.entries': n => n + ' check-in' + (n === 1 ? '' : 's'), 'pro.last': d => 'último: ' + d, 'pro.patientEyebrow':'Paciente', 'pro.patientLede': e => e + ' · toca un día para leer lo que se escribió.',
+  'tab.patients':'Pacientes', 'title.patients':['Pacientes','Busca un paciente y abre su calendario'], 'pats.eyebrow':'Tus pacientes', 'pats.h':'Busca un paciente,<br><em>abre su calendario.</em>' });
+Object.assign(I18N.pt, { 'pro.patients':'Pacientes', 'pro.search':'Buscar paciente…', 'pro.noPatients':'Seus pacientes aparecem aqui assim que se cadastram com o código.', 'pro.noMatch':'Nenhum paciente encontrado.',
+  'pro.entries': n => n + ' check-in' + (n === 1 ? '' : 's'), 'pro.last': d => 'último: ' + d, 'pro.patientEyebrow':'Paciente', 'pro.patientLede': e => e + ' · toque num dia para ler o que foi escrito.',
+  'tab.patients':'Pacientes', 'title.patients':['Pacientes','Encontre um paciente e abra o calendário'], 'pats.eyebrow':'Seus pacientes', 'pats.h':'Encontre um paciente,<br><em>abra o calendário.</em>' });
+Object.assign(I18N.nl, { 'pro.patients':'Patiënten', 'pro.search':'Patiënt zoeken…', 'pro.noPatients':'Je patiënten verschijnen hier zodra ze zich met hun code registreren.', 'pro.noMatch':'Geen patiënt gevonden.',
+  'pro.entries': n => n + ' check-in' + (n === 1 ? '' : 's'), 'pro.last': d => 'laatst: ' + d, 'pro.patientEyebrow':'Patiënt', 'pro.patientLede': e => e + ' · tik op een dag om te lezen wat er geschreven is.',
+  'tab.patients':'Patiënten', 'title.patients':['Patiënten','Zoek een patiënt en open de kalender'], 'pats.eyebrow':'Je patiënten', 'pats.h':'Zoek een patiënt,<br><em>open de kalender.</em>' });
 
 (async function boot(){
   try{
