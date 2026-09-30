@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-5p42l8X0JemB2UkKm04J3uqWLA05fAUyL0YkWcYGylI='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-kLBOppV1D3iwr5/usumI9acNaP7dzk4NoGL8vA8BxRQ='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>BAO &mdash; symptom &amp; wellbeing tracker</title>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -1525,7 +1525,7 @@ const I18N = {
     'body.count':   n => n + ' selected',
     'body.highlighted': z => 'I highlighted the ' + z + ' for you. Move the dot if I got it wrong.',
     'body.aria':    side => 'Interactive ' + side + ' body map',
-    'rate.marker':  '- RATINGS -',
+    'rate.marker':  '- INTENSITY -',
     'rate.title':   'How intense was it?',
     'rate.confirm': 'Save this rating',
     'rate.aria':    'Symptom intensity',
@@ -1535,7 +1535,7 @@ const I18N = {
     'recap.title':      '* RECAP *',
     'recap.symptoms':   '* SYMPTOMS * --> ',
     'recap.parts':      '* BODY PARTS * --> ',
-    'recap.rating':     '* PAIN RATING * --> ',
+    'recap.rating':     '* INTENSITY * --> ',
     'recap.situations': '* SITUATIONS * --> ',
     'recap.thoughts':   '* THOUGHTS * --> ',
     'recap.feelings':   '* FEELINGS * --> ',
@@ -1731,7 +1731,7 @@ const I18N = {
     'recap.title':      '* ZUSAMMENFASSUNG *',
     'recap.symptoms':   '* SYMPTOME * --> ',
     'recap.parts':      '* KÖRPERSTELLEN * --> ',
-    'recap.rating':     '* SCHMERZSTÄRKE * --> ',
+    'recap.rating':     '* INTENSITÄT * --> ',
     'recap.situations': '* SITUATIONEN * --> ',
     'recap.thoughts':   '* GEDANKEN * --> ',
     'recap.feelings':   '* GEFÜHLE * --> ',
@@ -2055,7 +2055,7 @@ I18N.it = {
   'recap.title': '* RIEPILOGO *',
   'recap.symptoms': '* SINTOMI * --> ',
   'recap.parts': '* ZONE DEL CORPO * --> ',
-  'recap.rating': '* INTENSITÀ DEL DOLORE * --> ',
+  'recap.rating': '* INTENSITÀ * --> ',
   'recap.situations': '* SITUAZIONI * --> ',
   'recap.thoughts': '* PENSIERI * --> ',
   'recap.feelings': '* EMOZIONI * --> ',
@@ -2545,7 +2545,7 @@ I18N.fr = {
   'recap.title': '* RÉCAPITULATIF *',
   'recap.symptoms': '* SYMPTÔMES * --> ',
   'recap.parts': '* ZONES DU CORPS * --> ',
-  'recap.rating': '* INTENSITÉ DE LA DOULEUR * --> ',
+  'recap.rating': '* INTENSITÉ * --> ',
   'recap.situations': '* SITUATIONS * --> ',
   'recap.thoughts': '* PENSÉES * --> ',
   'recap.feelings': '* ÉMOTIONS * --> ',
@@ -2965,7 +2965,7 @@ I18N.es = {
   'recap.title': '* RESUMEN *',
   'recap.symptoms': '* SÍNTOMAS * --> ',
   'recap.parts': '* ZONAS DEL CUERPO * --> ',
-  'recap.rating': '* INTENSIDAD DEL DOLOR * --> ',
+  'recap.rating': '* INTENSIDAD * --> ',
   'recap.situations': '* SITUACIONES * --> ',
   'recap.thoughts': '* PENSAMIENTOS * --> ',
   'recap.feelings': '* EMOCIONES * --> ',
@@ -3385,7 +3385,7 @@ I18N.pt = {
   'recap.title': '* RESUMO *',
   'recap.symptoms': '* SINTOMAS * --> ',
   'recap.parts': '* ÁREAS DO CORPO * --> ',
-  'recap.rating': '* INTENSIDADE DA DOR * --> ',
+  'recap.rating': '* INTENSIDADE * --> ',
   'recap.situations': '* SITUAÇÕES * --> ',
   'recap.thoughts': '* PENSAMENTOS * --> ',
   'recap.feelings': '* EMOÇÕES * --> ',
@@ -3805,7 +3805,7 @@ I18N.nl = {
   'recap.title': '* SAMENVATTING *',
   'recap.symptoms': '* KLACHTEN * --> ',
   'recap.parts': '* LICHAAMSDELEN * --> ',
-  'recap.rating': '* PIJNSCORE * --> ',
+  'recap.rating': '* INTENSITEIT * --> ',
   'recap.situations': '* SITUATIES * --> ',
   'recap.thoughts': '* GEDACHTEN * --> ',
   'recap.feelings': '* GEVOELENS * --> ',
@@ -5153,6 +5153,8 @@ async function runConversation(){
 
       LAST_POINTS = [];
       const type = guessKind(name, zone) || await askKind(name);
+      // sentimento gia' detto qui: non richiederlo piu' dopo
+      if (type === 'mind'){ try{ feelingsIn(name + ' ' + detail).forEach(k => feltNow.add(k)); }catch(e){} }
       const { parts, rating } = await captureBodyRating(zone, null, { noBody: type === 'mind' });
       const points = LAST_POINTS.slice();
 
@@ -5172,7 +5174,9 @@ async function runConversation(){
   const feltBefore = feltNow.size;
   entry.day    = await askFeel(t(LOG_DAY ? 'past.day' : 'q.day'), 'happy');
   if (feltNow.size === feltBefore){ const r = dayReaction(entry.day); if (r) await baoSay(r, '', 'listening', 700); }
-  entry.emotions = await askFeel(emotionsQuestion(entry), 'listening');
+  // se c'e' gia' un sintomo psicologico, la domanda sulle emozioni non serve
+  const hasMind = entry.symptoms.some(x => symType(x) === 'mind' || x.kind === 'feeling');
+  entry.emotions = hasMind ? '' : await askFeel(emotionsQuestion(entry), 'listening');
 
   await baoSay(t('chat.almost'), '', 'cheer', 700);
   entry.personal = await askFeel(t('q.personal'), 'cheer');
