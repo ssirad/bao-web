@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-oK9k6AyqQJNZ9rF1GOiSTah1XhC2IMUzrmOPUwZdco8='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-5p42l8X0JemB2UkKm04J3uqWLA05fAUyL0YkWcYGylI='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>BAO &mdash; symptom &amp; wellbeing tracker</title>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -383,7 +383,7 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
   display:flex;align-items:flex-end;justify-content:space-between;gap:6px}
 .cal-int{display:block;width:42%;max-width:34px;min-height:3px;border-radius:3px;background:var(--coral)}
 .cal-count{display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:2.5px;max-width:62%}
-.cal-count b{display:block;width:6px;height:6px;border-radius:50%;background:var(--teal)}
+.cal-count b{display:block;width:6px;height:6px;border-radius:50%;background:var(--teal)}.cal-count b.mind{background:#8b6fd6}
 .cal-count em{font-style:normal;font-size:9.5px;font-weight:800;color:var(--teal);line-height:1}
 .cal-rep{position:absolute;right:6px;top:4px;font-size:13px;font-weight:800;color:#7a6fb0;line-height:1;
   display:flex;align-items:baseline;gap:1px}
@@ -1137,6 +1137,7 @@ body:not(.pro) .tabbar [data-view=patients]{display:none!important}
             <div class="cal-legend">
               <span><em style="background:var(--coral)"></em><span data-i18n="cal.lgIntensity">Symptom intensity</span></span>
               <span><span class="cal-count lg"><b></b><b></b><b></b></span><span data-i18n="cal.lgCount">One dot per symptom</span></span>
+              <span><span class="cal-count lg"><b class="mind"></b></span><span data-i18n="cal.lgMind">Purple = psychological symptom</span></span>
               <span><span class="cal-rep lg">&#8635;</span><span data-i18n="cal.lgNote">Came back more than once</span></span>
               <span style="margin-left:auto" data-i18n="cal.lgBar">Bar height = intensity 0&ndash;10</span>
             </div>
@@ -5653,7 +5654,7 @@ function renderCalendar(){
       const ih = st.peak !== null ? Math.max(3, Math.round(st.peak / 10 * 26)) : 3;
       const shown = Math.min(st.count, 4);
       inner += '<span class="cal-bottom"><i class="cal-int" style="height:' + ih + 'px"></i>' +
-               '<span class="cal-count">' + '<b></b>'.repeat(shown) +
+               '<span class="cal-count">' + st.syms.slice().sort((a, b) => (symType(a) === 'mind') - (symType(b) === 'mind')).slice(0, shown).map(x => symType(x) === 'mind' ? '<b class="mind"></b>' : '<b></b>').join('') +
                (st.count > 4 ? '<em>+' + (st.count - 4) + '</em>' : '') + '</span></span>';
       label += ' — ' + t('cal.aria', st.count) + (reps ? ', ' + t('cal.ariaRep', reps) : '');
     } else {
@@ -7923,6 +7924,14 @@ Object.assign(I18N.nl, { 'uns.title':'Check-in bewaren?', 'uns.text':'Weet je ze
       if (pts.length) openPoints(pts, b.dataset.ptsTitle);
     }));
   };
+})();
+
+// ---- purple dot legend (psychological symptoms) ----
+(function(){
+  const L = { en:'Purple = psychological symptom', de:'Lila = psychische Beschwerde', it:'Viola = sintomo psicologico', fr:'Violet = symptôme psychologique',
+    es:'Morado = síntoma psicológico', pt:'Roxo = sintoma psicológico', nl:'Paars = psychische klacht' };
+  Object.keys(L).forEach(lg => { if (I18N[lg]) I18N[lg]['cal.lgMind'] = L[lg]; });
+  try{ document.querySelectorAll('[data-i18n="cal.lgMind"]').forEach(e => e.textContent = t('cal.lgMind')); }catch(e){}
 })();
 </script>
 </body>
