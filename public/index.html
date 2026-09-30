@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-w36MZ43QAzmmk/HVWUhJuj3alNrnDMTP0MWILtoXEZs='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-PW7p4r4Fgzpj93CK9NeYh+BL/MI1/fGHf5DR1B4wnlw='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>BAO &mdash; symptom &amp; wellbeing tracker</title>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -609,7 +609,8 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
   .topbar .mobile-menu,.topbar .lang-switch,#pageSub{display:none!important}
   #pageTitle{font-size:20px;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:62vw}
   #newCheckinBtn{font-size:0;width:42px;height:42px;padding:0;border-radius:50%;display:grid;place-items:center;flex:0 0 auto}
-  #newCheckinBtn::before{content:"";width:18px;height:18px;background:linear-gradient(currentColor,currentColor) center/100% 2.5px no-repeat,linear-gradient(currentColor,currentColor) center/2.5px 100% no-repeat;border-radius:2px}
+  #newCheckinBtn::before{content:"";width:18px;height:18px;background:linear-gradient(currentColor,currentColor) center/100% 2.5px no-repeat,linear-gradient(currentColor,currentColor) center/2.5px 100% no-repeat;border-radius:2px;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+  #newCheckinBtn{position:relative}
   .content{padding:20px 16px calc(96px + env(safe-area-inset-bottom,0px))}
   .hero .title{font-size:30px;line-height:1.08}
   .hero{gap:14px}
@@ -676,6 +677,38 @@ html.shell .content{flex:1 1 auto;width:100%;max-width:none;overflow-y:auto;-web
   html.shell .content{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
   html.shell .bao-chat-form,html.shell .bao-chat-quick{bottom:0}
 }
+
+.tour{position:fixed;inset:0;z-index:1200;display:grid;place-items:center;background:rgba(22,48,47,.42);
+  padding:calc(env(safe-area-inset-top,0px) + 16px) 16px calc(env(safe-area-inset-bottom,0px) + 16px);animation:tourIn .22s ease}
+.tour[hidden]{display:none}
+@keyframes tourIn{from{opacity:0}to{opacity:1}}
+.tour-box{background:#fff;border-radius:26px;width:100%;max-width:420px;padding:26px 24px 16px;text-align:center;
+  box-shadow:0 24px 60px rgba(20,60,58,.22);animation:tourPop .28s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes tourPop{from{transform:translateY(10px) scale(.97);opacity:0}to{transform:none;opacity:1}}
+.tour-art{width:118px;height:118px;margin:0 auto 12px;border-radius:50%}
+.tour-art .bao{width:100%;height:100%}
+.tour-step{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);font-weight:800}
+.tour-box h3{font-size:22px;line-height:1.2;margin:6px 0 10px;color:#1f2f30;letter-spacing:-.01em}
+.tour-box p{margin:0;color:#56696a;font-size:14.5px;line-height:1.6;min-height:4.8em}
+.tour-dots{display:flex;gap:6px;justify-content:center;margin:18px 0 16px}
+.tour-dots i{width:7px;height:7px;border-radius:5px;background:#d5e3df;transition:.25s}
+.tour-dots i.on{width:22px;background:var(--teal)}
+.tour-actions{display:flex;gap:10px}
+.tour-actions .btn{flex:1;padding:13px 10px}
+.tour-actions .btn[hidden]{display:none}
+.tour-skip{background:none;border:0;color:#8a9a9b;font-size:12.5px;font-weight:700;margin-top:12px;padding:6px 10px;cursor:pointer}
+.tour-skip[hidden]{visibility:hidden;display:inline-block}
+.tour-card-in{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.tour-card-art{width:64px;height:64px;flex:0 0 auto}
+.tour-card-art .bao{width:100%;height:100%}
+.tour-card-txt{flex:1 1 220px;min-width:0}
+.tour-card-txt h2{margin:0 0 4px}
+@media(min-width:1101px){
+  .settings-cols .acc-card{grid-row:span 2}
+  .settings-cols .tour-card{grid-column:2/4}
+}
+@media(max-width:1100px){.settings-cols .tour-card{grid-column:1/-1}}
+@media(max-width:680px){.tour-card-in .btn{width:100%}}
 </style>
 <script>try{ if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) document.documentElement.classList.add('native'); if (/BAOApp\/2/.test(navigator.userAgent)) document.documentElement.classList.add('shell'); }catch(e){}</script>
 <script>
@@ -715,6 +748,20 @@ html.shell .content{flex:1 1 auto;width:100%;max-width:none;overflow-y:auto;-web
 </script>
 </head>
 <body>
+<div class="tour" id="tour" hidden role="dialog" aria-modal="true" aria-labelledby="tourTitle">
+  <div class="tour-box">
+    <div class="tour-art"><span class="bao bao-cheer" id="tourArt"></span></div>
+    <div class="tour-step" id="tourStep"></div>
+    <h3 id="tourTitle"></h3>
+    <p id="tourText"></p>
+    <div class="tour-dots" id="tourDots"></div>
+    <div class="tour-actions">
+      <button class="btn outline" id="tourBack" type="button"></button>
+      <button class="btn primary" id="tourNext" type="button"></button>
+    </div>
+    <button class="tour-skip" id="tourSkip" type="button"></button>
+  </div>
+</div>
 <div class="app">
 
   <aside class="sidebar">
@@ -1003,7 +1050,7 @@ html.shell .content{flex:1 1 auto;width:100%;max-width:none;overflow-y:auto;-web
 
           </div>
           <div class="set-col">
-          <div class="card compact">
+          <div class="card compact acc-card">
             <div class="card-head"><div><h2 data-i18n="acc.title">Your account</h2>
               <div class="muted" data-i18n="acc.sub">The name Bao uses when he greets you.</div></div></div>
             <label class="form-label" for="nameInput" data-i18n="acc.name">Name</label>
@@ -1043,6 +1090,17 @@ html.shell .content{flex:1 1 auto;width:100%;max-width:none;overflow-y:auto;-web
               <input class="input rem-time" id="remTime" type="time" value="20:30" step="300">
             </div>
             <p class="tiny rem-note" id="remNote"></p>
+          </div>
+
+          <div class="card compact tour-card">
+            <div class="tour-card-in">
+              <span class="tour-card-art"><span class="bao bao-cheer" role="img" aria-label="Bao"></span></span>
+              <div class="tour-card-txt">
+                <h2 data-i18n="tour.cardTitle">How BAO works, step by step</h2>
+                <div class="muted" data-i18n="tour.cardSub">A one-minute tour with Bao. Watch it again whenever you like.</div>
+              </div>
+              <button class="btn primary" id="tourOpen" type="button" data-i18n="tour.cardBtn">Start the tutorial</button>
+            </div>
           </div>
 
           </div>
@@ -4044,7 +4102,7 @@ const store = {
 const LS_USERS = 'somatic.users.v2', LS_THROTTLE = 'somatic.throttle.v1';
 let USER = null;
 let USER_NAME = '';
-let USER_VERIFIED = true, JUST_REGISTERED = false;
+let USER_VERIFIED = true, JUST_REGISTERED = false, TOUR_PENDING = false;
 
 const own = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 function localUsers(){
@@ -4253,6 +4311,7 @@ const auth = {
       let made = prev ? await openRecord(prev, p).catch(() => null) : null;
       if (made && made.rec) storeRecord(r.user, made.rec);
       if (!made) made = await upgradeAccount(r.user, p, USER_NAME);
+      TOUR_PENDING = true;
       startSession(r.user, made.raw, made.key);
       return r.user;
     }
@@ -4260,6 +4319,7 @@ const auth = {
     const made = await newRecord(p, name);
     storeRecord(u, made.rec);
     USER_NAME = name;
+    TOUR_PENDING = true;
     startSession(u, made.raw, made.key);
     return u;
   },
@@ -5781,6 +5841,7 @@ async function enterApp(){
   await loadPet();
   renderAll();
   go('home');
+  if (TOUR_PENDING){ TOUR_PENDING = false; setTimeout(openTour, 700); }
   applyReminder();
 }
 const loginErr = m => { $('loginError').textContent = m; $('loginError').hidden = false; };
@@ -6721,6 +6782,117 @@ Object.assign(I18N.fr, { 'forgot.wait': 'Tu as demandé plusieurs e-mails en peu
 Object.assign(I18N.es, { 'forgot.wait': 'Has pedido varios correos en poco tiempo. Espera una hora y vuelve a intentarlo.' });
 Object.assign(I18N.pt, { 'forgot.wait': 'Você pediu vários e-mails em pouco tempo. Espere uma hora e tente de novo.' });
 Object.assign(I18N.nl, { 'forgot.wait': 'Je hebt in korte tijd meerdere e-mails aangevraagd. Wacht een uur en probeer het opnieuw.' });
+
+
+// ---- tutorial ----
+const TOUR = [
+  { art:'cheer',     k:'tour.s1' },
+  { art:'checkin',   k:'tour.s2' },
+  { art:'listening', k:'tour.s3' },
+  { art:'thinking',  k:'tour.s4' },
+  { art:'phone',     k:'tour.s5' },
+  { art:'happy',     k:'tour.s6' }
+];
+let tourI = 0;
+function tourNames(){ return { cal:t('nav.calendar'), pat:t('nav.patterns'), rep:t('nav.report'), set:t('nav.settings') }; }
+function paintTour(){
+  const st = TOUR[tourI], n = tourNames(), last = tourI === TOUR.length - 1;
+  $('tourArt').className = 'bao bao-' + st.art;
+  $('tourStep').textContent = t('tour.step', tourI + 1, TOUR.length);
+  $('tourTitle').textContent = t(st.k + 'h', displayName());
+  $('tourText').textContent = t(st.k + 'p', n);
+  $('tourDots').innerHTML = TOUR.map((_, i) => '<i class="' + (i === tourI ? 'on' : '') + '"></i>').join('');
+  $('tourBack').textContent = t('tour.back');
+  $('tourBack').hidden = tourI === 0;
+  $('tourNext').textContent = last ? t('tour.done') : (tourI === 0 ? t('tour.go') : t('tour.next'));
+  $('tourSkip').textContent = t('tour.skip');
+  $('tourSkip').hidden = last;
+}
+function openTour(){ tourI = 0; paintTour(); $('tour').hidden = false; setTimeout(() => $('tourNext').focus(), 50); }
+function closeTour(){ $('tour').hidden = true; }
+$('tourNext').addEventListener('click', () => { if (tourI < TOUR.length - 1){ tourI++; paintTour(); } else closeTour(); });
+$('tourBack').addEventListener('click', () => { if (tourI > 0){ tourI--; paintTour(); } });
+$('tourSkip').addEventListener('click', closeTour);
+$('tour').addEventListener('click', e => { if (e.target === $('tour')) closeTour(); });
+document.addEventListener('keydown', e => {
+  if ($('tour').hidden) return;
+  if (e.key === 'Escape') closeTour();
+  else if (e.key === 'ArrowRight') $('tourNext').click();
+  else if (e.key === 'ArrowLeft') $('tourBack').click();
+});
+$('tourOpen').addEventListener('click', openTour);
+
+Object.assign(I18N.en, { 'nav.patterns': I18N.en['nav.patterns'] || 'Patterns', 'nav.report': I18N.en['nav.report'] || 'My report', 'nav.settings': I18N.en['nav.settings'] || 'Settings', 'nav.calendar': I18N.en['nav.calendar'] || 'Calendar' });
+Object.assign(I18N.en, {
+  'tour.cardTitle': 'How BAO works, step by step', 'tour.cardSub': 'A one-minute tour with Bao. Watch it again whenever you like.', 'tour.cardBtn': 'Start the tutorial',
+  'tour.step': (i, n) => 'Step ' + i + ' of ' + n, 'tour.back': 'Back', 'tour.next': 'Next', 'tour.go': 'Show me', 'tour.done': 'Let’s start!', 'tour.skip': 'Skip the tutorial',
+  'tour.s1h': name => 'Hi ' + (name || 'there') + ', I’m Bao! 🐼', 'tour.s1p': () => 'I’ll help you notice how your body and your feelings talk to each other. Let me show you around, it takes one minute.',
+  'tour.s2h': () => 'Your daily check-in', 'tour.s2p': () => 'Tap the + button (or “Daily check-in”) and I’ll ask you a few simple questions. Answer like a message: a few words are enough. Wrote something wrong? Tap Undo.',
+  'tour.s3h': () => 'Where and how much', 'tour.s3p': () => 'When you tell me about a symptom, tap where you feel it on the body and press Send. Then choose how strong it was, from 0 to 10.',
+  'tour.s4h': () => 'Your calendar', 'tour.s4p': n => 'In “' + n.cal + '” you see every day at a glance. Tap a day to read it again, add a check-in you forgot, or delete one.',
+  'tour.s5h': () => 'Patterns and report', 'tour.s5p': n => '“' + n.pat + '” shows what comes back most often. “' + n.rep + '” makes a summary you can bring to your doctor. I never make a diagnosis.',
+  'tour.s6h': () => 'Make it yours', 'tour.s6p': n => 'In “' + n.set + '” you can design your avatar, choose your language, set a gentle daily reminder and watch this tutorial again.'
+});
+Object.assign(I18N.de, {
+  'tour.cardTitle': 'So funktioniert BAO, Schritt für Schritt', 'tour.cardSub': 'Eine kurze Tour mit Bao. Du kannst sie jederzeit wieder ansehen.', 'tour.cardBtn': 'Tutorial starten',
+  'tour.step': (i, n) => 'Schritt ' + i + ' von ' + n, 'tour.back': 'Zurück', 'tour.next': 'Weiter', 'tour.go': 'Zeig es mir', 'tour.done': 'Los geht’s!', 'tour.skip': 'Tutorial überspringen',
+  'tour.s1h': name => 'Hallo ' + (name || '') + ', ich bin Bao! 🐼', 'tour.s1p': () => 'Ich helfe dir zu bemerken, wie dein Körper und deine Gefühle miteinander sprechen. Ich zeige dir alles, es dauert nur eine Minute.',
+  'tour.s2h': () => 'Dein täglicher Check-in', 'tour.s2p': () => 'Tippe auf + (oder „Täglicher Check-in“) und ich stelle dir ein paar einfache Fragen. Antworte wie in einer Nachricht: ein paar Worte reichen. Vertippt? Tippe auf Zurück.',
+  'tour.s3h': () => 'Wo und wie stark', 'tour.s3p': () => 'Wenn du mir von einem Symptom erzählst, tippe auf die Stelle am Körper und dann auf Senden. Danach wählst du, wie stark es war, von 0 bis 10.',
+  'tour.s4h': () => 'Dein Kalender', 'tour.s4p': n => 'Im „' + n.cal + '“ siehst du jeden Tag auf einen Blick. Tippe auf einen Tag, um ihn nachzulesen, einen vergessenen Check-in nachzutragen oder einen zu löschen.',
+  'tour.s5h': () => 'Muster und Bericht', 'tour.s5p': n => '„' + n.pat + '“ zeigt, was am häufigsten wiederkommt. „' + n.rep + '“ erstellt eine Zusammenfassung für deine Ärztin oder deinen Arzt. Ich stelle nie eine Diagnose.',
+  'tour.s6h': () => 'Mach es zu deinem', 'tour.s6p': n => 'In den „' + n.set + '“ gestaltest du deinen Avatar, wählst deine Sprache, stellst eine sanfte tägliche Erinnerung ein und kannst dieses Tutorial wieder ansehen.'
+});
+Object.assign(I18N.it, {
+  'tour.cardTitle': 'Come funziona BAO, passo per passo', 'tour.cardSub': 'Un giro di un minuto con Bao. Puoi rivederlo quando vuoi.', 'tour.cardBtn': 'Inizia il tutorial',
+  'tour.step': (i, n) => 'Passo ' + i + ' di ' + n, 'tour.back': 'Indietro', 'tour.next': 'Avanti', 'tour.go': 'Fammi vedere', 'tour.done': 'Iniziamo!', 'tour.skip': 'Salta il tutorial',
+  'tour.s1h': name => 'Ciao ' + (name || '') + ', sono Bao! 🐼', 'tour.s1p': () => 'Ti aiuto a notare come il tuo corpo e le tue emozioni si parlano. Ti faccio fare un giro, ci vuole un minuto.',
+  'tour.s2h': () => 'Il tuo check-in del giorno', 'tour.s2p': () => 'Tocca il + (o “Check-in del giorno”) e ti faccio qualche domanda semplice. Rispondi come in un messaggio: bastano poche parole. Hai sbagliato? Tocca Annulla.',
+  'tour.s3h': () => 'Dove e quanto', 'tour.s3p': () => 'Quando mi racconti un sintomo, tocca sul corpo il punto dove lo senti e premi Invia. Poi scegli quanto era forte, da 0 a 10.',
+  'tour.s4h': () => 'Il tuo calendario', 'tour.s4p': n => 'In “' + n.cal + '” vedi tutti i giorni a colpo d’occhio. Tocca un giorno per rileggerlo, aggiungere un check-in che avevi dimenticato o eliminarne uno.',
+  'tour.s5h': () => 'Schemi e report', 'tour.s5p': n => '“' + n.pat + '” ti mostra cosa torna più spesso. “' + n.rep + '” prepara un riassunto da portare al tuo medico. Io non faccio mai diagnosi.',
+  'tour.s6h': () => 'Rendilo tuo', 'tour.s6p': n => 'In “' + n.set + '” puoi creare il tuo avatar, scegliere la lingua, impostare un promemoria gentile ogni giorno e rivedere questo tutorial.'
+});
+Object.assign(I18N.fr, {
+  'tour.cardTitle': 'Comment marche BAO, pas à pas', 'tour.cardSub': 'Une visite d’une minute avec Bao. Tu peux la revoir quand tu veux.', 'tour.cardBtn': 'Lancer le tutoriel',
+  'tour.step': (i, n) => 'Étape ' + i + ' sur ' + n, 'tour.back': 'Retour', 'tour.next': 'Suivant', 'tour.go': 'Montre-moi', 'tour.done': 'C’est parti !', 'tour.skip': 'Passer le tutoriel',
+  'tour.s1h': name => 'Salut ' + (name || '') + ', je suis Bao ! 🐼', 'tour.s1p': () => 'Je t’aide à remarquer comment ton corps et tes émotions se parlent. Je te fais visiter, ça prend une minute.',
+  'tour.s2h': () => 'Ton check-in du jour', 'tour.s2p': () => 'Touche le + (ou « Check-in du jour ») et je te pose quelques questions simples. Réponds comme dans un message : quelques mots suffisent. Une erreur ? Touche Annuler.',
+  'tour.s3h': () => 'Où et combien', 'tour.s3p': () => 'Quand tu me parles d’un symptôme, touche l’endroit du corps où tu le sens, puis Envoyer. Ensuite, choisis son intensité, de 0 à 10.',
+  'tour.s4h': () => 'Ton calendrier', 'tour.s4p': n => 'Dans « ' + n.cal + ' », tu vois chaque jour d’un coup d’œil. Touche un jour pour le relire, ajouter un check-in oublié ou en supprimer un.',
+  'tour.s5h': () => 'Tendances et rapport', 'tour.s5p': n => '« ' + n.pat + ' » montre ce qui revient le plus souvent. « ' + n.rep + ' » prépare un résumé pour ton médecin. Je ne pose jamais de diagnostic.',
+  'tour.s6h': () => 'Fais-en ton espace', 'tour.s6p': n => 'Dans « ' + n.set + ' », tu peux créer ton avatar, choisir ta langue, régler un doux rappel quotidien et revoir ce tutoriel.'
+});
+Object.assign(I18N.es, {
+  'tour.cardTitle': 'Cómo funciona BAO, paso a paso', 'tour.cardSub': 'Un recorrido de un minuto con Bao. Puedes volver a verlo cuando quieras.', 'tour.cardBtn': 'Empezar el tutorial',
+  'tour.step': (i, n) => 'Paso ' + i + ' de ' + n, 'tour.back': 'Atrás', 'tour.next': 'Siguiente', 'tour.go': 'Enséñamelo', 'tour.done': '¡Empecemos!', 'tour.skip': 'Saltar el tutorial',
+  'tour.s1h': name => '¡Hola ' + (name || '') + ', soy Bao! 🐼', 'tour.s1p': () => 'Te ayudo a notar cómo tu cuerpo y tus emociones se hablan. Te enseño todo, tarda un minuto.',
+  'tour.s2h': () => 'Tu check-in del día', 'tour.s2p': () => 'Toca el + (o «Check-in del día») y te haré unas preguntas sencillas. Responde como en un mensaje: bastan unas palabras. ¿Te equivocaste? Toca Deshacer.',
+  'tour.s3h': () => 'Dónde y cuánto', 'tour.s3p': () => 'Cuando me cuentes un síntoma, toca en el cuerpo dónde lo sientes y pulsa Enviar. Luego elige cuánta intensidad tuvo, de 0 a 10.',
+  'tour.s4h': () => 'Tu calendario', 'tour.s4p': n => 'En «' + n.cal + '» ves todos los días de un vistazo. Toca un día para releerlo, añadir un check-in olvidado o borrar uno.',
+  'tour.s5h': () => 'Patrones e informe', 'tour.s5p': n => '«' + n.pat + '» muestra lo que vuelve más a menudo. «' + n.rep + '» prepara un resumen para tu médico. Nunca hago diagnósticos.',
+  'tour.s6h': () => 'Hazlo tuyo', 'tour.s6p': n => 'En «' + n.set + '» puedes diseñar tu avatar, elegir el idioma, poner un recordatorio diario suave y volver a ver este tutorial.'
+});
+Object.assign(I18N.pt, {
+  'tour.cardTitle': 'Como o BAO funciona, passo a passo', 'tour.cardSub': 'Um passeio de um minuto com o Bao. Veja de novo quando quiser.', 'tour.cardBtn': 'Começar o tutorial',
+  'tour.step': (i, n) => 'Passo ' + i + ' de ' + n, 'tour.back': 'Voltar', 'tour.next': 'Próximo', 'tour.go': 'Me mostre', 'tour.done': 'Vamos começar!', 'tour.skip': 'Pular o tutorial',
+  'tour.s1h': name => 'Oi ' + (name || '') + ', eu sou o Bao! 🐼', 'tour.s1p': () => 'Eu te ajudo a perceber como o seu corpo e as suas emoções conversam. Vou te mostrar tudo, leva um minuto.',
+  'tour.s2h': () => 'Seu check-in do dia', 'tour.s2p': () => 'Toque no + (ou “Check-in do dia”) e eu faço algumas perguntas simples. Responda como numa mensagem: poucas palavras bastam. Errou? Toque em Desfazer.',
+  'tour.s3h': () => 'Onde e quanto', 'tour.s3p': () => 'Quando você me contar um sintoma, toque no corpo onde sente e depois em Enviar. Depois escolha a intensidade, de 0 a 10.',
+  'tour.s4h': () => 'Seu calendário', 'tour.s4p': n => 'Em “' + n.cal + '” você vê todos os dias de relance. Toque num dia para reler, adicionar um check-in esquecido ou apagar um.',
+  'tour.s5h': () => 'Padrões e relatório', 'tour.s5p': n => '“' + n.pat + '” mostra o que volta com mais frequência. “' + n.rep + '” prepara um resumo para levar ao seu médico. Eu nunca faço diagnósticos.',
+  'tour.s6h': () => 'Deixe do seu jeito', 'tour.s6p': n => 'Em “' + n.set + '” você cria seu avatar, escolhe o idioma, define um lembrete diário gentil e pode rever este tutorial.'
+});
+Object.assign(I18N.nl, {
+  'tour.cardTitle': 'Zo werkt BAO, stap voor stap', 'tour.cardSub': 'Een rondleiding van een minuut met Bao. Bekijk hem opnieuw wanneer je wilt.', 'tour.cardBtn': 'Start de uitleg',
+  'tour.step': (i, n) => 'Stap ' + i + ' van ' + n, 'tour.back': 'Terug', 'tour.next': 'Volgende', 'tour.go': 'Laat zien', 'tour.done': 'Aan de slag!', 'tour.skip': 'Uitleg overslaan',
+  'tour.s1h': name => 'Hoi ' + (name || '') + ', ik ben Bao! 🐼', 'tour.s1p': () => 'Ik help je te merken hoe je lichaam en je gevoelens met elkaar praten. Ik laat je alles zien, het duurt een minuut.',
+  'tour.s2h': () => 'Je dagelijkse check-in', 'tour.s2p': () => 'Tik op + (of „Dagelijkse check-in”) en ik stel je een paar eenvoudige vragen. Antwoord zoals in een bericht: een paar woorden is genoeg. Vergist? Tik op Terug.',
+  'tour.s3h': () => 'Waar en hoeveel', 'tour.s3p': () => 'Als je me over een klacht vertelt, tik dan op de plek op het lichaam en op Versturen. Kies daarna hoe sterk het was, van 0 tot 10.',
+  'tour.s4h': () => 'Je kalender', 'tour.s4p': n => 'In „' + n.cal + '” zie je elke dag in één oogopslag. Tik op een dag om hem terug te lezen, een vergeten check-in toe te voegen of er een te verwijderen.',
+  'tour.s5h': () => 'Patronen en rapport', 'tour.s5p': n => '„' + n.pat + '” laat zien wat het vaakst terugkomt. „' + n.rep + '” maakt een samenvatting voor je arts. Ik stel nooit een diagnose.',
+  'tour.s6h': () => 'Maak het van jou', 'tour.s6p': n => 'In „' + n.set + '” ontwerp je je avatar, kies je je taal, stel je een zachte dagelijkse herinnering in en kun je deze uitleg opnieuw bekijken.'
+});
 
 (async function boot(){
   try{
