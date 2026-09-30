@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-km9w3UZUlnpP0YvyxVjTOISDd8l/N71nj/sHOVrGNtc='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-Pz/EBGzdszBIO/AKD3UAYfbDmRPnZofgavyKr5r+cxc='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>BAO &mdash; symptom &amp; wellbeing tracker</title>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -383,7 +383,7 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
   display:flex;align-items:flex-end;justify-content:space-between;gap:6px}
 .cal-int{display:block;width:42%;max-width:34px;min-height:3px;border-radius:3px;background:var(--coral)}
 .cal-count{display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:2.5px;max-width:62%}
-.cal-count b{display:block;width:6px;height:6px;border-radius:50%;background:var(--teal)}.cal-count b.mind{background:#e8479a}
+.cal-count b{display:block;width:6px;height:6px;border-radius:50%;background:var(--teal)}.cal-count b.mind{background:#e8479a}.cal-cell .cal-count{flex-wrap:wrap-reverse;align-content:flex-end;max-width:33px}
 .cal-count em{font-style:normal;font-size:9.5px;font-weight:800;color:var(--teal);line-height:1}
 .cal-rep{position:absolute;right:6px;top:4px;font-size:13px;font-weight:800;color:#7a6fb0;line-height:1;
   display:flex;align-items:baseline;gap:1px}
@@ -5658,8 +5658,8 @@ function renderCalendar(){
       const ih = st.peak !== null ? Math.max(3, Math.round(st.peak / 10 * 26)) : 3;
       const shown = Math.min(st.count, 4);
       inner += '<span class="cal-bottom"><i class="cal-int" style="height:' + ih + 'px"></i>' +
-               '<span class="cal-count">' + st.syms.slice().sort((a, b) => (symType(a) === 'mind') - (symType(b) === 'mind')).slice(0, shown).map(x => symType(x) === 'mind' ? '<b class="mind"></b>' : '<b></b>').join('') +
-               (st.count > 4 ? '<em>+' + (st.count - 4) + '</em>' : '') + '</span></span>';
+               '<span class="cal-count">' + st.syms.slice().sort((a, b) => (symType(a) === 'mind') - (symType(b) === 'mind')).map(x => symType(x) === 'mind' ? '<b class="mind"></b>' : '<b></b>').join('') +
+               '</span></span>';
       label += ' — ' + t('cal.aria', st.count) + (reps ? ', ' + t('cal.ariaRep', reps) : '');
     } else {
       label += ' — ' + t('cal.ariaEmpty');
@@ -5727,7 +5727,7 @@ function renderDayPanel(){
         (symType(x) ? ' <span class="sym-type ' + symType(x) + '">' + esc(t('type.' + symType(x))) + '</span>' : '') + '</strong><span class="sym-tools">' +
         (x.rating !== '' && x.rating != null && !isNaN(Number(x.rating))
           ? '<span class="sym-score">' + esc(String(x.rating)) + '/10</span>' : '') +
-        '<button class="sym-del" type="button" data-del-sym="' + esc(e.id + '|' + n) + '" title="' + esc(t('del.sym')) + '" aria-label="' + esc(t('del.sym')) + '">&#10005;</button></span></div>';
+        '<button class="sym-del" type="button" data-del-sym="' + esc(e.id + '|' + n) + '" title="' + esc(t('del.sym')) + '" aria-label="' + esc(t('del.sym')) + '">&#10005;</button><span class="sym-chev" aria-hidden="true">&#9662;</span></span></div><div class="sym-body">';
       if (x.parts && x.parts.length)
         html += '<div class="chiprow" style="margin-top:8px">' + x.parts.map(pt => '<span>' + esc(partName(pt)) + '</span>').join('') +
           (x.points && x.points.length ? '<button type="button" class="pts-chip pts-open" data-pts="' + esc(JSON.stringify(x.points)).replace(/"/g, '&quot;') + '" data-pts-title="' + esc((x.name || '') + ' · ' + x.parts.map(partName).join(', ')).replace(/"/g, '&quot;') + '" title="' + esc(t('pts.see')) + '">📍 ' + esc(t('pts.n', x.points.length)) + ' · ' + esc(t('pts.see')) + '</button>' : '') + '</div>';
@@ -5735,7 +5735,7 @@ function renderDayPanel(){
       if (said(x.situation))  html += qa(t(x.kind === 'feeling' ? 'q.feelSituation' : 'q.situation'), x.situation);
       if (x.repeated)         html += qa(t(x.kind === 'feeling' ? 'q.feelRepeated' : 'q.repeated'), x.repeated === 'yes' ? t('day.yes') : t('day.no'));
       if (said(x.reflection)) html += '<div class="sym-reflect">' + para(x.reflection) + '</div>';
-      html += '</div>';
+      html += '</div></div>';
     });
     if (said(e.day) || said(e.memory)){
       html += '<div class="day-sec"><h4>' + t('day.thoughts') + '</h4>';
@@ -7922,7 +7922,19 @@ Object.assign(I18N.nl, { 'uns.title':'Check-in bewaren?', 'uns.text':'Weet je ze
     document.addEventListener('keydown', onKey);
     c.focus();
   }
+  st.textContent += '.sym-card.fold .sym-head{cursor:pointer;user-select:none}.sym-card.fold .sym-body{display:none}.sym-card.fold.open .sym-body{display:block}' +
+    '.sym-chev{display:none;margin-left:6px;color:var(--muted);transition:transform .18s;font-size:12px}.sym-card.fold .sym-chev{display:inline-block}.sym-card.fold.open .sym-chev{transform:rotate(180deg)}' +
+    '.sym-card.fold:not(.open) .sym-head{margin-bottom:0}';
   window.wirePoints = function(el){
+    const cards = [...el.querySelectorAll('.sym-card')];
+    if (cards.length > 1) cards.forEach(c => {
+      c.classList.add('fold');
+      const h = c.querySelector('.sym-head'); if (!h) return;
+      h.setAttribute('role', 'button'); h.tabIndex = 0; h.setAttribute('aria-expanded', 'false');
+      const tog = () => { const o = c.classList.toggle('open'); h.setAttribute('aria-expanded', o ? 'true' : 'false'); };
+      h.addEventListener('click', e => { if (e.target.closest('button')) return; tog(); });
+      h.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target === h){ e.preventDefault(); tog(); } });
+    });
     el.querySelectorAll('[data-pts]').forEach(b => b.addEventListener('click', () => {
       let pts = []; try{ pts = JSON.parse(b.dataset.pts) || []; }catch(e){}
       if (pts.length) openPoints(pts, b.dataset.ptsTitle);
