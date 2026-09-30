@@ -5725,7 +5725,7 @@ function renderDayPanel(){
         '<button class="sym-del" type="button" data-del-sym="' + esc(e.id + '|' + n) + '" title="' + esc(t('del.sym')) + '" aria-label="' + esc(t('del.sym')) + '">&#10005;</button></span></div>';
       if (x.parts && x.parts.length)
         html += '<div class="chiprow" style="margin-top:8px">' + x.parts.map(pt => '<span>' + esc(partName(pt)) + '</span>').join('') +
-          (x.points && x.points.length ? '<span class="pts-chip">📍 ' + esc(t('pts.n', x.points.length)) + '</span>' : '') + '</div>';
+          (x.points && x.points.length ? '<button type="button" class="pts-chip pts-open" data-pts="' + esc(JSON.stringify(x.points)).replace(/"/g, '&quot;') + '" data-pts-title="' + esc((x.name || '') + ' · ' + x.parts.map(partName).join(', ')).replace(/"/g, '&quot;') + '" title="' + esc(t('pts.see')) + '">📍 ' + esc(t('pts.n', x.points.length)) + ' · ' + esc(t('pts.see')) + '</button>' : '') + '</div>';
       if (said(x.detail))     html += qa(t('day.added'), x.detail);
       if (said(x.situation))  html += qa(t(x.kind === 'feeling' ? 'q.feelSituation' : 'q.situation'), x.situation);
       if (x.repeated)         html += qa(t(x.kind === 'feeling' ? 'q.feelRepeated' : 'q.repeated'), x.repeated === 'yes' ? t('day.yes') : t('day.no'));
@@ -5752,6 +5752,7 @@ function renderDayPanel(){
   el.innerHTML = html;
   wireLog(el);
   wireDelete(el);
+  wirePoints(el);
 }
 
 $('calPrev').addEventListener('click', () => { calM--; if (calM < 0){ calM = 11; calY--; } renderCalendar(); });
@@ -7864,6 +7865,66 @@ Object.assign(I18N.nl, { 'uns.title':'Check-in bewaren?', 'uns.text':'Weet je ze
   }
 })();
 
+
+// ---- show saved precise points on a body figure (calendar) ----
+(function(){
+  const L = { en:['See on body','Front','Back','Close','Where you felt it'], de:['Am Körper zeigen','Vorne','Hinten','Schließen','Wo du es gespürt hast'],
+    it:['Vedi sul corpo','Davanti','Dietro','Chiudi','Dove lo hai sentito'], fr:['Voir sur le corps','Devant','Dos','Fermer','Où tu l’as ressenti'],
+    es:['Ver en el cuerpo','Delante','Detrás','Cerrar','Dónde lo sentiste'], pt:['Ver no corpo','Frente','Costas','Fechar','Onde você sentiu'],
+    nl:['Toon op lichaam','Voorkant','Achterkant','Sluiten','Waar je het voelde'] };
+  const keys = ['pts.see','pts.front','pts.back','pts.close','pts.where'];
+  Object.keys(L).forEach(lg => { if (typeof I18N !== 'undefined' && I18N[lg]){ const o = {}; keys.forEach((k, i) => o[k] = L[lg][i]); Object.assign(I18N[lg], o); } });
+  const st = document.createElement('style');
+  st.textContent = '.pts-open{border:0;cursor:pointer;font:inherit;font-size:inherit;padding:inherit;border-radius:999px}.pts-open:hover{filter:brightness(.96);text-decoration:underline}' +
+    '.ptsmodal{position:fixed;inset:0;z-index:9999;background:rgba(20,40,40,.45);display:flex;align-items:center;justify-content:center;padding:16px}' +
+    '.ptsbox{background:#fff;border-radius:20px;max-width:640px;width:100%;max-height:92vh;overflow:auto;padding:20px 22px;box-shadow:0 20px 50px rgba(0,0,0,.25)}' +
+    '.ptsbox h3{margin:0 0 4px;font-size:18px}.ptsbox .sub{color:var(--muted);font-size:13px;margin-bottom:14px}' +
+    '.ptsfigs{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;background:#f1f7f5;border-radius:16px;padding:14px}' +
+    '.ptsfig{text-align:center;font-size:12px;font-weight:750;color:var(--teal-dark)}' +
+    '.ptsfig .body-stage{height:min(58vh,420px);margin:6px auto 0}.ptsfig .prec-pt{animation:ptPulse 1.6s ease-in-out infinite}' +
+    '@keyframes ptPulse{0%,100%{box-shadow:0 0 0 0 rgba(233,135,114,.6)}50%{box-shadow:0 0 0 9px rgba(233,135,114,0)}}' +
+    '@media (prefers-reduced-motion:reduce){.ptsfig .prec-pt{animation:none}}' +
+    '.ptsclose{margin-top:14px;width:100%}';
+  document.head.appendChild(st);
+
+  function openPoints(points, title){
+    const tr = (k, d) => { try{ const v = t(k); return v && v !== k ? v : d; }catch(e){ return d; } };
+    const sides = ['front','back'].filter(sd => points.some(p => p.side === sd));
+    const m = document.createElement('div'); m.className = 'ptsmodal'; m.setAttribute('role','dialog'); m.setAttribute('aria-modal','true');
+    const box = document.createElement('div'); box.className = 'ptsbox';
+    const h = document.createElement('h3'); h.textContent = tr('pts.where','Where you felt it');
+    const sub = document.createElement('div'); sub.className = 'sub'; sub.textContent = title || '';
+    const figs = document.createElement('div'); figs.className = 'ptsfigs';
+    sides.forEach(sd => {
+      const w = document.createElement('div'); w.className = 'ptsfig';
+      w.appendChild(document.createTextNode(tr(sd === 'front' ? 'pts.front' : 'pts.back', sd)));
+      const stage = document.createElement('div'); stage.className = 'body-stage';
+      const fig = document.createElement('div'); fig.className = 'figure ' + (sd === 'front' ? 'front-image' : 'back-image');
+      stage.appendChild(fig);
+      points.filter(p => p.side === sd).forEach(p => {
+        const d = document.createElement('span'); d.className = 'prec-pt'; d.style.left = (p.x * 100) + '%'; d.style.top = (p.y * 100) + '%';
+        d.title = (typeof partName === 'function' ? partName(p.part) : p.part) || '';
+        stage.appendChild(d);
+      });
+      w.appendChild(stage); figs.appendChild(w);
+    });
+    const c = document.createElement('button'); c.type = 'button'; c.className = 'btn primary ptsclose'; c.textContent = tr('pts.close','Close');
+    box.append(h, sub, figs, c); m.appendChild(box); document.body.appendChild(m);
+    const close = () => { m.remove(); document.removeEventListener('keydown', onKey); };
+    const onKey = e => { if (e.key === 'Escape') close(); };
+    c.addEventListener('click', close);
+    m.addEventListener('click', e => { if (e.target === m) close(); });
+    document.addEventListener('keydown', onKey);
+    c.focus();
+  }
+  window.wirePoints = function(el){
+    el.querySelectorAll('[data-pts]').forEach(b => b.addEventListener('click', () => {
+      let pts = []; try{ pts = JSON.parse(b.dataset.pts) || []; }catch(e){}
+      if (pts.length) openPoints(pts, b.dataset.ptsTitle);
+    }));
+  };
+})();
 </script>
 </body>
 </html>
+
