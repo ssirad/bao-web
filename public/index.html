@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-GLqi+z9W5lEhfm67YEfoOAA+lM+PgS0wxtZNypywomE='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-CbernCbGR3zXXZ0Q/mke927QpBGISe+Nhadaf7314Mc='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>BAO &mdash; symptom &amp; wellbeing tracker</title>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -870,6 +870,33 @@ body:not(.pro) .tabbar [data-view=patients]{display:none!important}
   .cal-bottom .cal-count.many::after{content:attr(data-n);display:grid;place-items:center;min-width:14px;height:14px;padding:0 3px;border-radius:7px;background:var(--teal);color:#fff;font-size:9px;font-weight:800;line-height:1}
   .cal-cell .cal-bottom .cal-int{width:6px!important}
 }
+.share-consent{margin-top:10px}
+.share-box{margin-top:10px}
+.share-box[hidden]{display:none}
+.share-box .share-note{margin:0 0 6px}
+.session-card[hidden]{display:none}
+.sn-input{width:100%;box-sizing:border-box;resize:vertical;min-height:58px;font:inherit;margin:4px 0 8px}
+.sn-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.sn-item{display:flex;gap:10px;align-items:flex-start;background:#f6faf8;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.sn-item.done{opacity:.55}
+.sn-item .sn-t{flex:1;min-width:0;white-space:pre-wrap;font-size:13.5px;color:#2f4243;line-height:1.45}
+.sn-item small{display:block;color:#8a9a9b;font-size:11px;margin-top:3px}
+.sn-item button{border:0;background:none;color:#187d78;font-weight:750;font-size:12px;cursor:pointer;padding:2px 4px;flex:0 0 auto}
+.sn-item button.rm{color:#b4573f}
+.sn-empty{color:#8a9a9b;font-size:12.5px}
+.pro-panel{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+.pro-panel .card{margin:0}
+.pq-list{display:flex;flex-direction:column;gap:6px;margin:4px 0 12px}
+.pq-item{display:flex;gap:8px;align-items:center;background:#f3f1fb;border-radius:10px;padding:8px 10px;font-size:13.5px;color:#3d3770}
+.pq-item span{flex:1}
+.pq-item button{border:0;background:none;color:#b4573f;font-weight:800;cursor:pointer;font-size:13px}
+.priv-box{margin-top:18px;background:#fff8e8;border:1px solid #f0dfb2;border-radius:14px;padding:12px}
+.priv-box h4{margin:0 0 4px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#8a6420}
+.priv-box p{margin:0 0 8px;font-size:11.5px;color:#9a8250}
+.priv-box textarea{width:100%;box-sizing:border-box;min-height:80px;resize:vertical;font:inherit;font-size:13.5px;border:1px solid #ecd9a8;border-radius:10px;padding:9px 10px;background:#fff}
+.priv-box .priv-st{font-size:11.5px;color:#9a8250;margin-left:8px}
+.priv-box .btn{margin-top:8px;padding:9px 14px;font-size:13px}
+@media(max-width:930px){.pro-panel{grid-template-columns:1fr}}
 </style>
 <script>try{ if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) document.documentElement.classList.add('native'); if (/BAOApp\/2/.test(navigator.userAgent)) document.documentElement.classList.add('shell'); }catch(e){}</script>
 <script>
@@ -1146,6 +1173,17 @@ body:not(.pro) .tabbar [data-view=patients]{display:none!important}
           </div>
           <button class="btn outline pro-remove" id="proRemove" type="button" data-i18n="pro.remove">Remove patient</button>
         </div>
+        <div class="pro-panel pro-only" id="proPanel">
+          <div class="card compact">
+            <div class="card-head"><div><h2 data-i18n="pp.notes">Notes for the next session</h2><div class="muted" data-i18n="pp.notesSub">What your patient wants to talk about.</div></div></div>
+            <div class="sn-list" id="ppNotes"></div>
+          </div>
+          <div class="card compact">
+            <div class="card-head"><div><h2 data-i18n="pp.q">Questions for your patient</h2><div class="muted" data-i18n="pp.qSub">Bao asks them at the end of every check-in.</div></div></div>
+            <div class="pq-list" id="ppQuestions"></div>
+            <div class="inline-form small"><input class="input" id="ppQText" maxlength="300" data-i18n-attr="placeholder|pp.qPh" placeholder="e.g. How did you sleep this week?"><button class="btn primary" id="ppQAdd" type="button" data-i18n="pp.qAdd">Add</button></div>
+          </div>
+        </div>
         <div class="cal-wrap">
           <div class="card">
             <div class="cal-head">
@@ -1287,7 +1325,10 @@ body:not(.pro) .tabbar [data-view=patients]{display:none!important}
             </div>
 
             <div class="verify-box" id="verifyBox" hidden><span data-i18n="ver.note">📩 Please confirm your email: we sent you a link.</span> <button class="linklike" id="verifyResend" type="button" data-i18n="ver.resend">Send it again</button></div>
-            <p class="share-note" id="shareNote" hidden></p>
+            <div class="share-box" id="shareBox" hidden>
+              <p class="share-note" id="shareNote"></p>
+              <button class="linklike danger" id="shareStop" type="button" data-i18n="share.stop">Stop sharing my check-ins</button>
+            </div>
             <div class="acc-actions"><button class="btn outline" id="pwChange" type="button" data-i18n="pw.change">Change password</button></div>
             <div class="signout-row mobile-only"><button class="btn outline" id="signOut2" type="button" data-i18n="side.signout">Sign out</button></div>
             <button class="linklike danger" id="delOpen" type="button" data-i18n="acc.delete">Delete my account</button>
@@ -1301,6 +1342,14 @@ body:not(.pro) .tabbar [data-view=patients]{display:none!important}
               <button class="linklike" id="delCancel" type="button" data-i18n="acc.deleteCancel">Keep my account</button>
             </div>
 
+          </div>
+
+          <div class="card compact session-card" id="sessionCard" hidden>
+            <div class="card-head"><div><h2 data-i18n="sn.title">For my next session</h2>
+              <div class="muted" id="sessionSub"></div></div></div>
+            <textarea class="input sn-input" id="snText" rows="2" maxlength="1500" data-i18n-attr="placeholder|sn.ph" placeholder="Something I want to talk about…"></textarea>
+            <button class="btn primary" id="snAdd" type="button" data-i18n="sn.add">Add note</button>
+            <div class="sn-list" id="snList"></div>
           </div>
 
           <div class="card compact lang-card">
@@ -1424,6 +1473,7 @@ body:not(.pro) .tabbar [data-view=patients]{display:none!important}
         <input class="input code-input" id="loginCode" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="BAO-XXXX-XXXX">
         <p class="tiny code-help" data-i18n="code.help">You get this code from your therapist or doctor. It only works with the email address they registered for you. Your check-ins will be visible to them.</p>
         <p class="code-link" id="codeLink" hidden></p>
+        <label class="consent share-consent"><input type="checkbox" id="shareConsent"><span data-i18n="share.consent">I agree that my therapist or doctor can read my check-ins. I can stop sharing at any time in Settings.</span></label>
       </div>
       <label class="form-label" for="loginName" style="margin-top:12px" id="nameLabel">What should Bao call you?</label>
       <div class="name-row">
@@ -4350,7 +4400,7 @@ const store = {
 const LS_USERS = 'somatic.users.v2', LS_THROTTLE = 'somatic.throttle.v1';
 let USER = null;
 let USER_NAME = '';
-let USER_VERIFIED = true, JUST_REGISTERED = false, TOUR_PENDING = false, USER_ROLE = 'patient', USER_SHARED = '', REG_EXTRA = {};
+let USER_VERIFIED = true, JUST_REGISTERED = false, TOUR_PENDING = false, USER_ROLE = 'patient', USER_SHARED = '', REG_EXTRA = {}, USER_QUESTIONS = [];
 
 const own = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 function localUsers(){
@@ -4504,7 +4554,7 @@ const auth = {
       try{
         const r = await jget('/api/auth/me');
         USER_NAME = r.name || '';
-        USER_ROLE = r.role === 'pro' ? 'pro' : 'patient'; USER_SHARED = r.shared || '';
+        USER_ROLE = r.role === 'pro' ? 'pro' : 'patient'; USER_SHARED = r.shared || ''; USER_QUESTIONS = r.questions || [];
       USER_VERIFIED = r.verified !== false;
         USER_VERIFIED = r.verified !== false;
         if (r.user) await resumeSession(r.user);   // unlocks the encrypted local backup, if this tab has the key
@@ -4525,7 +4575,7 @@ const auth = {
       }
       USER_NAME = r.name || '';
       USER_ROLE = r.role === 'pro' ? 'pro' : 'patient';
-      try{ const me = await jget('/api/auth/me'); USER_SHARED = me.shared || ''; }catch(e){}
+      try{ const me = await jget('/api/auth/me'); USER_SHARED = me.shared || ''; USER_QUESTIONS = me.questions || []; }catch(e){}
       const rec = own(localUsers(), r.user) ? localUsers()[r.user] : null;
       let made = rec ? await openRecord(rec, p) : null;
       if (made && made.rec) storeRecord(r.user, made.rec);
@@ -4557,7 +4607,7 @@ const auth = {
       const r = await jpost('/api/auth/register', Object.assign({ username:u, password:p, name, lang: LANG }, REG_EXTRA));
       USER_NAME = r.name || name;
       USER_ROLE = r.role === 'pro' ? 'pro' : 'patient';
-      try{ const me = await jget('/api/auth/me'); USER_SHARED = me.shared || ''; }catch(e){}
+      try{ const me = await jget('/api/auth/me'); USER_SHARED = me.shared || ''; USER_QUESTIONS = me.questions || []; }catch(e){}
       USER_VERIFIED = r.verified !== false;
       JUST_REGISTERED = true;
       const prev = own(localUsers(), r.user) ? localUsers()[r.user] : null;
@@ -5199,7 +5249,8 @@ async function runConversation(){
   entry.emotions = await askFeel(emotionsQuestion(entry), 'listening');
 
   await baoSay(t('chat.almost'), '', 'cheer', 700);
-  entry.personal = await askFeel(t('q.personal'), 'cheer');
+  await askAssigned();
+  entry.personal = await askFeel(t(USER_SHARED ? 'q.personalPriv' : 'q.personal'), 'cheer');
 
   await showRecap();
 }
@@ -5219,7 +5270,8 @@ function buildRecap(e){
     thoughts: t('recap.thoughts') + '*' + t(e.forDay ? 'past.day' : 'q.day') + '* ' + e.day +
               (e.memory ? '\n*' + t('q.memory') + '* ' + e.memory : ''),
     feelings: t('recap.feelings') + '*' + emotionsQuestion(e) + '* ' + e.emotions,
-    personal: t('recap.personal') + e.personal
+    personal: t('recap.personal') + e.personal + (USER_SHARED ? '\n' + t('recap.privNote') : ''),
+    assigned: (e.assigned || []).length ? t('recap.assigned', e.assignedBy || USER_SHARED) + e.assigned.map(x => '\n*' + x.q + '* ' + x.a).join('') : ''
   };
 }
 
@@ -5238,6 +5290,7 @@ async function showRecap(){
   for (const b of r.symptoms){ say(b, 'bao', 'recap', 'checkin'); await pause(240, gen); }
   say(r.thoughts, 'bao', 'recap', 'checkin'); await pause(240, gen);
   say(r.feelings, 'bao', 'recap', 'checkin'); await pause(240, gen);
+  if (r.assigned){ say(r.assigned, 'bao', 'recap', 'checkin'); await pause(240, gen); }
   say(r.personal, 'bao', 'recap', 'checkin'); await pause(260, gen);
 
   await baoSay(t('chat.thanks', entry.name || t('chat.friend')), '', 'cheer', 900);
@@ -5766,6 +5819,8 @@ function renderDayPanel(){
     }
     if (said(e.emotions))
       html += '<div class="day-sec"><h4>' + t('day.feelings') + '</h4>' + qa(emotionsQuestion(e), e.emotions) + '</div>';
+    if ((e.assigned || []).length)
+      html += '<div class="day-sec"><h4>' + esc(t('day.assigned', e.assignedBy || '')) + '</h4>' + e.assigned.map(x => qa(x.q, x.a)).join('') + '</div>';
     if (said(e.personal))
       html += '<div class="day-sec"><h4>' + t('day.personal') + '</h4><div class="day-note">' + para(e.personal) + '</div></div>';
     html += '<button class="day-del" type="button" data-del-entry="' + esc(e.id) + '">' + t(list.length > 1 ? 'del.entryN' : 'del.entry') + '</button>';
@@ -6137,7 +6192,7 @@ function paintLogin(){
 function showLogin(){
   itGate(false);
   if (typeof PRO_CUR !== 'undefined'){ PRO_CUR = ''; PRO_PATIENTS = []; PRO_ALL = []; }
-  document.body.classList.remove('pro'); USER_ROLE = 'patient'; USER_SHARED = ''; if (typeof ROLE_PICK !== 'undefined') ROLE_PICK = 'patient';
+  document.body.classList.remove('pro'); USER_ROLE = 'patient'; USER_SHARED = ''; USER_QUESTIONS = []; if (typeof ROLE_PICK !== 'undefined') ROLE_PICK = 'patient';
   loginMode = 'signin';
   document.querySelector('.app').classList.add('locked');
   $('loginScreen').hidden = false;
@@ -6158,7 +6213,7 @@ async function enterApp(){
   await loadPatterns();
   await loadPet();
   document.body.classList.toggle('pro', USER_ROLE === 'pro');
-  $('shareNote').hidden = !USER_SHARED; if (USER_SHARED) $('shareNote').textContent = '🔗 ' + t('share.with', USER_SHARED);
+  paintSharing();
   renderAll();
   if (USER_ROLE === 'pro'){ await loadPro(); TOUR_PENDING = false; }
   go('home');
@@ -6194,7 +6249,8 @@ $('loginForm').addEventListener('submit', async e => {
         if (ROLE_PICK === 'patient'){
           const code = $('loginCode').value.trim();
           if (!code) return loginErr(t('err.code'));
-          REG_EXTRA = { role:'patient', code };
+          if (!$('shareConsent').checked) return loginErr(t('why.share_consent'));
+          REG_EXTRA = { role:'patient', code, share: true };
         } else REG_EXTRA = { role:'pro', kind:'therapist' };
       }
       const ttl = !$('loginTitle').hidden ? $('loginTitle').value : '';
@@ -7317,6 +7373,7 @@ let PRO_CUR = '';
 function proCurrent(){ return PRO_PATIENTS.find(p => p.email === PRO_CUR) || null; }
 function applyProFilter(){
   DATA = PRO_CUR ? PRO_ALL.filter(e => e.patient && e.patient.email === PRO_CUR) : [];
+  loadProPatient();
   const p = proCurrent();
   $('proName').textContent = p ? (p.name || p.email) : '—';
   $('proLede').textContent = p ? t('pro.patientLede', p.email) : '';
@@ -7911,6 +7968,193 @@ Object.assign(I18N.pt, { 'pts.show':'ver no corpo' });
 Object.assign(I18N.nl, { 'pts.show':'toon op het lichaam' });
 if (!('body.front' in I18N.en)) I18N.en['body.front'] = 'Front';
 if (!('body.back' in I18N.en)) I18N.en['body.back'] = 'Back';
+
+// ---- domande assegnate dal terapeuta ----
+async function askAssigned(){
+  if (!USER_SHARED || !USER_QUESTIONS.length) return;
+  entry.assigned = []; entry.assignedBy = USER_SHARED;
+  await baoSay(t('aq.intro', USER_SHARED), '', 'listening', 700);
+  for (const q of USER_QUESTIONS){
+    const a = await ask(q, 'listening');
+    entry.assigned.push({ q, a });
+  }
+}
+
+// ---- paziente: condivisione e note per la prossima seduta ----
+function fmtDate(iso){ try{ const d = new Date(iso); return prettyKey(localKey(d)); }catch(e){ return ''; } }
+function paintSharing(){
+  const on = !!USER_SHARED && USER_ROLE !== 'pro';
+  $('shareBox').hidden = !on;
+  if (on) $('shareNote').textContent = '🔗 ' + t('share.with', USER_SHARED);
+  $('sessionCard').hidden = !on;
+  if (on){ $('sessionSub').textContent = t('sn.sub', USER_SHARED); loadMyNotes(); }
+}
+let MY_NOTES = [];
+async function loadMyNotes(){
+  try{ MY_NOTES = (await jget('/api/me/notes')).notes || []; }catch(e){ MY_NOTES = []; }
+  renderMyNotes();
+}
+function renderMyNotes(){
+  const box = $('snList');
+  if (!MY_NOTES.length){ box.innerHTML = '<div class="sn-empty">' + esc(t('sn.empty')) + '</div>'; return; }
+  box.innerHTML = MY_NOTES.slice().reverse().map(n =>
+    '<div class="sn-item' + (n.done ? ' done' : '') + '"><div class="sn-t">' + esc(n.text) + '<small>' + esc(fmtDate(n.date)) +
+    (n.done ? ' · ✓ ' + esc(t('sn.discussed')) : '') + '</small></div>' +
+    '<button class="rm" type="button" data-sn-del="' + esc(n.id) + '" aria-label="' + esc(t('sn.delete')) + '">✕</button></div>').join('');
+  box.querySelectorAll('[data-sn-del]').forEach(b => b.addEventListener('click', async () => {
+    try{ MY_NOTES = (await jpost('/api/me/note/delete', { id: b.dataset.snDel })).notes || []; renderMyNotes(); }catch(e){ showToast(t('err.generic')); }
+  }));
+}
+$('snAdd').addEventListener('click', async () => {
+  const text = $('snText').value.trim();
+  if (!text) return $('snText').focus();
+  $('snAdd').disabled = true;
+  try{ MY_NOTES = (await jpost('/api/me/note', { text })).notes || []; $('snText').value = ''; renderMyNotes(); }
+  catch(e){ showToast(e.message || t('err.generic')); }
+  finally{ $('snAdd').disabled = false; }
+});
+$('shareStop').addEventListener('click', async () => {
+  if (!confirm(t('share.stopConfirm', USER_SHARED))) return;
+  try{ await jpost('/api/me/unlink', {}); }catch(e){ showToast(t('err.generic')); return; }
+  showToast(t('share.stopped', USER_SHARED));
+  USER_SHARED = ''; USER_QUESTIONS = [];
+  paintSharing();
+});
+
+// ---- terapeuta: note del paziente, domande, note private ----
+let PRO_PAT = { notes: [], questions: [], private: {} }, PRO_PAT_FOR = '';
+async function loadProPatient(){
+  if (!document.body.classList.contains('pro') || !PRO_CUR) return;
+  const who = PRO_CUR;
+  try{ const r = await jget('/api/pro/patient?email=' + encodeURIComponent(who)); if (who !== PRO_CUR) return; PRO_PAT = { notes: r.notes || [], questions: r.questions || [], private: r.private || {} }; PRO_PAT_FOR = who; }
+  catch(e){ PRO_PAT = { notes: [], questions: [], private: {} }; PRO_PAT_FOR = who; }
+  paintProPanel();
+  addPrivateBox();
+}
+function paintProPanel(){
+  const nb = $('ppNotes');
+  const notes = PRO_PAT.notes.slice().sort((a, b) => (a.done - b.done) || (b.date > a.date ? 1 : -1));
+  nb.innerHTML = notes.length ? notes.map(n =>
+    '<div class="sn-item' + (n.done ? ' done' : '') + '"><div class="sn-t">' + esc(n.text) + '<small>' + esc(fmtDate(n.date)) + '</small></div>' +
+    '<button type="button" data-pp-done="' + esc(n.id) + '" data-v="' + (n.done ? '0' : '1') + '">' + esc(t(n.done ? 'pp.reopen' : 'pp.done')) + '</button></div>').join('')
+    : '<div class="sn-empty">' + esc(t('pp.noNotes')) + '</div>';
+  nb.querySelectorAll('[data-pp-done]').forEach(b => b.addEventListener('click', async () => {
+    try{ PRO_PAT.notes = (await jpost('/api/pro/note/done', { email: PRO_CUR, id: b.dataset.ppDone, done: b.dataset.v === '1' })).notes || []; paintProPanel(); }catch(e){ showToast(t('err.generic')); }
+  }));
+  const qb = $('ppQuestions');
+  qb.innerHTML = PRO_PAT.questions.length ? PRO_PAT.questions.map((q, i) =>
+    '<div class="pq-item"><span>❓ ' + esc(q) + '</span><button type="button" data-pq-rm="' + i + '" aria-label="✕">✕</button></div>').join('')
+    : '<div class="sn-empty">' + esc(t('pp.noQ')) + '</div>';
+  qb.querySelectorAll('[data-pq-rm]').forEach(b => b.addEventListener('click', () => saveQuestions(PRO_PAT.questions.filter((_, i) => i !== Number(b.dataset.pqRm)))));
+}
+async function saveQuestions(list){
+  try{ PRO_PAT.questions = (await jpost('/api/pro/questions', { email: PRO_CUR, questions: list })).questions || []; paintProPanel(); }
+  catch(e){ showToast(e.message || t('err.generic')); }
+}
+$('ppQAdd').addEventListener('click', () => {
+  const q = $('ppQText').value.trim(); if (!q) return $('ppQText').focus();
+  if (PRO_PAT.questions.length >= 10) return showToast(t('pp.qMax'));
+  $('ppQText').value = ''; saveQuestions([...PRO_PAT.questions, q]);
+});
+$('ppQText').addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); $('ppQAdd').click(); } });
+function addPrivateBox(){
+  if (!document.body.classList.contains('pro') || !PRO_CUR || PRO_PAT_FOR !== PRO_CUR) return;
+  const el = $('dayPanel'); if (!el || el.querySelector('.priv-box')) return;
+  const cur = (PRO_PAT.private[calSel] || {}).text || '';
+  const box = document.createElement('div'); box.className = 'priv-box';
+  box.innerHTML = '<h4>🔒 ' + esc(t('priv.title')) + '</h4><p>' + esc(t('priv.help')) + '</p>' +
+    '<textarea maxlength="4000">' + esc(cur) + '</textarea><button class="btn primary" type="button">' + esc(t('priv.save')) + '</button><span class="priv-st"></span>';
+  el.appendChild(box);
+  const ta = box.querySelector('textarea'), st = box.querySelector('.priv-st'), day = calSel, who = PRO_CUR;
+  const save = async () => {
+    const text = ta.value.trim();
+    if (text === ((PRO_PAT.private[day] || {}).text || '')) return;
+    try{ PRO_PAT.private = (await jpost('/api/pro/private', { email: who, day, text })).private || {}; st.textContent = '✓ ' + t('priv.saved'); }
+    catch(e){ st.textContent = t('err.generic'); }
+  };
+  box.querySelector('button').addEventListener('click', save);
+  ta.addEventListener('blur', save);
+}
+const _renderDayPanel0 = renderDayPanel;
+renderDayPanel = function(){ _renderDayPanel0(); addPrivateBox(); };
+
+Object.assign(I18N.en, {
+  'share.consent':'I agree that my therapist or doctor can read my check-ins. I can stop sharing at any time in Settings.',
+  'why.share_consent':'Please agree to share your check-ins with your therapist or doctor.',
+  'q.personalPriv':'If you want, add a thought just for you. This space stays private: your therapist doesn’t see it.',
+  'recap.privNote':'🔒 only for you','recap.assigned': n => '* FROM ' + String(n).toUpperCase() + ' * -->','day.assigned': n => 'Questions from ' + n,
+  'aq.intro': n => n + ' would like to ask you a few things too:',
+  'share.stop':'Stop sharing my check-ins','share.stopConfirm': n => 'Stop sharing with ' + n + '? They will no longer see your check-ins or your notes. Your own diary stays as it is.','share.stopped': n => 'You no longer share your check-ins with ' + n + '.',
+  'sn.title':'For my next session','sn.sub': n => 'Write down what you want to talk about with ' + n + '. They will see it before your session.','sn.ph':'Something I want to talk about…','sn.add':'Add note','sn.discussed':'discussed','sn.delete':'Delete','sn.empty':'No notes yet.',
+  'pp.notes':'Notes for the next session','pp.notesSub':'What your patient wants to talk about.','pp.q':'Questions for your patient','pp.qSub':'Bao asks them at the end of every check-in.','pp.qPh':'e.g. How did you sleep this week?','pp.qAdd':'Add','pp.done':'Mark as discussed','pp.reopen':'Reopen','pp.noNotes':'No notes for now.','pp.noQ':'No questions yet. Add one below.','pp.qMax':'You can ask up to 10 questions.',
+  'priv.title':'Private note','priv.help':'Only you can see this. Your patient never does.','priv.save':'Save note','priv.saved':'saved'
+});
+Object.assign(I18N.it, {
+  'share.consent':'Accetto che il mio terapeuta o medico possa leggere i miei check-in. Posso smettere di condividerli quando voglio dalle Impostazioni.',
+  'why.share_consent':'Per continuare devi accettare di condividere i check-in con il tuo terapeuta o medico.',
+  'q.personalPriv':'Se vuoi, aggiungi un pensiero solo per te. Questo spazio resta privato: il tuo terapeuta non lo vede.',
+  'recap.privNote':'🔒 solo per te','recap.assigned': n => '* DA ' + String(n).toUpperCase() + ' * -->','day.assigned': n => 'Domande di ' + n,
+  'aq.intro': n => n + ' vorrebbe chiederti anche qualcosa:',
+  'share.stop':'Smetti di condividere i miei check-in','share.stopConfirm': n => 'Smettere di condividere con ' + n + '? Non vedrà più i tuoi check-in né le tue note. Il tuo diario resta com’è.','share.stopped': n => 'Non condividi più i tuoi check-in con ' + n + '.',
+  'sn.title':'Per la prossima seduta','sn.sub': n => 'Scrivi qui di cosa vuoi parlare con ' + n + '. Lo vedrà prima della seduta.','sn.ph':'Qualcosa di cui voglio parlare…','sn.add':'Aggiungi nota','sn.discussed':'discusso','sn.delete':'Elimina','sn.empty':'Ancora nessuna nota.',
+  'pp.notes':'Note per la prossima seduta','pp.notesSub':'Di cosa vuole parlare il tuo paziente.','pp.q':'Domande per il paziente','pp.qSub':'Bao le fa alla fine di ogni check-in.','pp.qPh':'es. Come hai dormito questa settimana?','pp.qAdd':'Aggiungi','pp.done':'Segna come discussa','pp.reopen':'Riapri','pp.noNotes':'Nessuna nota per ora.','pp.noQ':'Ancora nessuna domanda. Aggiungine una qui sotto.','pp.qMax':'Puoi fare al massimo 10 domande.',
+  'priv.title':'Nota privata','priv.help':'La vedi solo tu. Il paziente non la vede mai.','priv.save':'Salva nota','priv.saved':'salvata'
+});
+Object.assign(I18N.de, {
+  'share.consent':'Ich bin einverstanden, dass meine Therapeutin, mein Therapeut oder meine Ärztin meine Check-ins lesen kann. Ich kann das Teilen jederzeit in den Einstellungen beenden.',
+  'why.share_consent':'Bitte stimme zu, deine Check-ins mit deiner Therapeutin oder deinem Arzt zu teilen.',
+  'q.personalPriv':'Wenn du magst, schreib noch einen Gedanken nur für dich. Dieser Platz bleibt privat: deine Therapeutin sieht ihn nicht.',
+  'recap.privNote':'🔒 nur für dich','recap.assigned': n => '* VON ' + String(n).toUpperCase() + ' * -->','day.assigned': n => 'Fragen von ' + n,
+  'aq.intro': n => n + ' möchte dich auch noch etwas fragen:',
+  'share.stop':'Teilen meiner Check-ins beenden','share.stopConfirm': n => 'Teilen mit ' + n + ' beenden? Deine Check-ins und Notizen sind dann nicht mehr sichtbar. Dein Tagebuch bleibt, wie es ist.','share.stopped': n => 'Du teilst deine Check-ins nicht mehr mit ' + n + '.',
+  'sn.title':'Für meine nächste Sitzung','sn.sub': n => 'Schreib auf, worüber du mit ' + n + ' sprechen möchtest. Es ist vor der Sitzung sichtbar.','sn.ph':'Etwas, worüber ich sprechen möchte…','sn.add':'Notiz hinzufügen','sn.discussed':'besprochen','sn.delete':'Löschen','sn.empty':'Noch keine Notizen.',
+  'pp.notes':'Notizen für die nächste Sitzung','pp.notesSub':'Worüber deine Patientin oder dein Patient sprechen möchte.','pp.q':'Fragen an die Person','pp.qSub':'Bao stellt sie am Ende jedes Check-ins.','pp.qPh':'z. B. Wie hast du diese Woche geschlafen?','pp.qAdd':'Hinzufügen','pp.done':'Als besprochen markieren','pp.reopen':'Wieder öffnen','pp.noNotes':'Noch keine Notizen.','pp.noQ':'Noch keine Fragen. Füge unten eine hinzu.','pp.qMax':'Du kannst höchstens 10 Fragen stellen.',
+  'priv.title':'Private Notiz','priv.help':'Nur du siehst sie. Die Person sieht sie nie.','priv.save':'Notiz speichern','priv.saved':'gespeichert'
+});
+Object.assign(I18N.fr, {
+  'share.consent':'J’accepte que mon ou ma thérapeute ou médecin lise mes check-ins. Je peux arrêter le partage à tout moment dans les Réglages.',
+  'why.share_consent':'Accepte de partager tes check-ins avec ton ou ta thérapeute pour continuer.',
+  'q.personalPriv':'Si tu veux, ajoute une pensée rien que pour toi. Cet espace reste privé : ton ou ta thérapeute ne le voit pas.',
+  'recap.privNote':'🔒 rien que pour toi','recap.assigned': n => '* DE ' + String(n).toUpperCase() + ' * -->','day.assigned': n => 'Questions de ' + n,
+  'aq.intro': n => n + ' aimerait aussi te demander quelque chose :',
+  'share.stop':'Arrêter de partager mes check-ins','share.stopConfirm': n => 'Arrêter de partager avec ' + n + ' ? Tes check-ins et tes notes ne seront plus visibles. Ton journal reste tel quel.','share.stopped': n => 'Tu ne partages plus tes check-ins avec ' + n + '.',
+  'sn.title':'Pour ma prochaine séance','sn.sub': n => 'Note ici ce dont tu veux parler avec ' + n + '. Ce sera visible avant la séance.','sn.ph':'Quelque chose dont je veux parler…','sn.add':'Ajouter une note','sn.discussed':'abordé','sn.delete':'Supprimer','sn.empty':'Pas encore de notes.',
+  'pp.notes':'Notes pour la prochaine séance','pp.notesSub':'Ce dont ton patient veut parler.','pp.q':'Questions pour ton patient','pp.qSub':'Bao les pose à la fin de chaque check-in.','pp.qPh':'ex. Comment as-tu dormi cette semaine ?','pp.qAdd':'Ajouter','pp.done':'Marquer comme abordée','pp.reopen':'Rouvrir','pp.noNotes':'Pas de notes pour l’instant.','pp.noQ':'Pas encore de questions. Ajoute-en une ci-dessous.','pp.qMax':'Tu peux poser 10 questions au maximum.',
+  'priv.title':'Note privée','priv.help':'Toi seul·e la vois. Le patient ne la voit jamais.','priv.save':'Enregistrer la note','priv.saved':'enregistrée'
+});
+Object.assign(I18N.es, {
+  'share.consent':'Acepto que mi terapeuta o médico pueda leer mis check-ins. Puedo dejar de compartirlos cuando quiera en Ajustes.',
+  'why.share_consent':'Para continuar, acepta compartir tus check-ins con tu terapeuta o médico.',
+  'q.personalPriv':'Si quieres, añade un pensamiento solo para ti. Este espacio es privado: tu terapeuta no lo ve.',
+  'recap.privNote':'🔒 solo para ti','recap.assigned': n => '* DE ' + String(n).toUpperCase() + ' * -->','day.assigned': n => 'Preguntas de ' + n,
+  'aq.intro': n => n + ' también quiere preguntarte algo:',
+  'share.stop':'Dejar de compartir mis check-ins','share.stopConfirm': n => '¿Dejar de compartir con ' + n + '? Ya no verá tus check-ins ni tus notas. Tu diario sigue igual.','share.stopped': n => 'Ya no compartes tus check-ins con ' + n + '.',
+  'sn.title':'Para mi próxima sesión','sn.sub': n => 'Escribe de qué quieres hablar con ' + n + '. Lo verá antes de la sesión.','sn.ph':'Algo de lo que quiero hablar…','sn.add':'Añadir nota','sn.discussed':'hablado','sn.delete':'Eliminar','sn.empty':'Aún no hay notas.',
+  'pp.notes':'Notas para la próxima sesión','pp.notesSub':'De qué quiere hablar tu paciente.','pp.q':'Preguntas para tu paciente','pp.qSub':'Bao las hace al final de cada check-in.','pp.qPh':'p. ej. ¿Cómo dormiste esta semana?','pp.qAdd':'Añadir','pp.done':'Marcar como hablada','pp.reopen':'Reabrir','pp.noNotes':'Sin notas por ahora.','pp.noQ':'Aún no hay preguntas. Añade una abajo.','pp.qMax':'Puedes hacer 10 preguntas como máximo.',
+  'priv.title':'Nota privada','priv.help':'Solo tú la ves. El paciente nunca la ve.','priv.save':'Guardar nota','priv.saved':'guardada'
+});
+Object.assign(I18N.pt, {
+  'share.consent':'Aceito que meu terapeuta ou médico leia meus check-ins. Posso parar de compartilhar quando quiser nas Configurações.',
+  'why.share_consent':'Para continuar, aceite compartilhar seus check-ins com seu terapeuta ou médico.',
+  'q.personalPriv':'Se quiser, escreva um pensamento só para você. Este espaço é privado: seu terapeuta não vê.',
+  'recap.privNote':'🔒 só para você','recap.assigned': n => '* DE ' + String(n).toUpperCase() + ' * -->','day.assigned': n => 'Perguntas de ' + n,
+  'aq.intro': n => n + ' também quer perguntar algumas coisas:',
+  'share.stop':'Parar de compartilhar meus check-ins','share.stopConfirm': n => 'Parar de compartilhar com ' + n + '? Essa pessoa não verá mais seus check-ins nem suas notas. Seu diário continua igual.','share.stopped': n => 'Você não compartilha mais seus check-ins com ' + n + '.',
+  'sn.title':'Para minha próxima sessão','sn.sub': n => 'Escreva sobre o que você quer falar com ' + n + '. Será visível antes da sessão.','sn.ph':'Algo sobre o que quero falar…','sn.add':'Adicionar nota','sn.discussed':'conversado','sn.delete':'Excluir','sn.empty':'Ainda sem notas.',
+  'pp.notes':'Notas para a próxima sessão','pp.notesSub':'Sobre o que seu paciente quer falar.','pp.q':'Perguntas para o paciente','pp.qSub':'O Bao faz no fim de cada check-in.','pp.qPh':'ex. Como você dormiu esta semana?','pp.qAdd':'Adicionar','pp.done':'Marcar como conversada','pp.reopen':'Reabrir','pp.noNotes':'Sem notas por enquanto.','pp.noQ':'Ainda sem perguntas. Adicione uma abaixo.','pp.qMax':'Você pode fazer no máximo 10 perguntas.',
+  'priv.title':'Nota privada','priv.help':'Só você vê. O paciente nunca vê.','priv.save':'Salvar nota','priv.saved':'salva'
+});
+Object.assign(I18N.nl, {
+  'share.consent':'Ik ga ermee akkoord dat mijn therapeut of arts mijn check-ins kan lezen. Ik kan het delen altijd stoppen in Instellingen.',
+  'why.share_consent':'Ga akkoord met het delen van je check-ins met je therapeut of arts om verder te gaan.',
+  'q.personalPriv':'Als je wilt, schrijf een gedachte alleen voor jezelf. Deze plek blijft privé: je therapeut ziet het niet.',
+  'recap.privNote':'🔒 alleen voor jou','recap.assigned': n => '* VAN ' + String(n).toUpperCase() + ' * -->','day.assigned': n => 'Vragen van ' + n,
+  'aq.intro': n => n + ' wil je ook nog iets vragen:',
+  'share.stop':'Stop met het delen van mijn check-ins','share.stopConfirm': n => 'Stoppen met delen met ' + n + '? Je check-ins en notities zijn dan niet meer zichtbaar. Je dagboek blijft zoals het is.','share.stopped': n => 'Je deelt je check-ins niet meer met ' + n + '.',
+  'sn.title':'Voor mijn volgende sessie','sn.sub': n => 'Schrijf op waarover je met ' + n + ' wilt praten. Het is zichtbaar vóór de sessie.','sn.ph':'Iets waarover ik wil praten…','sn.add':'Notitie toevoegen','sn.discussed':'besproken','sn.delete':'Verwijderen','sn.empty':'Nog geen notities.',
+  'pp.notes':'Notities voor de volgende sessie','pp.notesSub':'Waarover je patiënt wil praten.','pp.q':'Vragen voor je patiënt','pp.qSub':'Bao stelt ze aan het einde van elke check-in.','pp.qPh':'bv. Hoe heb je deze week geslapen?','pp.qAdd':'Toevoegen','pp.done':'Markeren als besproken','pp.reopen':'Heropenen','pp.noNotes':'Nog geen notities.','pp.noQ':'Nog geen vragen. Voeg er hieronder een toe.','pp.qMax':'Je kunt maximaal 10 vragen stellen.',
+  'priv.title':'Privénotitie','priv.help':'Alleen jij ziet dit. Je patiënt nooit.','priv.save':'Notitie bewaren','priv.saved':'bewaard'
+});
 
 (async function boot(){
   try{
