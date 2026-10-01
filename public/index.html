@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-CbernCbGR3zXXZ0Q/mke927QpBGISe+Nhadaf7314Mc='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-Bq21jDb8zvS65+sH+cY0IYDZDhPxxj9Q7+QQCBFqTbo='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>BAO &mdash; symptom &amp; wellbeing tracker</title>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -897,6 +897,33 @@ body:not(.pro) .tabbar [data-view=patients]{display:none!important}
 .priv-box .priv-st{font-size:11.5px;color:#9a8250;margin-left:8px}
 .priv-box .btn{margin-top:8px;padding:9px 14px;font-size:13px}
 @media(max-width:930px){.pro-panel{grid-template-columns:1fr}}
+
+.cal-mark{position:absolute;top:-1px;right:9px;width:9px;height:13px;background:#f2c94c;clip-path:polygon(0 0,100% 0,100% 100%,50% 72%,0 100%);z-index:3;box-shadow:0 1px 0 rgba(0,0,0,.08)}
+.cal-cell.marked .cal-rep{right:21px!important}
+.cal-cell .cal-rep{z-index:2}
+.day-notes{margin-top:18px;border-top:1px dashed var(--line);padding-top:14px}
+.day-notes h4{margin:0 0 8px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#9a7b16;display:flex;align-items:center;gap:6px}
+.day-notes h4 i{display:inline-block;width:9px;height:13px;background:#f2c94c;clip-path:polygon(0 0,100% 0,100% 100%,50% 72%,0 100%)}
+.dn-item{border-radius:12px;padding:9px 11px;margin-bottom:8px;background:#fffaf0;border:1px solid #f1e3b8}
+.dn-item.other{background:#f2f8f6;border-color:#d6e9e4}
+.dn-item .dn-t{white-space:pre-wrap;font-size:13.5px;color:#2f4243;line-height:1.45}
+.dn-item .dn-m{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:5px;font-size:11px;color:#8a7d5a}
+.dn-item.other .dn-m{color:#5f7b77}
+.dn-item .dn-m button{border:0;background:none;color:#187d78;font-weight:750;font-size:11.5px;cursor:pointer;padding:0 3px}
+.dn-item .dn-m button.rm{color:#b4573f}
+.dn-item .dn-m .sp{flex:1}
+.dn-form textarea{width:100%;box-sizing:border-box;min-height:64px;resize:vertical;font:inherit;font-size:13.5px;border:1px solid #ecd9a8;border-radius:10px;padding:9px 10px;background:#fff;margin-top:4px}
+.dn-vis{display:flex;gap:6px;margin:8px 0;flex-wrap:wrap}
+.dn-vis button{flex:1 1 auto;border:1px solid var(--line);background:#fff;color:#4f6163;border-radius:10px;padding:8px 10px;font-weight:750;font-size:12px;cursor:pointer}
+.dn-vis button.on{background:#f2c94c;border-color:#e2b93a;color:#4a3a06}
+.dn-form .btn{padding:9px 14px;font-size:13px}
+.dn-empty{font-size:12px;color:#9aa8a6;margin:0 0 6px}
+.tr-link{margin-top:12px;background:#f3faf8;border:1px dashed #9fd0c7;border-radius:12px;padding:10px 12px;font-size:12.5px;color:#4f6466;word-break:break-all}
+.tr-link[hidden]{display:none}
+.tr-link b{display:block;color:var(--teal-dark);margin-bottom:6px}
+.tr-link .btn{margin-top:8px;padding:8px 14px;font-size:12.5px}
+.transfer-card .btn{margin-top:10px}
+.priv-box{display:none!important}
 </style>
 <script>try{ if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) document.documentElement.classList.add('native'); if (/BAOApp\/2/.test(navigator.userAgent)) document.documentElement.classList.add('shell'); }catch(e){}</script>
 <script>
@@ -1355,6 +1382,14 @@ body:not(.pro) .tabbar [data-view=patients]{display:none!important}
           <div class="card compact lang-card">
             <div class="card-head"><div><h2 data-i18n="lang.title">Language</h2><div class="muted" data-i18n="lang.sub">Bao speaks the language you choose.</div></div></div>
             <div class="lang-options" id="langOptions"></div>
+          </div>
+
+          <div class="card compact transfer-card pro-only">
+            <div class="card-head"><div><h2 data-i18n="tr.title">Hand over my patients</h2>
+              <div class="muted" data-i18n="tr.sub">Create a link for another therapist or doctor. When they open it while signed in, all your patients move to them.</div></div></div>
+            <label class="consent"><input type="checkbox" id="trNotes"><span data-i18n="tr.notes">Also hand over my private notes</span></label>
+            <button class="btn outline" id="trMake" type="button" data-i18n="tr.make">Create transfer link</button>
+            <div class="tr-link" id="trLink" hidden></div>
           </div>
 
           <div class="card compact reminder-card">
@@ -5723,6 +5758,7 @@ function renderCalendar(){
     if (key === calSel) cls.push('selected');
 
     let inner = '<span class="cal-num">' + d + '</span>';
+    if (typeof dayNoteCount === 'function' && dayNoteCount(key)){ inner += '<span class="cal-mark" aria-hidden="true"></span>'; cls.push('marked'); }
     let label = prettyKey(key);
 
     if (has){
@@ -6216,6 +6252,8 @@ async function enterApp(){
   paintSharing();
   renderAll();
   if (USER_ROLE === 'pro'){ await loadPro(); TOUR_PENDING = false; }
+  else loadDayNotes();
+  setTimeout(checkTransfer, 600);
   go('home');
   if (TOUR_PENDING){ TOUR_PENDING = false; setTimeout(openTour, 700); }
   applyReminder();
@@ -8029,7 +8067,7 @@ async function loadProPatient(){
   try{ const r = await jget('/api/pro/patient?email=' + encodeURIComponent(who)); if (who !== PRO_CUR) return; PRO_PAT = { notes: r.notes || [], questions: r.questions || [], private: r.private || {} }; PRO_PAT_FOR = who; }
   catch(e){ PRO_PAT = { notes: [], questions: [], private: {} }; PRO_PAT_FOR = who; }
   paintProPanel();
-  addPrivateBox();
+  await loadDayNotes();
 }
 function paintProPanel(){
   const nb = $('ppNotes');
@@ -8076,7 +8114,7 @@ function addPrivateBox(){
   ta.addEventListener('blur', save);
 }
 const _renderDayPanel0 = renderDayPanel;
-renderDayPanel = function(){ _renderDayPanel0(); addPrivateBox(); };
+renderDayPanel = function(){ _renderDayPanel0(); addDayNotes(); };
 
 Object.assign(I18N.en, {
   'share.consent':'I agree that my therapist or doctor can read my check-ins. I can stop sharing at any time in Settings.',
@@ -8154,6 +8192,171 @@ Object.assign(I18N.nl, {
   'sn.title':'Voor mijn volgende sessie','sn.sub': n => 'Schrijf op waarover je met ' + n + ' wilt praten. Het is zichtbaar vóór de sessie.','sn.ph':'Iets waarover ik wil praten…','sn.add':'Notitie toevoegen','sn.discussed':'besproken','sn.delete':'Verwijderen','sn.empty':'Nog geen notities.',
   'pp.notes':'Notities voor de volgende sessie','pp.notesSub':'Waarover je patiënt wil praten.','pp.q':'Vragen voor je patiënt','pp.qSub':'Bao stelt ze aan het einde van elke check-in.','pp.qPh':'bv. Hoe heb je deze week geslapen?','pp.qAdd':'Toevoegen','pp.done':'Markeren als besproken','pp.reopen':'Heropenen','pp.noNotes':'Nog geen notities.','pp.noQ':'Nog geen vragen. Voeg er hieronder een toe.','pp.qMax':'Je kunt maximaal 10 vragen stellen.',
   'priv.title':'Privénotitie','priv.help':'Alleen jij ziet dit. Je patiënt nooit.','priv.save':'Notitie bewaren','priv.saved':'bewaard'
+});
+
+// ---- note del giorno (paziente e terapeuta) ----
+let DAY_NOTES = [], DN_VIS_PUBLIC = false;
+function notesApiEmail(){ return document.body.classList.contains('pro') ? PRO_CUR : ''; }
+function dayNoteCount(key){ return DAY_NOTES.filter(n => n.day === key).length; }
+async function loadDayNotes(){
+  if (MODE !== 'server') return;
+  const pro = document.body.classList.contains('pro');
+  if (pro && !PRO_CUR){ DAY_NOTES = []; return; }
+  try{ DAY_NOTES = (await jget('/api/notes' + (pro ? '?email=' + encodeURIComponent(PRO_CUR) : ''))).notes || []; }catch(e){ DAY_NOTES = []; }
+  renderCalendar();
+}
+function otherName(){
+  if (document.body.classList.contains('pro')){ const p = typeof proCurrent === 'function' && proCurrent(); return p ? (p.name || p.email) : ''; }
+  return USER_SHARED || '';
+}
+function addDayNotes(){
+  if (MODE !== 'server') return;
+  const pro = document.body.classList.contains('pro');
+  if (pro && !PRO_CUR) return;
+  const el = $('dayPanel'); if (!el || el.querySelector('.day-notes')) return;
+  const day = calSel, other = otherName(), canShare = pro || !!USER_SHARED;
+  const list = DAY_NOTES.filter(n => n.day === day).sort((a, b) => a.date < b.date ? -1 : 1);
+  const mine = n => n.owner === USER;
+  const box = document.createElement('div'); box.className = 'day-notes';
+  box.innerHTML = '<h4><i></i>' + esc(t('dn.title')) + '</h4>' +
+    (list.length ? list.map(n => {
+      const own = mine(n);
+      const vis = !n.public ? '🔒 ' + t('dn.onlyYou') : own ? '👁 ' + t('dn.sharedWith', other) : '👁 ' + t('dn.sharedWithYou');
+      return '<div class="dn-item' + (own ? '' : ' other') + '"><div class="dn-t">' + esc(n.text) + '</div><div class="dn-m"><span>' + esc(own && (!n.by || n.by === USER) ? t('dn.you') : (n.byName || '')) + ' · ' + esc(vis) + '</span><span class="sp"></span>' +
+        (own && canShare ? '<button type="button" data-dn-vis="' + esc(n.id) + '" data-v="' + (n.public ? '0' : '1') + '">' + esc(t(n.public ? 'dn.makePrivate' : 'dn.makeShared')) + '</button>' : '') +
+        (own ? '<button type="button" class="rm" data-dn-del="' + esc(n.id) + '">' + esc(t('dn.delete')) + '</button>' : '') + '</div></div>';
+    }).join('') : '<p class="dn-empty">' + esc(t('dn.empty')) + '</p>') +
+    '<div class="dn-form"><textarea maxlength="4000" placeholder="' + esc(t('dn.ph')) + '"></textarea>' +
+    (canShare ? '<div class="dn-vis"><button type="button" data-pub="0" class="' + (DN_VIS_PUBLIC ? '' : 'on') + '">🔒 ' + esc(t('dn.onlyMe')) + '</button><button type="button" data-pub="1" class="' + (DN_VIS_PUBLIC ? 'on' : '') + '">👁 ' + esc(t('dn.shareWith', other)) + '</button></div>' : '') +
+    '<button class="btn primary" type="button" data-dn-add>' + esc(t('dn.add')) + '</button></div>';
+  el.appendChild(box);
+  const ta = box.querySelector('textarea');
+  box.querySelectorAll('[data-pub]').forEach(b => b.addEventListener('click', () => {
+    DN_VIS_PUBLIC = b.dataset.pub === '1';
+    box.querySelectorAll('[data-pub]').forEach(x => x.classList.toggle('on', x === b));
+  }));
+  const after = r => { DAY_NOTES = r.notes || DAY_NOTES; const keep = ta.value && !r.notes; renderCalendar(); };
+  box.querySelector('[data-dn-add]').addEventListener('click', async e => {
+    const text = ta.value.trim(); if (!text) return ta.focus();
+    e.target.disabled = true;
+    try{ after(await jpost('/api/notes/add', { email: notesApiEmail(), day, text, public: canShare && DN_VIS_PUBLIC })); }
+    catch(err){ e.target.disabled = false; showToast(err.message || t('err.generic')); }
+  });
+  box.querySelectorAll('[data-dn-del]').forEach(b => b.addEventListener('click', async () => {
+    if (!confirm(t('dn.confirmDel'))) return;
+    try{ after(await jpost('/api/notes/delete', { email: notesApiEmail(), id: b.dataset.dnDel })); }catch(e){ showToast(t('err.generic')); }
+  }));
+  box.querySelectorAll('[data-dn-vis]').forEach(b => b.addEventListener('click', async () => {
+    try{ after(await jpost('/api/notes/update', { email: notesApiEmail(), id: b.dataset.dnVis, public: b.dataset.v === '1' })); }catch(e){ showToast(t('err.generic')); }
+  }));
+}
+// il paziente vede subito le note condivise nuove quando apre il calendario
+const _goNotes0 = go;
+go = function(id){ const r = _goNotes0(id); if (id === 'calendar' && !document.body.classList.contains('pro')) loadDayNotes(); return r; };
+
+// ---- passare i pazienti a un altro terapeuta ----
+(function(){
+  try{
+    const q = new URLSearchParams(location.search);
+    const tk = q.get('transfer');
+    if (tk){ sessionStorage.setItem('bao.transfer', tk); history.replaceState(null, '', location.pathname); }
+  }catch(e){}
+})();
+async function checkTransfer(){
+  let tk = null; try{ tk = sessionStorage.getItem('bao.transfer'); }catch(e){}
+  if (!tk || MODE !== 'server') return;
+  try{ sessionStorage.removeItem('bao.transfer'); }catch(e){}
+  let info;
+  try{ info = await jget('/api/pro/transfer/info?token=' + encodeURIComponent(tk)); }
+  catch(ex){ const why = ex && ex.data && ex.data.reason ? t('why.' + ex.data.reason) : ''; showToast(why && why.indexOf('why.') !== 0 ? why : t('err.generic')); return; }
+  if (!confirm(t('tr.ask', info.from.name || '—', info.patients, info.waiting))) return;
+  try{
+    const r = await jpost('/api/pro/transfer/accept', { token: tk });
+    showToast(t('tr.done', r.moved));
+    await loadPro(); if (typeof loadSubs === 'function') loadSubs();
+  }catch(ex){ const why = ex && ex.data && ex.data.reason ? t('why.' + ex.data.reason) : ''; showToast(why && why.indexOf('why.') !== 0 ? why : (ex.message || t('err.generic'))); }
+}
+$('trMake').addEventListener('click', async () => {
+  if (!confirm(t('tr.confirm'))) return;
+  $('trMake').disabled = true;
+  try{
+    const r = await jpost('/api/pro/transfer/create', { notes: $('trNotes').checked });
+    $('trLink').innerHTML = '<b>' + esc(t('tr.ready', r.days)) + '</b>' + esc(r.link) + '<br><button class="btn primary" type="button" data-copy="' + esc(r.link) + '">' + esc(t('subs.copy')) + '</button>';
+    $('trLink').hidden = false;
+    if (typeof wireCopy === 'function') wireCopy($('trLink'));
+  }catch(e){ showToast(e.message || t('err.generic')); }
+  finally{ $('trMake').disabled = false; }
+});
+
+Object.assign(I18N.en, {
+  'dn.title':'Notes','dn.empty':'No notes for this day yet.','dn.ph':'Write a note for this day…','dn.add':'Add note','dn.onlyMe':'Only me','dn.shareWith': n => 'Share with ' + n,
+  'dn.you':'You','dn.onlyYou':'only you','dn.sharedWith': n => 'shared with ' + n,'dn.sharedWithYou':'shared with you','dn.makePrivate':'Make private','dn.makeShared':'Share','dn.delete':'Delete','dn.confirmDel':'Delete this note?',
+  'pro.removeConfirm': n => 'Remove ' + n + '? Their BAO account, all their check-ins and notes will be deleted for good. This cannot be undone.',
+  'share.consent':'I agree that my therapist or doctor can read my check-ins. I can stop sharing at any time in Settings. If they end our collaboration in BAO, my BAO account is closed.',
+  'tr.title':'Hand over my patients','tr.sub':'Create a link for another therapist or doctor. When they open it while signed in, all your patients move to them.','tr.notes':'Also hand over my private notes','tr.make':'Create transfer link',
+  'tr.confirm':'Create a transfer link? Whoever accepts it receives all your patients and you will no longer see them.','tr.ready': d => 'Send this link to the other therapist or doctor. It works once, for ' + d + ' days:',
+  'tr.ask': (n, p, w) => n + ' wants to hand over ' + p + ' patient(s)' + (w ? ' and ' + w + ' waiting code(s)' : '') + ' to you. Accept?','tr.done': n => n + ' patient(s) are now yours.',
+  'why.tr_bad':'This transfer link has expired or was already used.','why.tr_role':'Only therapists and doctors can accept a transfer.','why.tr_self':'This is your own transfer link. Send it to the other therapist or doctor.'
+});
+Object.assign(I18N.it, {
+  'dn.title':'Note','dn.empty':'Ancora nessuna nota per questo giorno.','dn.ph':'Scrivi una nota per questo giorno…','dn.add':'Aggiungi nota','dn.onlyMe':'Solo io','dn.shareWith': n => 'Condividi con ' + n,
+  'dn.you':'Tu','dn.onlyYou':'solo tu','dn.sharedWith': n => 'condivisa con ' + n,'dn.sharedWithYou':'condivisa con te','dn.makePrivate':'Rendi privata','dn.makeShared':'Condividi','dn.delete':'Elimina','dn.confirmDel':'Eliminare questa nota?',
+  'pro.removeConfirm': n => 'Togliere ' + n + '? Il suo account BAO, tutti i check-in e le note verranno cancellati per sempre. Non si può annullare.',
+  'share.consent':'Accetto che il mio terapeuta o medico possa leggere i miei check-in. Posso smettere di condividerli quando voglio dalle Impostazioni. Se il terapeuta chiude la collaborazione su BAO, il mio account BAO viene chiuso.',
+  'tr.title':'Passa i miei pazienti','tr.sub':'Crea un link per un altro terapeuta o medico. Quando lo apre con il suo account BAO, tutti i tuoi pazienti passano a lui.','tr.notes':'Passa anche le mie note private','tr.make':'Crea il link di trasferimento',
+  'tr.confirm':'Creare un link di trasferimento? Chi lo accetta riceve tutti i tuoi pazienti e tu non li vedrai più.','tr.ready': d => 'Manda questo link all’altro terapeuta o medico. Funziona una volta sola, per ' + d + ' giorni:',
+  'tr.ask': (n, p, w) => n + ' vuole passarti ' + p + ' paziente/i' + (w ? ' e ' + w + ' codice/i in attesa' : '') + '. Accetti?','tr.done': n => 'Ora hai ' + n + ' paziente/i in più.',
+  'why.tr_bad':'Questo link di trasferimento è scaduto o è già stato usato.','why.tr_role':'Solo terapeuti e medici possono accettare un trasferimento.','why.tr_self':'Questo è il tuo link. Mandalo all’altro terapeuta o medico.'
+});
+Object.assign(I18N.de, {
+  'dn.title':'Notizen','dn.empty':'Noch keine Notizen für diesen Tag.','dn.ph':'Schreib eine Notiz zu diesem Tag…','dn.add':'Notiz hinzufügen','dn.onlyMe':'Nur ich','dn.shareWith': n => 'Mit ' + n + ' teilen',
+  'dn.you':'Du','dn.onlyYou':'nur du','dn.sharedWith': n => 'geteilt mit ' + n,'dn.sharedWithYou':'mit dir geteilt','dn.makePrivate':'Privat machen','dn.makeShared':'Teilen','dn.delete':'Löschen','dn.confirmDel':'Diese Notiz löschen?',
+  'pro.removeConfirm': n => n + ' entfernen? Das BAO-Konto, alle Check-ins und Notizen werden endgültig gelöscht. Das kann nicht rückgängig gemacht werden.',
+  'share.consent':'Ich bin einverstanden, dass meine Therapeutin, mein Therapeut oder meine Ärztin meine Check-ins lesen kann. Ich kann das Teilen jederzeit beenden. Beendet sie die Zusammenarbeit in BAO, wird mein BAO-Konto geschlossen.',
+  'tr.title':'Patient:innen übergeben','tr.sub':'Erstelle einen Link für eine andere Therapeutin oder einen anderen Arzt. Öffnet sie ihn angemeldet, gehen alle deine Patient:innen zu ihr über.','tr.notes':'Auch meine privaten Notizen übergeben','tr.make':'Übergabe-Link erstellen',
+  'tr.confirm':'Übergabe-Link erstellen? Wer ihn annimmt, erhält alle deine Patient:innen, und du siehst sie nicht mehr.','tr.ready': d => 'Schick diesen Link an die andere Person. Er funktioniert einmal, ' + d + ' Tage lang:',
+  'tr.ask': (n, p, w) => n + ' möchte dir ' + p + ' Patient:in(nen)' + (w ? ' und ' + w + ' offene Code(s)' : '') + ' übergeben. Annehmen?','tr.done': n => n + ' Patient:in(nen) sind jetzt bei dir.',
+  'why.tr_bad':'Dieser Übergabe-Link ist abgelaufen oder wurde schon benutzt.','why.tr_role':'Nur Therapeut:innen und Ärzt:innen können eine Übergabe annehmen.','why.tr_self':'Das ist dein eigener Link. Schick ihn an die andere Person.'
+});
+Object.assign(I18N.fr, {
+  'dn.title':'Notes','dn.empty':'Pas encore de notes pour ce jour.','dn.ph':'Écris une note pour ce jour…','dn.add':'Ajouter une note','dn.onlyMe':'Moi seul·e','dn.shareWith': n => 'Partager avec ' + n,
+  'dn.you':'Toi','dn.onlyYou':'toi seul·e','dn.sharedWith': n => 'partagée avec ' + n,'dn.sharedWithYou':'partagée avec toi','dn.makePrivate':'Rendre privée','dn.makeShared':'Partager','dn.delete':'Supprimer','dn.confirmDel':'Supprimer cette note ?',
+  'pro.removeConfirm': n => 'Retirer ' + n + ' ? Son compte BAO, tous ses check-ins et notes seront supprimés définitivement.',
+  'share.consent':'J’accepte que mon ou ma thérapeute ou médecin lise mes check-ins. Je peux arrêter le partage à tout moment. Si la collaboration prend fin dans BAO, mon compte BAO est fermé.',
+  'tr.title':'Transférer mes patients','tr.sub':'Crée un lien pour un autre thérapeute ou médecin. Quand il l’ouvre connecté, tous tes patients passent chez lui.','tr.notes':'Transférer aussi mes notes privées','tr.make':'Créer le lien de transfert',
+  'tr.confirm':'Créer un lien de transfert ? La personne qui l’accepte reçoit tous tes patients et tu ne les verras plus.','tr.ready': d => 'Envoie ce lien à l’autre thérapeute. Il fonctionne une fois, pendant ' + d + ' jours :',
+  'tr.ask': (n, p, w) => n + ' veut te transférer ' + p + ' patient(s)' + (w ? ' et ' + w + ' code(s) en attente' : '') + '. Accepter ?','tr.done': n => n + ' patient(s) sont maintenant chez toi.',
+  'why.tr_bad':'Ce lien de transfert a expiré ou a déjà été utilisé.','why.tr_role':'Seuls les thérapeutes et médecins peuvent accepter un transfert.','why.tr_self':'C’est ton propre lien. Envoie-le à l’autre thérapeute.'
+});
+Object.assign(I18N.es, {
+  'dn.title':'Notas','dn.empty':'Aún no hay notas para este día.','dn.ph':'Escribe una nota para este día…','dn.add':'Añadir nota','dn.onlyMe':'Solo yo','dn.shareWith': n => 'Compartir con ' + n,
+  'dn.you':'Tú','dn.onlyYou':'solo tú','dn.sharedWith': n => 'compartida con ' + n,'dn.sharedWithYou':'compartida contigo','dn.makePrivate':'Hacer privada','dn.makeShared':'Compartir','dn.delete':'Eliminar','dn.confirmDel':'¿Eliminar esta nota?',
+  'pro.removeConfirm': n => '¿Quitar a ' + n + '? Su cuenta BAO, todos sus check-ins y notas se eliminarán para siempre.',
+  'share.consent':'Acepto que mi terapeuta o médico pueda leer mis check-ins. Puedo dejar de compartir cuando quiera. Si termina la colaboración en BAO, mi cuenta BAO se cierra.',
+  'tr.title':'Traspasar mis pacientes','tr.sub':'Crea un enlace para otro terapeuta o médico. Cuando lo abra con su cuenta, todos tus pacientes pasan a él.','tr.notes':'Traspasar también mis notas privadas','tr.make':'Crear enlace de traspaso',
+  'tr.confirm':'¿Crear un enlace de traspaso? Quien lo acepte recibe todos tus pacientes y ya no los verás.','tr.ready': d => 'Envía este enlace al otro terapeuta. Funciona una vez, durante ' + d + ' días:',
+  'tr.ask': (n, p, w) => n + ' quiere traspasarte ' + p + ' paciente(s)' + (w ? ' y ' + w + ' código(s) pendientes' : '') + '. ¿Aceptas?','tr.done': n => 'Ahora tienes ' + n + ' paciente(s) más.',
+  'why.tr_bad':'Este enlace de traspaso ha caducado o ya se usó.','why.tr_role':'Solo terapeutas y médicos pueden aceptar un traspaso.','why.tr_self':'Este es tu propio enlace. Envíalo al otro terapeuta.'
+});
+Object.assign(I18N.pt, {
+  'dn.title':'Notas','dn.empty':'Ainda sem notas para este dia.','dn.ph':'Escreva uma nota para este dia…','dn.add':'Adicionar nota','dn.onlyMe':'Só eu','dn.shareWith': n => 'Compartilhar com ' + n,
+  'dn.you':'Você','dn.onlyYou':'só você','dn.sharedWith': n => 'compartilhada com ' + n,'dn.sharedWithYou':'compartilhada com você','dn.makePrivate':'Tornar privada','dn.makeShared':'Compartilhar','dn.delete':'Excluir','dn.confirmDel':'Excluir esta nota?',
+  'pro.removeConfirm': n => 'Remover ' + n + '? A conta BAO, todos os check-ins e notas serão apagados para sempre.',
+  'share.consent':'Aceito que meu terapeuta ou médico leia meus check-ins. Posso parar de compartilhar quando quiser. Se a colaboração terminar no BAO, minha conta BAO é encerrada.',
+  'tr.title':'Transferir meus pacientes','tr.sub':'Crie um link para outro terapeuta ou médico. Quando ele abrir com a conta dele, todos os seus pacientes passam para ele.','tr.notes':'Transferir também minhas notas privadas','tr.make':'Criar link de transferência',
+  'tr.confirm':'Criar um link de transferência? Quem aceitar recebe todos os seus pacientes e você não os verá mais.','tr.ready': d => 'Envie este link ao outro terapeuta. Funciona uma vez, por ' + d + ' dias:',
+  'tr.ask': (n, p, w) => n + ' quer transferir ' + p + ' paciente(s)' + (w ? ' e ' + w + ' código(s) pendentes' : '') + ' para você. Aceita?','tr.done': n => 'Agora você tem mais ' + n + ' paciente(s).',
+  'why.tr_bad':'Este link de transferência expirou ou já foi usado.','why.tr_role':'Só terapeutas e médicos podem aceitar uma transferência.','why.tr_self':'Este é o seu próprio link. Envie ao outro terapeuta.'
+});
+Object.assign(I18N.nl, {
+  'dn.title':'Notities','dn.empty':'Nog geen notities voor deze dag.','dn.ph':'Schrijf een notitie bij deze dag…','dn.add':'Notitie toevoegen','dn.onlyMe':'Alleen ik','dn.shareWith': n => 'Delen met ' + n,
+  'dn.you':'Jij','dn.onlyYou':'alleen jij','dn.sharedWith': n => 'gedeeld met ' + n,'dn.sharedWithYou':'met jou gedeeld','dn.makePrivate':'Privé maken','dn.makeShared':'Delen','dn.delete':'Verwijderen','dn.confirmDel':'Deze notitie verwijderen?',
+  'pro.removeConfirm': n => n + ' verwijderen? Het BAO-account, alle check-ins en notities worden definitief verwijderd.',
+  'share.consent':'Ik ga ermee akkoord dat mijn therapeut of arts mijn check-ins kan lezen. Ik kan het delen altijd stoppen. Als de samenwerking in BAO stopt, wordt mijn BAO-account gesloten.',
+  'tr.title':'Mijn patiënten overdragen','tr.sub':'Maak een link voor een andere therapeut of arts. Opent die hem ingelogd, dan gaan al je patiënten naar hem over.','tr.notes':'Ook mijn privénotities overdragen','tr.make':'Overdrachtslink maken',
+  'tr.confirm':'Een overdrachtslink maken? Wie hem accepteert krijgt al je patiënten en jij ziet ze niet meer.','tr.ready': d => 'Stuur deze link naar de andere therapeut. Hij werkt één keer, ' + d + ' dagen lang:',
+  'tr.ask': (n, p, w) => n + ' wil ' + p + ' patiënt(en)' + (w ? ' en ' + w + ' open code(s)' : '') + ' aan je overdragen. Accepteren?','tr.done': n => n + ' patiënt(en) zijn nu bij jou.',
+  'why.tr_bad':'Deze overdrachtslink is verlopen of al gebruikt.','why.tr_role':'Alleen therapeuten en artsen kunnen een overdracht accepteren.','why.tr_self':'Dit is je eigen link. Stuur hem naar de andere therapeut.'
 });
 
 (async function boot(){

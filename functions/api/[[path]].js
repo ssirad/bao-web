@@ -110,8 +110,36 @@ async function unlinkPatient(env, pu){
   await putJSON(env, 'tp:' + pro, st);
   await env.BAO.delete('aq:' + pu.email);
   await env.BAO.delete('tn:' + pro + '|' + pu.email);
+  const dn = (await getJSON(env, 'dn:' + pu.email, [])).filter(n => n.author !== 'pro' || n.public);
+  await putJSON(env, 'dn:' + pu.email, dn);
   delete pu.therapist;
   await putJSON(env, 'u:' + pu.email, pu);
+}
+// the therapist removes the patient: the patient's whole BAO account is deleted
+async function deletePatientAccount(env, pu){
+  await endAllSessions(env, pu);
+  await Promise.all(['u:', 'c:', 'p:', 'aq:', 'sn:', 'dn:'].map(k => env.BAO.delete(k + pu.email)));
+}
+// day notes: dn:<patient> = [{ id, day, text, public, author:'pro'|'patient', owner, byName, date }]
+function notesFor(list, u){
+  if (u.role === 'pro') return list.filter(n => n.public || (n.author === 'pro' && n.owner === u.email));
+  return list.filter(n => n.author === 'patient' || n.public);
+}
+async function migrateTN(env, pro, patientEmail){
+  const key = 'tn:' + pro.email + '|' + patientEmail;
+  const old = await getJSON(env, key);
+  if (!old || !old.days) return;
+  const list = await getJSON(env, 'dn:' + patientEmail, []);
+  for (const [day, v] of Object.entries(old.days)){
+    if (v && v.text) list.push({ id: 'd' + Date.now().toString(36) + token().slice(0, 5), day, text: v.text, public: false, author: 'pro', owner: pro.email, by: pro.email, byName: pro.name || '', date: v.updated || new Date().toISOString() });
+  }
+  await putJSON(env, 'dn:' + patientEmail, list);
+  await env.BAO.delete(key);
+}
+// which diary do these notes belong to? the patient's own, or (for a therapist) a linked patient
+async function notesTarget(env, u, email){
+  if (u.role === 'pro'){ const pu = await proPatient(env, u, email); if (pu) await migrateTN(env, u, pu.email); return pu; }
+  return u;
 }
 async function proPatient(env, u, email){
   if (!u || u.role !== 'pro') return null;
@@ -192,7 +220,7 @@ async function handle(context){
     switch (route){
 
     case 'GET /api/version':
-      return json({ version: 'bao-server 2026-10-01 notes' });
+      return json({ version: 'bao-server 2026-10-01 daynotes' });
 
     case 'GET /api/auth/me': {
       const u = await currentUser(env, request);
@@ -289,7 +317,7 @@ async function handle(context){
         await env.BAO.delete('tp:' + u.email);
       }
       if (u.therapist) await unlinkPatient(env, u);
-      await Promise.all(['u:', 'c:', 'p:', 'aq:', 'sn:'].map(k => env.BAO.delete(k + u.email)));
+      await Promise.all(['u:', 'c:', 'p:', 'aq:', 'sn:', 'dn:'].map(k => env.BAO.delete(k + u.email)));
       return json({ ok: true }, 200, { 'Set-Cookie': sessionCookie('', 0) });
     }
 
@@ -494,9 +522,8 @@ async function handle(context){
         const k = await getJSON(env, 'k:' + c);
         if (!k || k.email !== email || !k.used) continue;
         const pu = await getJSON(env, 'u:' + email);
-        if (pu && pu.therapist === u.email){ delete pu.therapist; await putJSON(env, 'u:' + pu.email, pu); }
+        if (pu && pu.therapist === u.email) await deletePatientAccount(env, pu);
         await env.BAO.delete('k:' + c);
-        await env.BAO.delete('aq:' + email);
         await env.BAO.delete('tn:' + u.email + '|' + email);
         st.codes = st.codes.filter(x => x !== c);
         found = true;
@@ -587,6 +614,114 @@ async function handle(context){
       list.forEach(n => { if (n.id === b.id) n.done = b.done !== false; });
       await putJSON(env, 'sn:' + pu.email, list);
       return json({ ok: true, notes: list });
+    }
+
+    // ---- day notes (patient and therapist, private or shared) ----
+    case 'GET /api/notes': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      const pt = await notesTarget(env, u, url.searchParams.get('email'));
+      if (!pt) return fail('Not found.', 404);
+      return json({ notes: notesFor(await getJSON(env, 'dn:' + pt.email, []), u) });
+    }
+    case 'POST /api/notes/add': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      const b = await readBody(request);
+      const pt = await notesTarget(env, u, b.email);
+      if (!pt) return fail('Not found.', 404);
+      const day = String(b.day || '');
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) return fail('Bad day.');
+      const text = cleanText(b.text, 4000);
+      if (!text) return fail('Write something first.');
+      const list = await getJSON(env, 'dn:' + pt.email, []);
+      if (list.length >= 2000) return fail('Too many notes.', 413);
+      const canShare = u.role === 'pro' || !!u.therapist;
+      list.push({ id: 'd' + Date.now().toString(36) + token().slice(0, 5), day, text, public: canShare && b.public === true,
+        author: u.role === 'pro' ? 'pro' : 'patient', owner: u.email, by: u.email, byName: u.name || '', date: new Date().toISOString() });
+      await putJSON(env, 'dn:' + pt.email, list);
+      return json({ ok: true, notes: notesFor(list, u) });
+    }
+    case 'POST /api/notes/update':
+    case 'POST /api/notes/delete': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      const b = await readBody(request);
+      const pt = await notesTarget(env, u, b.email);
+      if (!pt) return fail('Not found.', 404);
+      let list = await getJSON(env, 'dn:' + pt.email, []);
+      const n = list.find(x => x.id === b.id);
+      if (!n || n.owner !== u.email) return fail('Not found.', 404);
+      if (route === 'POST /api/notes/delete') list = list.filter(x => x !== n);
+      else { if (typeof b.public === 'boolean') n.public = (u.role === 'pro' || !!u.therapist) && b.public; if (b.text != null){ const tx = cleanText(b.text, 4000); if (tx) n.text = tx; } }
+      await putJSON(env, 'dn:' + pt.email, list);
+      return json({ ok: true, notes: notesFor(list, u) });
+    }
+
+    // ---- hand all patients over to another therapist ----
+    case 'POST /api/pro/transfer/create': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      if (u.role !== 'pro') return fail('Only for therapists and doctors.', 403);
+      const b = await readBody(request);
+      const t = token();
+      await putJSON(env, 'tr:' + await sha256(t), { from: u.email, notes: b.notes === true, created: new Date().toISOString() }, { expirationTtl: 7 * 86400 });
+      return json({ ok: true, link: appUrl(env, request) + '/?transfer=' + encodeURIComponent(t), days: 7 });
+    }
+    case 'GET /api/pro/transfer/info': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      const tr = await getJSON(env, 'tr:' + await sha256(url.searchParams.get('token') || ''));
+      if (!tr) return failWhy('This transfer link has expired or was already used.', 404, 'tr_bad');
+      if (u.role !== 'pro') return failWhy('Only therapists and doctors can accept a transfer.', 403, 'tr_role');
+      if (tr.from === u.email) return failWhy('This is your own transfer link. Send it to the other therapist or doctor.', 400, 'tr_self');
+      const from = await getJSON(env, 'u:' + tr.from);
+      const { codes } = await proState(env, { email: tr.from });
+      return json({ from: { name: from ? from.name || '' : '' }, patients: codes.filter(c => c.patient).length, waiting: codes.filter(c => !c.used).length, notes: tr.notes });
+    }
+    case 'POST /api/pro/transfer/accept': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      if (u.role !== 'pro') return failWhy('Only therapists and doctors can accept a transfer.', 403, 'tr_role');
+      const key = 'tr:' + await sha256(String((await readBody(request)).token || ''));
+      const tr = await getJSON(env, key);
+      if (!tr) return failWhy('This transfer link has expired or was already used.', 404, 'tr_bad');
+      if (tr.from === u.email) return failWhy('This is your own transfer link. Send it to the other therapist or doctor.', 400, 'tr_self');
+      const oldSt = await getJSON(env, 'tp:' + tr.from, { plan: '', codes: [] });
+      const newSt = await getJSON(env, 'tp:' + u.email, { plan: '', codes: [] });
+      const live = [];
+      for (const c of oldSt.codes){ const k = await getJSON(env, 'k:' + c); if (k) live.push([c, k]); }
+      let mine = 0; for (const c of newSt.codes) if (await env.BAO.get('k:' + c)) mine++;
+      if (!PLANS[newSt.plan]) newSt.plan = PLANS[oldSt.plan] ? oldSt.plan : 'clinic';
+      if (mine + live.length > PLANS[newSt.plan].patients){
+        const fit = Object.keys(PLANS).find(p => PLANS[p].patients >= mine + live.length);
+        if (!fit) return failWhy('Your plan does not have room for these patients.', 400, 'plan_full');
+        newSt.plan = fit;
+      }
+      const fromUser = { email: tr.from };
+      let moved = 0;
+      for (const [c, k] of live){
+        if (k.used){
+          const pu = await getJSON(env, 'u:' + k.email);
+          if (!pu || pu.therapist !== tr.from){ await env.BAO.delete('k:' + c); continue; }
+          await migrateTN(env, fromUser, pu.email);
+          pu.therapist = u.email; await putJSON(env, 'u:' + pu.email, pu);
+          const aq = await getJSON(env, 'aq:' + pu.email);
+          if (aq && aq.pro === tr.from){ aq.pro = u.email; await putJSON(env, 'aq:' + pu.email, aq); }
+          let dn = await getJSON(env, 'dn:' + pu.email, []);
+          dn = dn.filter(n => !(n.author === 'pro' && n.owner === tr.from && !n.public && !tr.notes));
+          dn.forEach(n => { if (n.author === 'pro' && n.owner === tr.from) n.owner = u.email; });
+          await putJSON(env, 'dn:' + pu.email, dn);
+          moved++;
+        }
+        k.pro = u.email; await putJSON(env, 'k:' + c, k);
+        newSt.codes.push(c);
+      }
+      oldSt.codes = [];
+      await putJSON(env, 'tp:' + tr.from, oldSt);
+      await putJSON(env, 'tp:' + u.email, newSt);
+      await env.BAO.delete(key);
+      return json({ ok: true, moved, plan: newSt.plan });
     }
 
     case 'GET /api/pro/checkins': {
