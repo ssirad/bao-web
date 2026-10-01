@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-Pz/EBGzdszBIO/AKD3UAYfbDmRPnZofgavyKr5r+cxc='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-GLqi+z9W5lEhfm67YEfoOAA+lM+PgS0wxtZNypywomE='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>BAO &mdash; symptom &amp; wellbeing tracker</title>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -383,7 +383,7 @@ html[lang="de"] .bodymap:before{content:"Tippe auf einen Bereich und zoome hinei
   display:flex;align-items:flex-end;justify-content:space-between;gap:6px}
 .cal-int{display:block;width:42%;max-width:34px;min-height:3px;border-radius:3px;background:var(--coral)}
 .cal-count{display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:2.5px;max-width:62%}
-.cal-count b{display:block;width:6px;height:6px;border-radius:50%;background:var(--teal)}.cal-count b.mind{background:#e8479a}.cal-cell .cal-count{flex-wrap:wrap-reverse;align-content:flex-end;max-width:33px}.cal-wrap{grid-template-columns:1fr!important}.day-panel{position:static!important}.content:has(#calendar.active){max-width:none}@media(min-width:931px){.cal-cell{aspect-ratio:7/5}}
+.cal-count b{display:block;width:6px;height:6px;border-radius:50%;background:var(--teal)}
 .cal-count em{font-style:normal;font-size:9.5px;font-weight:800;color:var(--teal);line-height:1}
 .cal-rep{position:absolute;right:6px;top:4px;font-size:13px;font-weight:800;color:#7a6fb0;line-height:1;
   display:flex;align-items:baseline;gap:1px}
@@ -845,6 +845,31 @@ body:not(.pro) .tabbar [data-view=patients]{display:none!important}
 .unsaved-box p{margin:0 0 8px;color:#56696a;font-size:14.5px;line-height:1.55}
 .unsaved-box .btn{width:100%;padding:13px}
 .unsaved-box .linklike{margin-top:2px}
+
+.pts-btn{border:0;cursor:pointer;font:inherit;font-size:12px;font-weight:750;border-radius:20px;padding:5px 10px}
+.pts-btn.open{background:#a4553f!important;color:#fff!important}
+.pts-body{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:12px;padding:12px;border-radius:14px;background:linear-gradient(180deg,#f4f9f7,#edf4f1)}
+.pts-body[hidden]{display:none}
+.pts-fig{position:relative;height:300px;background-size:100% 100%;background-repeat:no-repeat}
+.pts-fig .pts-cap{position:absolute;left:0;right:0;top:-2px;text-align:center;font-size:10px;font-weight:800;color:#7a8b8c;letter-spacing:.08em;text-transform:uppercase}
+.pts-fig i{position:absolute;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:var(--coral);border:3px solid #fff;box-shadow:0 0 0 4px rgba(232,120,77,.25),0 2px 5px rgba(0,0,0,.2)}
+.pts-list{width:100%;display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.pts-list span{background:#fff;border:1px solid var(--line);border-radius:14px;padding:4px 9px;font-size:11.5px;color:#4f6466}
+@media(max-width:680px){
+  .cal-cell{padding:4px 5px}
+  .cal-num{position:relative;z-index:2;font-size:12px;line-height:1.1}
+  .cal-rep{position:absolute;top:3px;right:4px;font-size:10px;line-height:1;color:#7d6bc4;z-index:2}
+  .cal-rep small{display:none}
+  .cal-cell .cal-bottom{position:absolute;left:5px;right:5px;bottom:5px;top:21px;height:auto!important;margin:0!important;display:flex;align-items:flex-end;justify-content:space-between;gap:3px;pointer-events:none}
+  .cal-bottom .cal-int{width:6px;flex:0 0 6px;height:calc(var(--p,.3) * 100%)!important;min-height:3px}
+  .cal-bottom .cal-count{flex:0 1 auto;max-width:62%;max-height:100%;overflow:hidden;align-content:flex-end;gap:2px}
+  .cal-bottom .cal-count b{width:5px;height:5px}
+  .cal-bottom .cal-count em{font-size:8.5px}
+  .cal-bottom .cal-count.many{overflow:visible;max-height:none}
+  .cal-bottom .cal-count.many b,.cal-bottom .cal-count.many em{display:none}
+  .cal-bottom .cal-count.many::after{content:attr(data-n);display:grid;place-items:center;min-width:14px;height:14px;padding:0 3px;border-radius:7px;background:var(--teal);color:#fff;font-size:9px;font-weight:800;line-height:1}
+  .cal-cell .cal-bottom .cal-int{width:6px!important}
+}
 </style>
 <script>try{ if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) document.documentElement.classList.add('native'); if (/BAOApp\/2/.test(navigator.userAgent)) document.documentElement.classList.add('shell'); }catch(e){}</script>
 <script>
@@ -1137,7 +1162,6 @@ body:not(.pro) .tabbar [data-view=patients]{display:none!important}
             <div class="cal-legend">
               <span><em style="background:var(--coral)"></em><span data-i18n="cal.lgIntensity">Symptom intensity</span></span>
               <span><span class="cal-count lg"><b></b><b></b><b></b></span><span data-i18n="cal.lgCount">One dot per symptom</span></span>
-              <span><span class="cal-count lg"><b class="mind"></b></span><span data-i18n="cal.lgMind">Pink = psychological symptom</span></span>
               <span><span class="cal-rep lg">&#8635;</span><span data-i18n="cal.lgNote">Came back more than once</span></span>
               <span style="margin-left:auto" data-i18n="cal.lgBar">Bar height = intensity 0&ndash;10</span>
             </div>
@@ -1525,7 +1549,7 @@ const I18N = {
     'body.count':   n => n + ' selected',
     'body.highlighted': z => 'I highlighted the ' + z + ' for you. Move the dot if I got it wrong.',
     'body.aria':    side => 'Interactive ' + side + ' body map',
-    'rate.marker':  '- INTENSITY -',
+    'rate.marker':  '- RATINGS -',
     'rate.title':   'How intense was it?',
     'rate.confirm': 'Save this rating',
     'rate.aria':    'Symptom intensity',
@@ -1535,7 +1559,7 @@ const I18N = {
     'recap.title':      '* RECAP *',
     'recap.symptoms':   '* SYMPTOMS * --> ',
     'recap.parts':      '* BODY PARTS * --> ',
-    'recap.rating':     '* INTENSITY * --> ',
+    'recap.rating':     '* PAIN RATING * --> ',
     'recap.situations': '* SITUATIONS * --> ',
     'recap.thoughts':   '* THOUGHTS * --> ',
     'recap.feelings':   '* FEELINGS * --> ',
@@ -1731,7 +1755,7 @@ const I18N = {
     'recap.title':      '* ZUSAMMENFASSUNG *',
     'recap.symptoms':   '* SYMPTOME * --> ',
     'recap.parts':      '* KÖRPERSTELLEN * --> ',
-    'recap.rating':     '* INTENSITÄT * --> ',
+    'recap.rating':     '* SCHMERZSTÄRKE * --> ',
     'recap.situations': '* SITUATIONEN * --> ',
     'recap.thoughts':   '* GEDANKEN * --> ',
     'recap.feelings':   '* GEFÜHLE * --> ',
@@ -2055,7 +2079,7 @@ I18N.it = {
   'recap.title': '* RIEPILOGO *',
   'recap.symptoms': '* SINTOMI * --> ',
   'recap.parts': '* ZONE DEL CORPO * --> ',
-  'recap.rating': '* INTENSITÀ * --> ',
+  'recap.rating': '* INTENSITÀ DEL DOLORE * --> ',
   'recap.situations': '* SITUAZIONI * --> ',
   'recap.thoughts': '* PENSIERI * --> ',
   'recap.feelings': '* EMOZIONI * --> ',
@@ -2545,7 +2569,7 @@ I18N.fr = {
   'recap.title': '* RÉCAPITULATIF *',
   'recap.symptoms': '* SYMPTÔMES * --> ',
   'recap.parts': '* ZONES DU CORPS * --> ',
-  'recap.rating': '* INTENSITÉ * --> ',
+  'recap.rating': '* INTENSITÉ DE LA DOULEUR * --> ',
   'recap.situations': '* SITUATIONS * --> ',
   'recap.thoughts': '* PENSÉES * --> ',
   'recap.feelings': '* ÉMOTIONS * --> ',
@@ -2965,7 +2989,7 @@ I18N.es = {
   'recap.title': '* RESUMEN *',
   'recap.symptoms': '* SÍNTOMAS * --> ',
   'recap.parts': '* ZONAS DEL CUERPO * --> ',
-  'recap.rating': '* INTENSIDAD * --> ',
+  'recap.rating': '* INTENSIDAD DEL DOLOR * --> ',
   'recap.situations': '* SITUACIONES * --> ',
   'recap.thoughts': '* PENSAMIENTOS * --> ',
   'recap.feelings': '* EMOCIONES * --> ',
@@ -3385,7 +3409,7 @@ I18N.pt = {
   'recap.title': '* RESUMO *',
   'recap.symptoms': '* SINTOMAS * --> ',
   'recap.parts': '* ÁREAS DO CORPO * --> ',
-  'recap.rating': '* INTENSIDADE * --> ',
+  'recap.rating': '* INTENSIDADE DA DOR * --> ',
   'recap.situations': '* SITUAÇÕES * --> ',
   'recap.thoughts': '* PENSAMENTOS * --> ',
   'recap.feelings': '* EMOÇÕES * --> ',
@@ -3805,7 +3829,7 @@ I18N.nl = {
   'recap.title': '* SAMENVATTING *',
   'recap.symptoms': '* KLACHTEN * --> ',
   'recap.parts': '* LICHAAMSDELEN * --> ',
-  'recap.rating': '* INTENSITEIT * --> ',
+  'recap.rating': '* PIJNSCORE * --> ',
   'recap.situations': '* SITUATIES * --> ',
   'recap.thoughts': '* GEDACHTEN * --> ',
   'recap.feelings': '* GEVOELENS * --> ',
@@ -5153,8 +5177,6 @@ async function runConversation(){
 
       LAST_POINTS = [];
       const type = guessKind(name, zone) || await askKind(name);
-      // sentimento gia' detto qui: non richiederlo piu' dopo
-      if (type === 'mind'){ try{ feelingsIn(name + ' ' + detail).forEach(k => feltNow.add(k)); }catch(e){} }
       const { parts, rating } = await captureBodyRating(zone, null, { noBody: type === 'mind' });
       const points = LAST_POINTS.slice();
 
@@ -5174,9 +5196,7 @@ async function runConversation(){
   const feltBefore = feltNow.size;
   entry.day    = await askFeel(t(LOG_DAY ? 'past.day' : 'q.day'), 'happy');
   if (feltNow.size === feltBefore){ const r = dayReaction(entry.day); if (r) await baoSay(r, '', 'listening', 700); }
-  // se c'e' gia' un sintomo psicologico, la domanda sulle emozioni non serve
-  const hasMind = entry.symptoms.some(x => symType(x) === 'mind' || x.kind === 'feeling');
-  entry.emotions = hasMind ? '' : await askFeel(emotionsQuestion(entry), 'listening');
+  entry.emotions = await askFeel(emotionsQuestion(entry), 'listening');
 
   await baoSay(t('chat.almost'), '', 'cheer', 700);
   entry.personal = await askFeel(t('q.personal'), 'cheer');
@@ -5657,9 +5677,9 @@ function renderCalendar(){
       if (reps) inner += '<span class="cal-rep">&#8635;' + (reps > 1 ? '<small>' + reps + '</small>' : '') + '</span>';
       const ih = st.peak !== null ? Math.max(3, Math.round(st.peak / 10 * 26)) : 3;
       const shown = Math.min(st.count, 4);
-      inner += '<span class="cal-bottom"><i class="cal-int" style="height:' + ih + 'px"></i>' +
-               '<span class="cal-count">' + st.syms.slice().sort((a, b) => (symType(a) === 'mind') - (symType(b) === 'mind')).map(x => symType(x) === 'mind' ? '<b class="mind"></b>' : '<b></b>').join('') +
-               '</span></span>';
+      inner += '<span class="cal-bottom"><i class="cal-int" style="height:' + ih + 'px;--p:' + (st.peak !== null ? Math.max(.15, st.peak / 10) : .15) + '"></i>' +
+               '<span class="cal-count' + (st.count > 3 ? ' many' : '') + '" data-n="' + st.count + '">' + '<b></b>'.repeat(shown) +
+               (st.count > 4 ? '<em>+' + (st.count - 4) + '</em>' : '') + '</span></span>';
       label += ' — ' + t('cal.aria', st.count) + (reps ? ', ' + t('cal.ariaRep', reps) : '');
     } else {
       label += ' — ' + t('cal.ariaEmpty');
@@ -5727,15 +5747,16 @@ function renderDayPanel(){
         (symType(x) ? ' <span class="sym-type ' + symType(x) + '">' + esc(t('type.' + symType(x))) + '</span>' : '') + '</strong><span class="sym-tools">' +
         (x.rating !== '' && x.rating != null && !isNaN(Number(x.rating))
           ? '<span class="sym-score">' + esc(String(x.rating)) + '/10</span>' : '') +
-        '<button class="sym-del" type="button" data-del-sym="' + esc(e.id + '|' + n) + '" title="' + esc(t('del.sym')) + '" aria-label="' + esc(t('del.sym')) + '">&#10005;</button><span class="sym-chev" aria-hidden="true">&#9662;</span></span></div><div class="sym-body">';
+        '<button class="sym-del" type="button" data-del-sym="' + esc(e.id + '|' + n) + '" title="' + esc(t('del.sym')) + '" aria-label="' + esc(t('del.sym')) + '">&#10005;</button></span></div>';
       if (x.parts && x.parts.length)
         html += '<div class="chiprow" style="margin-top:8px">' + x.parts.map(pt => '<span>' + esc(partName(pt)) + '</span>').join('') +
-          (x.points && x.points.length ? '<button type="button" class="pts-chip pts-open" data-pts="' + esc(JSON.stringify(x.points)).replace(/"/g, '&quot;') + '" data-pts-title="' + esc((x.name || '') + ' · ' + x.parts.map(partName).join(', ')).replace(/"/g, '&quot;') + '" title="' + esc(t('pts.see')) + '">📍 ' + esc(t('pts.n', x.points.length)) + ' · ' + esc(t('pts.see')) + '</button>' : '') + '</div>';
+          (x.points && x.points.length ? '<button type="button" class="pts-chip pts-btn" data-pts="' + esc(e.id + '|' + n) + '">📍 ' + esc(t('pts.n', x.points.length)) + ' · ' + esc(t('pts.show')) + '</button>' : '') + '</div>' +
+          (x.points && x.points.length ? '<div class="pts-body" hidden></div>' : '');
       if (said(x.detail))     html += qa(t('day.added'), x.detail);
       if (said(x.situation))  html += qa(t(x.kind === 'feeling' ? 'q.feelSituation' : 'q.situation'), x.situation);
       if (x.repeated)         html += qa(t(x.kind === 'feeling' ? 'q.feelRepeated' : 'q.repeated'), x.repeated === 'yes' ? t('day.yes') : t('day.no'));
       if (said(x.reflection)) html += '<div class="sym-reflect">' + para(x.reflection) + '</div>';
-      html += '</div></div>';
+      html += '</div>';
     });
     if (said(e.day) || said(e.memory)){
       html += '<div class="day-sec"><h4>' + t('day.thoughts') + '</h4>';
@@ -5757,7 +5778,7 @@ function renderDayPanel(){
   el.innerHTML = html;
   wireLog(el);
   wireDelete(el);
-  wirePoints(el);
+  wirePoints(el, list);
 }
 
 $('calPrev').addEventListener('click', () => { calM--; if (calM < 0){ calM = 11; calY--; } renderCalendar(); });
@@ -7848,6 +7869,49 @@ Object.assign(I18N.es, { 'uns.title':'¿Guardar tu check-in?', 'uns.text':'¿Seg
 Object.assign(I18N.pt, { 'uns.title':'Salvar seu check-in?', 'uns.text':'Tem certeza de que não quer salvar este check-in? O que você escreveu será perdido.', 'uns.save':'Salvar o check-in', 'uns.drop':'Não salvar', 'uns.stay':'Voltar ao check-in' });
 Object.assign(I18N.nl, { 'uns.title':'Check-in bewaren?', 'uns.text':'Weet je zeker dat je deze check-in niet wilt bewaren? Wat je hebt geschreven gaat verloren.', 'uns.save':'Check-in bewaren', 'uns.drop':'Niet bewaren', 'uns.stay':'Terug naar de check-in' });
 
+
+// ---- punti precisi nel calendario ----
+const FIG_URL = {};
+function figUrl(side){
+  if (FIG_URL[side]) return FIG_URL[side];
+  const fig = $('bodyStage').querySelector('.figure');
+  const had = { f: fig.classList.contains('front-image'), b: fig.classList.contains('back-image') };
+  fig.classList.toggle('front-image', side === 'front'); fig.classList.toggle('back-image', side === 'back');
+  const u = getComputedStyle(fig).backgroundImage;
+  fig.classList.toggle('front-image', had.f); fig.classList.toggle('back-image', had.b);
+  return (FIG_URL[side] = u && u !== 'none' ? u : '');
+}
+function pointsBody(points){
+  const sides = ['front', 'back'].filter(sd => points.some(p => p.side === sd));
+  const AR = { front: 406 / 914, back: 386 / 914 };
+  let h = sides.map(sd => '<div class="pts-fig" style="aspect-ratio:' + AR[sd] + ';background-image:' + figUrl(sd).replace(/"/g, "'") + '">' +
+    '<span class="pts-cap">' + esc(t(sd === 'front' ? 'body.front' : 'body.back')) + '</span>' +
+    points.filter(p => p.side === sd).map(p => '<i style="left:' + (p.x * 100) + '%;top:' + (p.y * 100) + '%" title="' + esc(partName(p.part)) + '"></i>').join('') + '</div>').join('');
+  const names = [...new Set(points.map(p => partName(p.part)))];
+  h += '<div class="pts-list">' + names.map(n => '<span>📍 ' + esc(n) + '</span>').join('') + '</div>';
+  return h;
+}
+function wirePoints(el, list){
+  el.querySelectorAll('[data-pts]').forEach(b => b.addEventListener('click', () => {
+    const [id, n] = b.dataset.pts.split('|');
+    const e = list.find(x => x.id === id); const x = e && (e.symptoms || [])[Number(n)];
+    const box = b.closest('.sym-card').querySelector('.pts-body');
+    if (!x || !box) return;
+    const open = box.hidden;
+    if (open) box.innerHTML = pointsBody(x.points || []);
+    box.hidden = !open; b.classList.toggle('open', open);
+  }));
+}
+Object.assign(I18N.en, { 'pts.show':'show on the body' });
+Object.assign(I18N.it, { 'pts.show':'mostra sul corpo' });
+Object.assign(I18N.de, { 'pts.show':'am Körper zeigen' });
+Object.assign(I18N.fr, { 'pts.show':'voir sur le corps' });
+Object.assign(I18N.es, { 'pts.show':'ver en el cuerpo' });
+Object.assign(I18N.pt, { 'pts.show':'ver no corpo' });
+Object.assign(I18N.nl, { 'pts.show':'toon op het lichaam' });
+if (!('body.front' in I18N.en)) I18N.en['body.front'] = 'Front';
+if (!('body.back' in I18N.en)) I18N.en['body.back'] = 'Back';
+
 (async function boot(){
   try{
     applyLang();
@@ -7870,86 +7934,6 @@ Object.assign(I18N.nl, { 'uns.title':'Check-in bewaren?', 'uns.text':'Weet je ze
   }
 })();
 
-
-// ---- show saved precise points on a body figure (calendar) ----
-(function(){
-  const L = { en:['See on body','Front','Back','Close','Where you felt it'], de:['Am Körper zeigen','Vorne','Hinten','Schließen','Wo du es gespürt hast'],
-    it:['Vedi sul corpo','Davanti','Dietro','Chiudi','Dove lo hai sentito'], fr:['Voir sur le corps','Devant','Dos','Fermer','Où tu l’as ressenti'],
-    es:['Ver en el cuerpo','Delante','Detrás','Cerrar','Dónde lo sentiste'], pt:['Ver no corpo','Frente','Costas','Fechar','Onde você sentiu'],
-    nl:['Toon op lichaam','Voorkant','Achterkant','Sluiten','Waar je het voelde'] };
-  const keys = ['pts.see','pts.front','pts.back','pts.close','pts.where'];
-  Object.keys(L).forEach(lg => { if (typeof I18N !== 'undefined' && I18N[lg]){ const o = {}; keys.forEach((k, i) => o[k] = L[lg][i]); Object.assign(I18N[lg], o); } });
-  const st = document.createElement('style');
-  st.textContent = '.pts-open{border:0;cursor:pointer;font:inherit;font-size:inherit;padding:inherit;border-radius:999px}.pts-open:hover{filter:brightness(.96);text-decoration:underline}' +
-    '.ptsmodal{position:fixed;inset:0;z-index:9999;background:rgba(20,40,40,.45);display:flex;align-items:center;justify-content:center;padding:16px}' +
-    '.ptsbox{background:#fff;border-radius:20px;max-width:640px;width:100%;max-height:92vh;overflow:auto;padding:20px 22px;box-shadow:0 20px 50px rgba(0,0,0,.25)}' +
-    '.ptsbox h3{margin:0 0 4px;font-size:18px}.ptsbox .sub{color:var(--muted);font-size:13px;margin-bottom:14px}' +
-    '.ptsfigs{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;background:#f1f7f5;border-radius:16px;padding:14px}' +
-    '.ptsfig{text-align:center;font-size:12px;font-weight:750;color:var(--teal-dark)}' +
-    '.ptsfig .body-stage{height:min(58vh,420px);margin:6px auto 0}.ptsfig .prec-pt{animation:ptPulse 1.6s ease-in-out infinite}' +
-    '@keyframes ptPulse{0%,100%{box-shadow:0 0 0 0 rgba(233,135,114,.6)}50%{box-shadow:0 0 0 9px rgba(233,135,114,0)}}' +
-    '@media (prefers-reduced-motion:reduce){.ptsfig .prec-pt{animation:none}}' +
-    '.ptsclose{margin-top:14px;width:100%}';
-  document.head.appendChild(st);
-
-  function openPoints(points, title){
-    const tr = (k, d) => { try{ const v = t(k); return v && v !== k ? v : d; }catch(e){ return d; } };
-    const sides = ['front','back'].filter(sd => points.some(p => p.side === sd));
-    const m = document.createElement('div'); m.className = 'ptsmodal'; m.setAttribute('role','dialog'); m.setAttribute('aria-modal','true');
-    const box = document.createElement('div'); box.className = 'ptsbox';
-    const h = document.createElement('h3'); h.textContent = tr('pts.where','Where you felt it');
-    const sub = document.createElement('div'); sub.className = 'sub'; sub.textContent = title || '';
-    const figs = document.createElement('div'); figs.className = 'ptsfigs';
-    sides.forEach(sd => {
-      const w = document.createElement('div'); w.className = 'ptsfig';
-      w.appendChild(document.createTextNode(tr(sd === 'front' ? 'pts.front' : 'pts.back', sd)));
-      const stage = document.createElement('div'); stage.className = 'body-stage';
-      const fig = document.createElement('div'); fig.className = 'figure ' + (sd === 'front' ? 'front-image' : 'back-image');
-      stage.appendChild(fig);
-      points.filter(p => p.side === sd).forEach(p => {
-        const d = document.createElement('span'); d.className = 'prec-pt'; d.style.left = (p.x * 100) + '%'; d.style.top = (p.y * 100) + '%';
-        d.title = (typeof partName === 'function' ? partName(p.part) : p.part) || '';
-        stage.appendChild(d);
-      });
-      w.appendChild(stage); figs.appendChild(w);
-    });
-    const c = document.createElement('button'); c.type = 'button'; c.className = 'btn primary ptsclose'; c.textContent = tr('pts.close','Close');
-    box.append(h, sub, figs, c); m.appendChild(box); document.body.appendChild(m);
-    const close = () => { m.remove(); document.removeEventListener('keydown', onKey); };
-    const onKey = e => { if (e.key === 'Escape') close(); };
-    c.addEventListener('click', close);
-    m.addEventListener('click', e => { if (e.target === m) close(); });
-    document.addEventListener('keydown', onKey);
-    c.focus();
-  }
-  st.textContent += '.sym-card.fold .sym-head{cursor:pointer;user-select:none}.sym-card.fold .sym-body{display:none}.sym-card.fold.open .sym-body{display:block}' +
-    '.sym-chev{display:none;margin-left:6px;color:var(--muted);transition:transform .18s;font-size:12px}.sym-card.fold .sym-chev{display:inline-block}.sym-card.fold.open .sym-chev{transform:rotate(180deg)}' +
-    '.sym-card.fold:not(.open) .sym-head{margin-bottom:0}';
-  window.wirePoints = function(el){
-    const cards = [...el.querySelectorAll('.sym-card')];
-    if (cards.length > 1) cards.forEach(c => {
-      c.classList.add('fold');
-      const h = c.querySelector('.sym-head'); if (!h) return;
-      h.setAttribute('role', 'button'); h.tabIndex = 0; h.setAttribute('aria-expanded', 'false');
-      const tog = () => { const o = c.classList.toggle('open'); h.setAttribute('aria-expanded', o ? 'true' : 'false'); };
-      h.addEventListener('click', e => { if (e.target.closest('button')) return; tog(); });
-      h.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target === h){ e.preventDefault(); tog(); } });
-    });
-    el.querySelectorAll('[data-pts]').forEach(b => b.addEventListener('click', () => {
-      let pts = []; try{ pts = JSON.parse(b.dataset.pts) || []; }catch(e){}
-      if (pts.length) openPoints(pts, b.dataset.ptsTitle);
-    }));
-  };
-})();
-
-// ---- purple dot legend (psychological symptoms) ----
-(function(){
-  const L = { en:'Pink = psychological symptom', de:'Rosa = psychische Beschwerde', it:'Rosa = sintomo psicologico', fr:'Rose = symptôme psychologique',
-    es:'Rosa = síntoma psicológico', pt:'Rosa = sintoma psicológico', nl:'Roze = psychische klacht' };
-  Object.keys(L).forEach(lg => { if (I18N[lg]) I18N[lg]['cal.lgMind'] = L[lg]; });
-  try{ document.querySelectorAll('[data-i18n="cal.lgMind"]').forEach(e => e.textContent = t('cal.lgMind')); }catch(e){}
-})();
 </script>
 </body>
 </html>
-
