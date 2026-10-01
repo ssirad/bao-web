@@ -94,6 +94,30 @@ function appUrl(env, request){
 const publicUser = (u, extra) => ({ user: u.email, name: u.name || '', verified: !!u.verified,
   role: u.role === 'pro' ? 'pro' : 'patient', kind: u.kind || '', ...(extra || {}) });
 const failWhy = (msg, status, reason) => json({ error: msg, reason }, status);
+const cleanText = (v, max) => String(v == null ? '' : v).replace(/\r/g, '').trim().slice(0, max);
+// the patient stops sharing: link, code and assigned questions go away; the therapist's private notes are removed too
+async function unlinkPatient(env, pu){
+  const pro = pu.therapist;
+  if (!pro) return;
+  const st = await getJSON(env, 'tp:' + pro, { plan: '', codes: [] });
+  const keep = [];
+  for (const c of st.codes){
+    const k = await getJSON(env, 'k:' + c);
+    if (k && k.email === pu.email && k.used){ await env.BAO.delete('k:' + c); continue; }
+    keep.push(c);
+  }
+  st.codes = keep;
+  await putJSON(env, 'tp:' + pro, st);
+  await env.BAO.delete('aq:' + pu.email);
+  await env.BAO.delete('tn:' + pro + '|' + pu.email);
+  delete pu.therapist;
+  await putJSON(env, 'u:' + pu.email, pu);
+}
+async function proPatient(env, u, email){
+  if (!u || u.role !== 'pro') return null;
+  const pu = await getJSON(env, 'u:' + cleanEmail(email));
+  return pu && pu.therapist === u.email ? pu : null;
+}
 
 // ---- therapists / doctors ("pro") ----
 //   tp:<email>   { plan, codes:[CODE...] }        the pro's plan and the codes they created
@@ -168,14 +192,18 @@ async function handle(context){
     switch (route){
 
     case 'GET /api/version':
-      return json({ version: 'bao-server 2026-09-30 pro' });
+      return json({ version: 'bao-server 2026-10-01 notes' });
 
     case 'GET /api/auth/me': {
       const u = await currentUser(env, request);
       if (!u) return fail('Not signed in.', 401);
-      let shared = '';
-      if (u.therapist){ const p = await getJSON(env, 'u:' + u.therapist); shared = p ? (p.name || '') : ''; }
-      return json(publicUser(u, { shared }));
+      let shared = '', questions = [];
+      if (u.therapist){
+        const p = await getJSON(env, 'u:' + u.therapist); shared = p ? (p.name || '') : '';
+        const aq = await getJSON(env, 'aq:' + u.email);
+        if (aq && aq.pro === u.therapist) questions = aq.questions || [];
+      }
+      return json(publicUser(u, { shared, questions }));
     }
 
     case 'POST /api/auth/register': {
@@ -197,6 +225,7 @@ async function handle(context){
         if (!codeRec) return failWhy('This patient code does not exist.', 400, 'code_bad');
         if (codeRec.used) return failWhy('This patient code was already used.', 400, 'code_used');
         if (codeRec.email !== email) return failWhy('This patient code belongs to a different email address.', 400, 'code_email');
+        if (b.share !== true) return failWhy('Please agree to share your check-ins with your therapist or doctor.', 400, 'share_consent');
       }
       const user = { email, name, lang, verified: false, created: new Date().toISOString(), ...(await newPassword(pw)), sessions: [] };
       if (role === 'pro'){ user.role = 'pro'; user.kind = b.kind === 'doctor' ? 'doctor' : 'therapist'; }
@@ -259,7 +288,8 @@ async function handle(context){
         }
         await env.BAO.delete('tp:' + u.email);
       }
-      await Promise.all(['u:', 'c:', 'p:'].map(k => env.BAO.delete(k + u.email)));
+      if (u.therapist) await unlinkPatient(env, u);
+      await Promise.all(['u:', 'c:', 'p:', 'aq:', 'sn:'].map(k => env.BAO.delete(k + u.email)));
       return json({ ok: true }, 200, { 'Set-Cookie': sessionCookie('', 0) });
     }
 
@@ -466,12 +496,97 @@ async function handle(context){
         const pu = await getJSON(env, 'u:' + email);
         if (pu && pu.therapist === u.email){ delete pu.therapist; await putJSON(env, 'u:' + pu.email, pu); }
         await env.BAO.delete('k:' + c);
+        await env.BAO.delete('aq:' + email);
+        await env.BAO.delete('tn:' + u.email + '|' + email);
         st.codes = st.codes.filter(x => x !== c);
         found = true;
       }
       if (!found) return fail('Not found.', 404);
       await putJSON(env, 'tp:' + u.email, st);
       return json({ ok: true });
+    }
+
+    // ---- patient: sharing, notes for the next session ----
+    case 'POST /api/me/unlink': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      if (u.therapist) await unlinkPatient(env, u);
+      return json({ ok: true });
+    }
+    case 'GET /api/me/notes': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      return json({ notes: await getJSON(env, 'sn:' + u.email, []) });
+    }
+    case 'POST /api/me/note': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      const text = cleanText((await readBody(request)).text, 1500);
+      if (!text) return fail('Write something first.');
+      const list = await getJSON(env, 'sn:' + u.email, []);
+      if (list.length >= 200) return fail('Too many notes.', 413);
+      list.push({ id: 'n' + Date.now().toString(36) + token().slice(0, 4), text, date: new Date().toISOString(), done: false });
+      await putJSON(env, 'sn:' + u.email, list);
+      return json({ ok: true, notes: list });
+    }
+    case 'POST /api/me/note/delete': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      const id = String((await readBody(request)).id || '');
+      const list = (await getJSON(env, 'sn:' + u.email, [])).filter(n => n.id !== id);
+      await putJSON(env, 'sn:' + u.email, list);
+      return json({ ok: true, notes: list });
+    }
+
+    // ---- therapist: one patient's notes, private notes, assigned questions ----
+    case 'GET /api/pro/patient': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      const pu = await proPatient(env, u, url.searchParams.get('email'));
+      if (!pu) return fail('Not found.', 404);
+      const aq = await getJSON(env, 'aq:' + pu.email);
+      return json({
+        notes: await getJSON(env, 'sn:' + pu.email, []),
+        questions: aq && aq.pro === u.email ? aq.questions || [] : [],
+        private: (await getJSON(env, 'tn:' + u.email + '|' + pu.email, { days: {} })).days || {}
+      });
+    }
+    case 'POST /api/pro/private': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      const b = await readBody(request);
+      const pu = await proPatient(env, u, b.email);
+      if (!pu) return fail('Not found.', 404);
+      const day = String(b.day || '');
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) return fail('Bad day.');
+      const key = 'tn:' + u.email + '|' + pu.email;
+      const st = await getJSON(env, key, { days: {} });
+      const text = cleanText(b.text, 4000);
+      if (text) st.days[day] = { text, updated: new Date().toISOString() }; else delete st.days[day];
+      await putJSON(env, key, st);
+      return json({ ok: true, private: st.days });
+    }
+    case 'POST /api/pro/questions': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      const b = await readBody(request);
+      const pu = await proPatient(env, u, b.email);
+      if (!pu) return fail('Not found.', 404);
+      const qs = (Array.isArray(b.questions) ? b.questions : []).map(q => cleanText(q, 300)).filter(Boolean).slice(0, 10);
+      if (qs.length) await putJSON(env, 'aq:' + pu.email, { pro: u.email, questions: qs, updated: new Date().toISOString() });
+      else await env.BAO.delete('aq:' + pu.email);
+      return json({ ok: true, questions: qs });
+    }
+    case 'POST /api/pro/note/done': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      const b = await readBody(request);
+      const pu = await proPatient(env, u, b.email);
+      if (!pu) return fail('Not found.', 404);
+      const list = await getJSON(env, 'sn:' + pu.email, []);
+      list.forEach(n => { if (n.id === b.id) n.done = b.done !== false; });
+      await putJSON(env, 'sn:' + pu.email, list);
+      return json({ ok: true, notes: list });
     }
 
     case 'GET /api/pro/checkins': {
@@ -483,7 +598,7 @@ async function handle(context){
       for (const c of codes){
         if (!c.patient || c.patient.gone) continue;
         patients.push(c.patient);
-        for (const e of await getJSON(env, 'c:' + c.patient.email, [])) checkins.push({ ...e, patient: c.patient });
+        for (const e of await getJSON(env, 'c:' + c.patient.email, [])){ const x = { ...e, patient: c.patient }; delete x.personal; checkins.push(x); }
       }
       return json({ patients, checkins });
     }
