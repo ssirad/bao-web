@@ -220,18 +220,19 @@ async function handle(context){
     switch (route){
 
     case 'GET /api/version':
-      return json({ version: 'bao-server 2026-10-01 daynotes' });
+      return json({ version: 'bao-server 2026-10-01 safephone' });
 
     case 'GET /api/auth/me': {
       const u = await currentUser(env, request);
       if (!u) return fail('Not signed in.', 401);
-      let shared = '', questions = [];
+      let shared = '', questions = [], therapistPhone = '';
       if (u.therapist){
-        const p = await getJSON(env, 'u:' + u.therapist); shared = p ? (p.name || '') : '';
+        const p = await getJSON(env, 'u:' + u.therapist); shared = p ? (p.name || '') : ''; therapistPhone = p ? (p.safePhone || '') : '';
         const aq = await getJSON(env, 'aq:' + u.email);
         if (aq && aq.pro === u.therapist) questions = aq.questions || [];
       }
-      return json(publicUser(u, { shared, questions }));
+      if (u.role === 'pro') return json(publicUser(u, { safePhone: u.safePhone || '' }));
+      return json(publicUser(u, { shared, questions, therapistPhone }));
     }
 
     case 'POST /api/auth/register': {
@@ -477,6 +478,17 @@ async function handle(context){
       st.codes.push(code);
       await putJSON(env, 'tp:' + u.email, st);
       return json({ ok: true, code, plan: st.plan });
+    }
+
+    case 'POST /api/pro/phone': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      if (u.role !== 'pro') return fail('Only for therapists and doctors.', 403);
+      const phone = cleanText((await readBody(request)).phone, 30);
+      if (phone && (!/^\+?[0-9 ()\/.-]+$/.test(phone) || phone.replace(/\D/g, '').length < 5)) return failWhy('Please enter a valid phone number.', 400, 'phone_bad');
+      if (phone) u.safePhone = phone; else delete u.safePhone;
+      await putJSON(env, 'u:' + u.email, u);
+      return json({ ok: true, safePhone: u.safePhone || '' });
     }
 
     case 'POST /api/pro/plan': {

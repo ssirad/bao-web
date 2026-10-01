@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-Bq21jDb8zvS65+sH+cY0IYDZDhPxxj9Q7+QQCBFqTbo='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-RTz0M+pbNvrUGbfLQQMENTGs+iRh1JO76wnXPhW5Gvg='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>BAO &mdash; symptom &amp; wellbeing tracker</title>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -924,6 +924,52 @@ body:not(.pro) .tabbar [data-view=patients]{display:none!important}
 .tr-link .btn{margin-top:8px;padding:8px 14px;font-size:12.5px}
 .transfer-card .btn{margin-top:10px}
 .priv-box{display:none!important}
+
+body.pro .help-card{display:none}
+.help-card .btn{margin-top:10px}
+.help-link{margin-top:10px;border:0;background:#fdf0ec;color:#a4472f;font-weight:750;font-size:12.5px;border-radius:999px;padding:6px 12px;cursor:pointer}
+.help-modal .unsaved-box{max-height:calc(100vh - 32px);overflow:auto}
+.help-list{display:flex;flex-direction:column;gap:8px;text-align:left}
+.help-call{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:14px;background:#f2f8f6;border:1px solid #d6e9e4;text-decoration:none;color:#1f3a3a}
+.help-call.em{background:#fdeee9;border-color:#f3c8bb;color:#8a2f1a}
+.help-call .ic{font-size:20px;flex:0 0 auto}
+.help-call b{display:block;font-size:17px;letter-spacing:.02em}
+.help-call small{display:block;font-size:12px;opacity:.85;line-height:1.35}
+.help-country{display:flex;align-items:center;gap:8px;font-size:12px;color:#6b7c7d;margin-top:2px}
+.help-country select{flex:1;font:inherit;font-size:13px;padding:6px 8px;border-radius:10px;border:1px solid var(--line);background:#fff;color:#2f4243}
+.crisis-card{max-width:440px}
+.help-call.ther{background:#eef4fb;border-color:#c9dbef;color:#1d3f63}
+.help-call.small{padding:7px 14px}.help-call.small b{font-size:14px}
+.help-where{font-size:11.5px;color:#8a999a;margin:2px 0 0;text-align:center}
+.sp-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.sp-row input{flex:1 1 180px;min-width:0;font:inherit;font-size:15px;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.sp-row .btn{flex:0 0 auto}
+.sp-remove{margin-top:8px;color:#b4573f}.sp-remove[hidden]{display:none}
+.sp-note{margin:10px 0 0}
+.crisis-wrong{font-size:12.5px;color:#6b7c7d;margin:10px 0 0}
+.crisis-go{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.crisis-go .btn{width:100%}
+.emo-bubble{max-width:420px;width:100%}
+.emo-svg{max-width:300px;margin:0 auto}
+.emo-svg svg{width:100%;height:auto;display:block;touch-action:manipulation}
+.emo-seg{cursor:pointer;transition:opacity .2s}
+.emo-seg path{stroke:#fff;stroke-width:2.5;transition:filter .2s}
+.emo-seg.dim:not(.has){opacity:.35}
+.emo-seg.has path{filter:saturate(1.25) brightness(.93)}
+.emo-seg:focus{outline:none}.emo-seg:focus-visible path{stroke:#1f2f30}
+.emo-e{font-size:22px;pointer-events:none}
+.emo-t{font-size:11.5px;font-weight:800;fill:#26393a;pointer-events:none}
+.emo-mid{fill:#fff}
+.emo-n{font-size:15px;font-weight:800;fill:#187d78}
+.emo-subs{margin-top:10px;padding:10px;border-radius:14px;background:color-mix(in srgb,var(--emo) 14%,#fff);display:flex;flex-wrap:wrap;gap:6px}
+.emo-subs[hidden]{display:none}
+.emo-q{width:100%;font-size:12px;color:#56696a;margin-bottom:2px}
+.emo-chip{border:1.5px solid var(--emo);background:#fff;color:#26393a;border-radius:999px;padding:7px 12px;font-weight:700;font-size:13px;cursor:pointer}
+.emo-chip.on{background:var(--emo);color:#1f2f30}
+.emo-picked{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px;min-height:28px}
+.emo-lab{font-size:12px;color:#6b7c7d}
+.emo-pill{border:0;background:var(--emo);color:#1f2f30;border-radius:999px;padding:5px 10px;font-weight:750;font-size:12.5px;cursor:pointer}
+.emo-pill b{opacity:.6;margin-left:2px}
 </style>
 <script>try{ if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) document.documentElement.classList.add('native'); if (/BAOApp\/2/.test(navigator.userAgent)) document.documentElement.classList.add('shell'); }catch(e){}</script>
 <script>
@@ -971,6 +1017,15 @@ body:not(.pro) .tabbar [data-view=patients]{display:none!important}
     <button class="btn primary" id="unsavedSave" type="button"></button>
     <button class="btn outline" id="unsavedDrop" type="button"></button>
     <button class="linklike" id="unsavedStay" type="button"></button>
+  </div>
+</div>
+<div class="unsaved help-modal" id="helpModal" hidden role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+  <div class="unsaved-box">
+    <span class="bao bao-listening unsaved-art"></span>
+    <h3 id="helpTitle"></h3>
+    <p></p>
+    <div class="help-list"></div>
+    <button class="linklike help-close" type="button"></button>
   </div>
 </div>
 <div class="tour" id="tour" hidden role="dialog" aria-modal="true" aria-labelledby="tourTitle">
@@ -1113,6 +1168,7 @@ body:not(.pro) .tabbar [data-view=patients]{display:none!important}
               <div class="eyebrow" id="chatDate">Today</div>
               <h2 class="title" style="font-size:clamp(24px,3.4vw,36px)" data-i18n="chat.h">Bao is listening,<br><em>take your time.</em></h2>
               <p class="lede" style="margin-bottom:0" data-i18n="chat.lede">Write to him like a message. Nothing is stored until you press save.</p>
+              <button class="help-link" type="button" data-help-open><span aria-hidden="true">🆘</span> <span data-i18n="help.link">Need help right now?</span></button>
             </div>
           </div>
 
@@ -1382,6 +1438,20 @@ body:not(.pro) .tabbar [data-view=patients]{display:none!important}
           <div class="card compact lang-card">
             <div class="card-head"><div><h2 data-i18n="lang.title">Language</h2><div class="muted" data-i18n="lang.sub">Bao speaks the language you choose.</div></div></div>
             <div class="lang-options" id="langOptions"></div>
+          </div>
+
+          <div class="card compact help-card">
+            <div class="card-head"><div><h2 data-i18n="help.card">Help right now</h2>
+              <div class="muted" data-i18n="help.cardSub">Numbers you can call when things get too heavy.</div></div></div>
+            <button class="btn outline" type="button" data-help-open data-i18n="help.open">Show the numbers</button>
+          </div>
+
+          <div class="card compact safephone-card pro-only">
+            <div class="card-head"><div><h2 data-i18n="sp.title">Safety number for my patients</h2>
+              <div class="muted" data-i18n="sp.sub">If a patient writes something alarming in a check-in, Bao shows them the emergency numbers. If you add your number here, it also appears there, right after 112.</div></div></div>
+            <div class="sp-row"><input id="spPhone" type="tel" inputmode="tel" autocomplete="tel" maxlength="30" placeholder="+49 30 1234567" data-i18n-attr="placeholder|sp.ph"><button class="btn primary" id="spSave" type="button" data-i18n="sp.save">Save number</button></div>
+            <button class="linklike sp-remove" id="spRemove" type="button" hidden data-i18n="sp.remove">Remove number</button>
+            <p class="tiny muted sp-note" data-i18n="sp.note">112 always stays first: you are not an emergency service. BAO does not notify you automatically.</p>
           </div>
 
           <div class="card compact transfer-card pro-only">
@@ -4589,7 +4659,7 @@ const auth = {
       try{
         const r = await jget('/api/auth/me');
         USER_NAME = r.name || '';
-        USER_ROLE = r.role === 'pro' ? 'pro' : 'patient'; USER_SHARED = r.shared || ''; USER_QUESTIONS = r.questions || [];
+        USER_ROLE = r.role === 'pro' ? 'pro' : 'patient'; USER_SHARED = r.shared || ''; USER_QUESTIONS = r.questions || []; THER_PHONE = r.therapistPhone || ''; SAFE_PHONE = r.safePhone || ''; if (typeof paintSafePhone === 'function') paintSafePhone();
       USER_VERIFIED = r.verified !== false;
         USER_VERIFIED = r.verified !== false;
         if (r.user) await resumeSession(r.user);   // unlocks the encrypted local backup, if this tab has the key
@@ -4610,7 +4680,7 @@ const auth = {
       }
       USER_NAME = r.name || '';
       USER_ROLE = r.role === 'pro' ? 'pro' : 'patient';
-      try{ const me = await jget('/api/auth/me'); USER_SHARED = me.shared || ''; USER_QUESTIONS = me.questions || []; }catch(e){}
+      try{ const me = await jget('/api/auth/me'); USER_SHARED = me.shared || ''; USER_QUESTIONS = me.questions || []; THER_PHONE = me.therapistPhone || ''; SAFE_PHONE = me.safePhone || ''; if (typeof paintSafePhone === 'function') paintSafePhone(); }catch(e){}
       const rec = own(localUsers(), r.user) ? localUsers()[r.user] : null;
       let made = rec ? await openRecord(rec, p) : null;
       if (made && made.rec) storeRecord(r.user, made.rec);
@@ -4642,7 +4712,7 @@ const auth = {
       const r = await jpost('/api/auth/register', Object.assign({ username:u, password:p, name, lang: LANG }, REG_EXTRA));
       USER_NAME = r.name || name;
       USER_ROLE = r.role === 'pro' ? 'pro' : 'patient';
-      try{ const me = await jget('/api/auth/me'); USER_SHARED = me.shared || ''; USER_QUESTIONS = me.questions || []; }catch(e){}
+      try{ const me = await jget('/api/auth/me'); USER_SHARED = me.shared || ''; USER_QUESTIONS = me.questions || []; THER_PHONE = me.therapistPhone || ''; SAFE_PHONE = me.safePhone || ''; if (typeof paintSafePhone === 'function') paintSafePhone(); }catch(e){}
       USER_VERIFIED = r.verified !== false;
       JUST_REGISTERED = true;
       const prev = own(localUsers(), r.user) ? localUsers()[r.user] : null;
@@ -5281,7 +5351,8 @@ async function runConversation(){
   const feltBefore = feltNow.size;
   entry.day    = await askFeel(t(LOG_DAY ? 'past.day' : 'q.day'), 'happy');
   if (feltNow.size === feltBefore){ const r = dayReaction(entry.day); if (r) await baoSay(r, '', 'listening', 700); }
-  entry.emotions = await askFeel(emotionsQuestion(entry), 'listening');
+  entry.emotionsQ = emotionsQuestion(entry);
+  entry.emotions = await askEmotions(entry.emotionsQ);
 
   await baoSay(t('chat.almost'), '', 'cheer', 700);
   await askAssigned();
@@ -5304,7 +5375,7 @@ function buildRecap(e){
     symptoms: blocks,
     thoughts: t('recap.thoughts') + '*' + t(e.forDay ? 'past.day' : 'q.day') + '* ' + e.day +
               (e.memory ? '\n*' + t('q.memory') + '* ' + e.memory : ''),
-    feelings: t('recap.feelings') + '*' + emotionsQuestion(e) + '* ' + e.emotions,
+    feelings: t('recap.feelings') + '*' + (e.emotionsQ || emotionsQuestion(e)) + '* ' + e.emotions,
     personal: t('recap.personal') + e.personal + (USER_SHARED ? '\n' + t('recap.privNote') : ''),
     assigned: (e.assigned || []).length ? t('recap.assigned', e.assignedBy || USER_SHARED) + e.assigned.map(x => '\n*' + x.q + '* ' + x.a).join('') : ''
   };
@@ -5854,7 +5925,7 @@ function renderDayPanel(){
       html += '</div>';
     }
     if (said(e.emotions))
-      html += '<div class="day-sec"><h4>' + t('day.feelings') + '</h4>' + qa(emotionsQuestion(e), e.emotions) + '</div>';
+      html += '<div class="day-sec"><h4>' + t('day.feelings') + '</h4>' + qa(e.emotionsQ || emotionsQuestion(e), e.emotions) + '</div>';
     if ((e.assigned || []).length)
       html += '<div class="day-sec"><h4>' + esc(t('day.assigned', e.assignedBy || '')) + '</h4>' + e.assigned.map(x => qa(x.q, x.a)).join('') + '</div>';
     if (said(e.personal))
@@ -6228,7 +6299,7 @@ function paintLogin(){
 function showLogin(){
   itGate(false);
   if (typeof PRO_CUR !== 'undefined'){ PRO_CUR = ''; PRO_PATIENTS = []; PRO_ALL = []; }
-  document.body.classList.remove('pro'); USER_ROLE = 'patient'; USER_SHARED = ''; USER_QUESTIONS = []; if (typeof ROLE_PICK !== 'undefined') ROLE_PICK = 'patient';
+  document.body.classList.remove('pro'); USER_ROLE = 'patient'; USER_SHARED = ''; USER_QUESTIONS = []; THER_PHONE = ''; SAFE_PHONE = ''; if (typeof ROLE_PICK !== 'undefined') ROLE_PICK = 'patient';
   loginMode = 'signin';
   document.querySelector('.app').classList.add('locked');
   $('loginScreen').hidden = false;
@@ -6745,7 +6816,7 @@ async function feelCheck(text){
   if (CRISIS_WORDS.test(text)){
     if (feltNow.has('crisis')) return;
     feltNow.add('crisis');
-    await baoSay(t('feel.crisis'), '', 'listening', 900);
+    await crisisCard();
     return;
   }
   for (const kind of feelingsIn(text)){
@@ -6759,7 +6830,7 @@ async function feelingDetour(kind){
   const more = await ask(t('feel.notice.' + kind), 'listening');
   if (CRISIS_WORDS.test(more) && !feltNow.has('crisis')){
     feltNow.add('crisis');
-    await baoSay(t('feel.crisis'), '', 'listening', 900);
+    await crisisCard();
   }
   const parts = [], rating = undefined;
   // la risposta vale gia' come situazione: niente seconda domanda
@@ -8055,7 +8126,7 @@ $('shareStop').addEventListener('click', async () => {
   if (!confirm(t('share.stopConfirm', USER_SHARED))) return;
   try{ await jpost('/api/me/unlink', {}); }catch(e){ showToast(t('err.generic')); return; }
   showToast(t('share.stopped', USER_SHARED));
-  USER_SHARED = ''; USER_QUESTIONS = [];
+  USER_SHARED = ''; USER_QUESTIONS = []; THER_PHONE = ''; SAFE_PHONE = '';
   paintSharing();
 });
 
@@ -8358,6 +8429,408 @@ Object.assign(I18N.nl, {
   'tr.ask': (n, p, w) => n + ' wil ' + p + ' patiënt(en)' + (w ? ' en ' + w + ' open code(s)' : '') + ' aan je overdragen. Accepteren?','tr.done': n => n + ' patiënt(en) zijn nu bij jou.',
   'why.tr_bad':'Deze overdrachtslink is verlopen of al gebruikt.','why.tr_role':'Alleen therapeuten en artsen kunnen een overdracht accepteren.','why.tr_self':'Dit is je eigen link. Stuur hem naar de andere therapeut.'
 });
+
+// ---- aiuto in caso di crisi: numeri per paese, scheda in chat, pulsante sempre raggiungibile ----
+// per ora: numeri di Berlino per tutti
+var THER_PHONE = '', SAFE_PHONE = '';
+const HELP = {
+  lines: [
+    { n:'0800 111 0 111', who:'TelefonSeelsorge', h24:1 },
+    { n:'0800 111 0 222', who:'TelefonSeelsorge', h24:1 },
+    { n:'030 390 63 00', who:'Berliner Krisendienst', note:'help.kd' }
+  ]
+};
+function helpCountry(){ return 'BER'; }
+function telHref(n){ return 'tel:' + String(n).replace(/[^\d+]/g, ''); }
+function helpBlock(){
+  let h = '<a class="help-call em" href="tel:112"><span class="ic">📞</span><span><b>112</b><small>' + esc(t('help.em')) + '</small></span></a>';
+  if (THER_PHONE && USER_SHARED) h += '<a class="help-call ther" href="' + telHref(THER_PHONE) + '"><span class="ic">🩺</span><span><b>' + esc(THER_PHONE) + '</b><small>' + esc(t('help.ther', USER_SHARED)) + '</small></span></a>';
+  h += HELP.lines.map(l => '<a class="help-call" href="' + telHref(l.n) + '"><span class="ic">💬</span><span><b>' + esc(l.n) + '</b><small>' + esc(l.who) +
+      (l.h24 ? ' · ' + esc(t('help.h24')) : '') + (l.note ? ' · ' + esc(t(l.note)) : '') + '</small></span></a>').join('');
+  h += '<a class="help-call small" href="tel:110"><span class="ic">🚓</span><span><b>110</b><small>' + esc(t('help.police')) + '</small></span></a>';
+  h += '<p class="help-where">' + esc(t('help.where')) + '</p>';
+  return h;
+}
+function wireHelp(){}
+function openHelp(){
+  const m = $('helpModal');
+  m.querySelector('.help-list').innerHTML = helpBlock(helpCountry());
+  m.querySelector('h3').textContent = t('help.title');
+  m.querySelector('p').textContent = t('help.sub');
+  m.querySelector('.help-close').textContent = t('help.close');
+  wireHelp(m);
+  m.hidden = false;
+}
+$('helpModal').addEventListener('click', e => { if (e.target.id === 'helpModal' || e.target.classList.contains('help-close')) $('helpModal').hidden = true; });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('helpModal').hidden) $('helpModal').hidden = true; });
+document.querySelectorAll('[data-help-open]').forEach(b => b.addEventListener('click', openHelp));
+
+const CRISIS_MORE = /(ammazzarmi|uccidermi|togliermi la vita|non voglio pi[uù] (?:vivere|esserci|svegliarmi)|vorrei sparire|voglio sparire|vorrei morire|meglio se non ci fossi|meglio morta|meglio morto|non ha (?:pi[uù] )?senso vivere|kill me|better off dead|no reason to live|want to disappear|end it all|not wake up|mich töten|lebensmüde|nicht mehr aufwachen|nicht mehr da sein|keinen sinn mehr zu leben|verschwinden will|plus envie de vivre|disparaître pour toujours|ne plus me réveiller|no quiero vivir|desaparecer para siempre|no despertar|não quero (?:mais )?viver|sumir para sempre|não acordar|niet meer leven|niet meer wakker|wil verdwijnen)/iu;
+function isCrisis(text){ text = String(text || ''); return CRISIS_WORDS.test(text) || CRISIS_MORE.test(text); }
+
+async function crisisCard(){
+  const gen = chatGen;
+  feltNow.add('crisis');
+  face('listening');
+  await baoSay(t('crisis.msg'), '', 'listening', 900);
+  if (gen !== chatGen) throw STALE;
+  const row = document.createElement('div');
+  row.className = 'msg widget';
+  row.innerHTML = '<div class="msg-face"><span class="bao bao-listening"></span></div>';
+  const box = document.createElement('div');
+  box.className = 'widget-bubble crisis-card';
+  box.innerHTML = '<div class="help-list">' + helpBlock(helpCountry()) + '</div>' +
+    '<p class="crisis-wrong">' + esc(t('crisis.wrong')) + '</p>' +
+    '<div class="crisis-go"><button type="button" class="btn primary" data-c="go">' + esc(t('crisis.go')) + '</button>' +
+    '<button type="button" class="btn outline" data-c="stop">' + esc(t('crisis.stop')) + '</button></div>';
+  row.appendChild(box);
+  baoLog.appendChild(row);
+  wireHelp(box);
+  scrollToEnd();
+  if (FAST){ box.querySelector('.crisis-go').remove(); return; }
+  const prevForm = baoForm.classList.contains('swapped');
+  baoForm.classList.add('swapped');
+  const choice = await new Promise(res => box.querySelectorAll('[data-c]').forEach(b => b.addEventListener('click', () => res(b.dataset.c), { once:true })));
+  if (!prevForm) baoForm.classList.remove('swapped');
+  box.querySelector('.crisis-go').remove();
+  if (gen !== chatGen) throw STALE;
+  if (choice === 'stop'){
+    resetChat();
+    go('home');
+    showToast(t('crisis.stopped'));
+    throw STALE;
+  }
+  await baoSay(t('crisis.cont'), '', 'cheer', 600);
+}
+async function crisisCheck(text){
+  if (!isCrisis(text) || feltNow.has('crisis')) return;
+  await crisisCard();
+}
+// ogni risposta scritta passa dal controllo, non solo alcune domande
+const _waitText0 = waitText;
+waitText = function(){ return _waitText0().then(async v => { await crisisCheck(v); return v; }); };
+
+Object.assign(I18N.en, {
+  'crisis.msg':'Thank you for telling me. What you feel matters, and you don’t have to go through it on your own. I’m only a little panda and I can’t help in an emergency, but these people can. Tap a number to call:',
+  'crisis.wrong':'If I misunderstood you, that’s completely fine. You can simply carry on.',
+  'crisis.go':'Continue the check-in','crisis.stop':'Stop here for today','crisis.cont':'Okay. I’m here. Let’s go on slowly.',
+  'crisis.stopped':'Okay. Bao is here whenever you want to come back. 💚',
+  'help.em':'Emergency: if you are in danger right now','help.h24':'24/7','help.young':'under 18','help.country':'Country',
+  'help.title':'Need help right now?','help.sub':'If you are in danger or are thinking about hurting yourself, please call. You don’t have to explain everything.','help.close':'Close',
+  'help.link':'Need help right now?','help.card':'Help right now','help.cardSub':'Numbers you can call when things get too heavy.','help.open':'Show the numbers'
+});
+Object.assign(I18N.it, {
+  'crisis.msg':'Grazie di avermelo detto. Quello che provi conta, e non devi affrontarlo senza nessuno. Io sono solo un piccolo panda e non posso aiutarti in un’emergenza, ma queste persone sì. Tocca un numero per chiamare:',
+  'crisis.wrong':'Se ho capito male, va benissimo: puoi semplicemente continuare.',
+  'crisis.go':'Continua il check-in','crisis.stop':'Fermati qui per oggi','crisis.cont':'Va bene. Sono qui. Andiamo avanti piano.',
+  'crisis.stopped':'Va bene. Bao è qui quando vuoi tornare. 💚',
+  'help.em':'Emergenza: se sei in pericolo adesso','help.h24':'24 ore su 24','help.young':'under 18','help.country':'Paese',
+  'help.title':'Ti serve aiuto adesso?','help.sub':'Se sei in pericolo o pensi di farti del male, chiama. Non devi spiegare tutto.','help.close':'Chiudi',
+  'help.link':'Ti serve aiuto adesso?','help.card':'Aiuto subito','help.cardSub':'Numeri che puoi chiamare quando diventa tutto troppo pesante.','help.open':'Mostra i numeri'
+});
+Object.assign(I18N.de, {
+  'crisis.msg':'Danke, dass du es mir sagst. Was du fühlst, zählt, und du musst da nicht allein durch. Ich bin nur ein kleiner Panda und kann in einem Notfall nicht helfen, aber diese Menschen schon. Tippe auf eine Nummer, um anzurufen:',
+  'crisis.wrong':'Falls ich dich falsch verstanden habe, ist das völlig in Ordnung. Du kannst einfach weitermachen.',
+  'crisis.go':'Check-in fortsetzen','crisis.stop':'Für heute hier aufhören','crisis.cont':'Okay. Ich bin da. Wir machen langsam weiter.',
+  'crisis.stopped':'Okay. Bao ist da, wann immer du zurückkommen willst. 💚',
+  'help.em':'Notruf: wenn du gerade in Gefahr bist','help.h24':'rund um die Uhr','help.young':'unter 18','help.country':'Land',
+  'help.title':'Brauchst du jetzt Hilfe?','help.sub':'Wenn du in Gefahr bist oder daran denkst, dir etwas anzutun, ruf bitte an. Du musst nicht alles erklären.','help.close':'Schließen',
+  'help.link':'Brauchst du jetzt Hilfe?','help.card':'Sofort Hilfe','help.cardSub':'Nummern, die du anrufen kannst, wenn es zu schwer wird.','help.open':'Nummern zeigen'
+});
+Object.assign(I18N.fr, {
+  'crisis.msg':'Merci de me l’avoir dit. Ce que tu ressens compte, et tu n’as pas à le traverser sans personne. Je ne suis qu’un petit panda et je ne peux pas aider en cas d’urgence, mais ces personnes, oui. Touche un numéro pour appeler :',
+  'crisis.wrong':'Si je t’ai mal compris, ce n’est pas grave du tout. Tu peux simplement continuer.',
+  'crisis.go':'Continuer le check-in','crisis.stop':'M’arrêter là pour aujourd’hui','crisis.cont':'D’accord. Je suis là. On continue doucement.',
+  'crisis.stopped':'D’accord. Bao est là quand tu veux revenir. 💚',
+  'help.em':'Urgence : si tu es en danger maintenant','help.h24':'24 h/24','help.young':'moins de 18 ans','help.country':'Pays',
+  'help.title':'Besoin d’aide maintenant ?','help.sub':'Si tu es en danger ou si tu penses à te faire du mal, appelle. Tu n’as pas besoin de tout expliquer.','help.close':'Fermer',
+  'help.link':'Besoin d’aide maintenant ?','help.card':'De l’aide tout de suite','help.cardSub':'Des numéros à appeler quand c’est trop lourd.','help.open':'Voir les numéros'
+});
+Object.assign(I18N.es, {
+  'crisis.msg':'Gracias por contármelo. Lo que sientes importa, y no tienes que pasarlo sin nadie. Solo soy un pequeño panda y no puedo ayudar en una emergencia, pero estas personas sí. Toca un número para llamar:',
+  'crisis.wrong':'Si te he entendido mal, no pasa nada. Puedes seguir sin más.',
+  'crisis.go':'Seguir con el check-in','crisis.stop':'Parar aquí por hoy','crisis.cont':'Vale. Estoy aquí. Sigamos despacio.',
+  'crisis.stopped':'Vale. Bao está aquí cuando quieras volver. 💚',
+  'help.em':'Emergencia: si estás en peligro ahora','help.h24':'24 h','help.young':'menores de 18','help.country':'País',
+  'help.title':'¿Necesitas ayuda ahora?','help.sub':'Si estás en peligro o piensas en hacerte daño, llama. No tienes que explicarlo todo.','help.close':'Cerrar',
+  'help.link':'¿Necesitas ayuda ahora?','help.card':'Ayuda inmediata','help.cardSub':'Números a los que puedes llamar cuando todo pesa demasiado.','help.open':'Ver los números'
+});
+Object.assign(I18N.pt, {
+  'crisis.msg':'Obrigado por me contar. O que você sente importa, e você não precisa passar por isso sem ninguém. Sou só um pequeno panda e não consigo ajudar numa emergência, mas estas pessoas conseguem. Toque num número para ligar:',
+  'crisis.wrong':'Se eu entendi mal, tudo bem. Você pode simplesmente continuar.',
+  'crisis.go':'Continuar o check-in','crisis.stop':'Parar por hoje','crisis.cont':'Tudo bem. Estou aqui. Vamos continuar devagar.',
+  'crisis.stopped':'Tudo bem. O Bao está aqui quando você quiser voltar. 💚',
+  'help.em':'Emergência: se você está em perigo agora','help.h24':'24 h','help.young':'menores de 18','help.country':'País',
+  'help.title':'Precisa de ajuda agora?','help.sub':'Se você está em perigo ou pensa em se machucar, ligue. Não precisa explicar tudo.','help.close':'Fechar',
+  'help.link':'Precisa de ajuda agora?','help.card':'Ajuda imediata','help.cardSub':'Números para ligar quando fica pesado demais.','help.open':'Ver os números'
+});
+Object.assign(I18N.nl, {
+  'crisis.msg':'Dank je dat je het me vertelt. Wat je voelt telt, en je hoeft hier niet alleen doorheen. Ik ben maar een kleine panda en kan niet helpen in een noodgeval, maar deze mensen wel. Tik op een nummer om te bellen:',
+  'crisis.wrong':'Als ik je verkeerd begreep, is dat helemaal oké. Je kunt gewoon verder.',
+  'crisis.go':'Check-in voortzetten','crisis.stop':'Voor vandaag stoppen','crisis.cont':'Oké. Ik ben er. We gaan rustig verder.',
+  'crisis.stopped':'Oké. Bao is er wanneer je terug wilt komen. 💚',
+  'help.em':'Noodnummer: als je nu in gevaar bent','help.h24':'dag en nacht','help.young':'onder 18','help.country':'Land',
+  'help.title':'Heb je nu hulp nodig?','help.sub':'Als je in gevaar bent of eraan denkt jezelf iets aan te doen, bel dan. Je hoeft niet alles uit te leggen.','help.close':'Sluiten',
+  'help.link':'Heb je nu hulp nodig?','help.card':'Direct hulp','help.cardSub':'Nummers die je kunt bellen als het te zwaar wordt.','help.open':'Nummers tonen'
+});
+
+// numero di sicurezza del terapeuta (impostazioni del dottore)
+function paintSafePhone(){
+  const i = $('spPhone'); if (!i) return;
+  i.value = SAFE_PHONE || '';
+  $('spRemove').hidden = !SAFE_PHONE;
+}
+$('spSave').addEventListener('click', async () => {
+  const v = $('spPhone').value.trim();
+  $('spSave').disabled = true;
+  try{
+    const r = await jpost('/api/pro/phone', { phone: v });
+    SAFE_PHONE = r.safePhone || ''; paintSafePhone();
+    showToast(t(SAFE_PHONE ? 'sp.saved' : 'sp.removed'));
+  }catch(ex){ const why = ex && ex.data && ex.data.reason ? t('why.' + ex.data.reason) : ''; showToast(why && why.indexOf('why.') !== 0 ? why : (ex.message || t('err.generic'))); }
+  finally{ $('spSave').disabled = false; }
+});
+$('spRemove').addEventListener('click', async () => {
+  if (!confirm(t('sp.confirmRemove'))) return;
+  try{ await jpost('/api/pro/phone', { phone: '' }); SAFE_PHONE = ''; paintSafePhone(); showToast(t('sp.removed')); }catch(e){ showToast(t('err.generic')); }
+});
+const SP_TEXT = {
+  en:{ 'help.police':'Police','help.ther': n => 'Your therapist/doctor ' + n,'help.kd':'free and anonymous','help.where':'Numbers for Berlin, Germany.',
+    'sp.title':'Safety number for my patients','sp.sub':'If a patient writes something alarming in a check-in, Bao shows them the emergency numbers. If you add your number here, it also appears there, right after 112. It is shown only to your patients and only in that moment (and under “Need help right now?”).',
+    'sp.ph':'e.g. +49 30 1234567','sp.save':'Save number','sp.saved':'Saved. Your patients will see it with the emergency numbers.','sp.removed':'Number removed.','sp.remove':'Remove number','sp.confirmRemove':'Remove your safety number?',
+    'sp.note':'112 always stays first: you are not an emergency service. BAO does not notify you automatically.','why.phone_bad':'Please enter a valid phone number.' },
+  it:{ 'help.police':'Polizia','help.ther': n => 'Il tuo terapeuta/medico ' + n,'help.kd':'gratuito e anonimo','help.where':'Numeri per Berlino, Germania.',
+    'sp.title':'Numero di sicurezza per i pazienti','sp.sub':'Se un paziente scrive qualcosa di allarmante in un check-in, Bao gli mostra i numeri di emergenza. Se metti qui il tuo numero, comparirà anche lì, subito dopo il 112. Lo vedono solo i tuoi pazienti e solo in quel momento (e in “Ti serve aiuto adesso?”).',
+    'sp.ph':'es. +49 30 1234567','sp.save':'Salva numero','sp.saved':'Salvato. I tuoi pazienti lo vedranno insieme ai numeri di emergenza.','sp.removed':'Numero tolto.','sp.remove':'Togli numero','sp.confirmRemove':'Togliere il tuo numero di sicurezza?',
+    'sp.note':'Il 112 resta sempre il primo: non sei un servizio di emergenza. BAO non ti avvisa in automatico.','why.phone_bad':'Inserisci un numero di telefono valido.' },
+  de:{ 'help.police':'Polizei','help.ther': n => 'Deine Therapeutin / dein Arzt ' + n,'help.kd':'kostenlos und anonym','help.where':'Nummern für Berlin, Deutschland.',
+    'sp.title':'Sicherheitsnummer für meine Patient:innen','sp.sub':'Schreibt eine Patientin oder ein Patient im Check-in etwas Alarmierendes, zeigt Bao die Notrufnummern. Wenn du hier deine Nummer einträgst, erscheint sie dort direkt nach der 112. Nur deine Patient:innen sehen sie, und nur in diesem Moment (und unter „Brauchst du jetzt Hilfe?“).',
+    'sp.ph':'z. B. +49 30 1234567','sp.save':'Nummer speichern','sp.saved':'Gespeichert. Deine Patient:innen sehen sie bei den Notrufnummern.','sp.removed':'Nummer entfernt.','sp.remove':'Nummer entfernen','sp.confirmRemove':'Deine Sicherheitsnummer entfernen?',
+    'sp.note':'Die 112 steht immer an erster Stelle: Du bist kein Notdienst. BAO benachrichtigt dich nicht automatisch.','why.phone_bad':'Bitte gib eine gültige Telefonnummer ein.' },
+  fr:{ 'help.police':'Police','help.ther': n => 'Ton ou ta thérapeute/médecin ' + n,'help.kd':'gratuit et anonyme','help.where':'Numéros pour Berlin, Allemagne.',
+    'sp.title':'Numéro de sécurité pour mes patients','sp.sub':'Si un patient écrit quelque chose d’alarmant dans un check-in, Bao lui montre les numéros d’urgence. Si tu ajoutes ton numéro ici, il apparaît aussi, juste après le 112. Seuls tes patients le voient, et seulement à ce moment-là (et dans « Besoin d’aide maintenant ? »).',
+    'sp.ph':'ex. +49 30 1234567','sp.save':'Enregistrer le numéro','sp.saved':'Enregistré. Tes patients le verront avec les numéros d’urgence.','sp.removed':'Numéro retiré.','sp.remove':'Retirer le numéro','sp.confirmRemove':'Retirer ton numéro de sécurité ?',
+    'sp.note':'Le 112 reste toujours en premier : tu n’es pas un service d’urgence. BAO ne te prévient pas automatiquement.','why.phone_bad':'Saisis un numéro de téléphone valide.' },
+  es:{ 'help.police':'Policía','help.ther': n => 'Tu terapeuta/médico ' + n,'help.kd':'gratuito y anónimo','help.where':'Números para Berlín, Alemania.',
+    'sp.title':'Número de seguridad para mis pacientes','sp.sub':'Si un paciente escribe algo alarmante en un check-in, Bao le muestra los números de emergencia. Si añades tu número aquí, también aparecerá allí, justo después del 112. Solo lo ven tus pacientes y solo en ese momento (y en «¿Necesitas ayuda ahora?»).',
+    'sp.ph':'p. ej. +49 30 1234567','sp.save':'Guardar número','sp.saved':'Guardado. Tus pacientes lo verán con los números de emergencia.','sp.removed':'Número eliminado.','sp.remove':'Quitar número','sp.confirmRemove':'¿Quitar tu número de seguridad?',
+    'sp.note':'El 112 siempre va primero: no eres un servicio de emergencias. BAO no te avisa automáticamente.','why.phone_bad':'Introduce un número de teléfono válido.' },
+  pt:{ 'help.police':'Polícia','help.ther': n => 'Seu terapeuta/médico ' + n,'help.kd':'gratuito e anônimo','help.where':'Números para Berlim, Alemanha.',
+    'sp.title':'Número de segurança para meus pacientes','sp.sub':'Se um paciente escrever algo alarmante num check-in, o Bao mostra os números de emergência. Se você adicionar seu número aqui, ele também aparece lá, logo depois do 112. Só seus pacientes o veem, e só nesse momento (e em “Precisa de ajuda agora?”).',
+    'sp.ph':'ex. +49 30 1234567','sp.save':'Salvar número','sp.saved':'Salvo. Seus pacientes vão vê-lo junto com os números de emergência.','sp.removed':'Número removido.','sp.remove':'Remover número','sp.confirmRemove':'Remover seu número de segurança?',
+    'sp.note':'O 112 fica sempre em primeiro lugar: você não é um serviço de emergência. O BAO não avisa você automaticamente.','why.phone_bad':'Digite um número de telefone válido.' },
+  nl:{ 'help.police':'Politie','help.ther': n => 'Je therapeut/arts ' + n,'help.kd':'gratis en anoniem','help.where':'Nummers voor Berlijn, Duitsland.',
+    'sp.title':'Veiligheidsnummer voor mijn cliënten','sp.sub':'Als een cliënt iets alarmerends schrijft in een check-in, toont Bao de noodnummers. Als je hier je nummer invult, verschijnt het daar ook, direct na 112. Alleen jouw cliënten zien het, en alleen op dat moment (en bij „Heb je nu hulp nodig?”).',
+    'sp.ph':'bijv. +49 30 1234567','sp.save':'Nummer opslaan','sp.saved':'Opgeslagen. Je cliënten zien het bij de noodnummers.','sp.removed':'Nummer verwijderd.','sp.remove':'Nummer verwijderen','sp.confirmRemove':'Je veiligheidsnummer verwijderen?',
+    'sp.note':'112 staat altijd bovenaan: jij bent geen noodhulpdienst. BAO waarschuwt je niet automatisch.','why.phone_bad':'Vul een geldig telefoonnummer in.' }
+};
+for (const k in SP_TEXT) Object.assign(I18N[k], SP_TEXT[k]);
+
+// ---- ruota delle emozioni ----
+const EMO = [
+  { k:'joy',      c:'#F4C84F', e:'😊', sub:['relief','gratitude','pride','excitement','love'] },
+  { k:'surprise', c:'#F2A65A', e:'😮', sub:['amazement','curiosity','shock','confusion'] },
+  { k:'anger',    c:'#E27D60', e:'😠', sub:['irritation','frustration','resentment','jealousy','disgust'] },
+  { k:'shame',    c:'#E39AB5', e:'😳', sub:['guilt','embarrassment','inadequacy','humiliation'] },
+  { k:'fear',     c:'#A58BD3', e:'😨', sub:['anxiety','worry','panic','insecurity','nervousness'] },
+  { k:'sad',      c:'#6E9FD6', e:'😢', sub:['loneliness','disappointment','nostalgia','emptiness','hurt'] },
+  { k:'stress',   c:'#9AA6B2', e:'😵', sub:['overwhelm','tension','exhaustion','restlessness','numbness'] },
+  { k:'calm',     c:'#86C5A4', e:'😌', sub:['peace','trust','safety','contentment'] }
+];
+const EMO_HARD = ['anger','shame','fear','sad','stress'];
+const EMO_L = {
+  en:{ joy:'Joy',surprise:'Surprise',anger:'Anger',shame:'Shame',fear:'Fear',sad:'Sadness',stress:'Stress',calm:'Calm',
+    relief:'relief',gratitude:'gratitude',pride:'pride',excitement:'excitement',love:'love',amazement:'amazement',curiosity:'curiosity',shock:'shock',confusion:'confusion',
+    irritation:'irritation',frustration:'frustration',resentment:'resentment',jealousy:'jealousy',disgust:'disgust',guilt:'guilt',embarrassment:'embarrassment',inadequacy:'feeling not good enough',humiliation:'humiliation',
+    anxiety:'anxiety',worry:'worry',panic:'panic',insecurity:'insecurity',nervousness:'nervousness',loneliness:'loneliness',disappointment:'disappointment',nostalgia:'nostalgia',emptiness:'emptiness',hurt:'hurt',
+    overwhelm:'overwhelm',tension:'tension',exhaustion:'exhaustion',restlessness:'restlessness',numbness:'numbness',peace:'peace',trust:'trust',safety:'feeling safe',contentment:'contentment' },
+  it:{ joy:'Gioia',surprise:'Sorpresa',anger:'Rabbia',shame:'Vergogna',fear:'Paura',sad:'Tristezza',stress:'Stress',calm:'Calma',
+    relief:'sollievo',gratitude:'gratitudine',pride:'orgoglio',excitement:'entusiasmo',love:'amore',amazement:'stupore',curiosity:'curiosità',shock:'shock',confusion:'confusione',
+    irritation:'irritazione',frustration:'frustrazione',resentment:'risentimento',jealousy:'gelosia',disgust:'disgusto',guilt:'senso di colpa',embarrassment:'imbarazzo',inadequacy:'sentirsi inadeguati',humiliation:'umiliazione',
+    anxiety:'ansia',worry:'preoccupazione',panic:'panico',insecurity:'insicurezza',nervousness:'nervosismo',loneliness:'solitudine',disappointment:'delusione',nostalgia:'nostalgia',emptiness:'vuoto',hurt:'ferita',
+    overwhelm:'sopraffazione',tension:'tensione',exhaustion:'esaurimento',restlessness:'agitazione',numbness:'apatia',peace:'pace',trust:'fiducia',safety:'sentirsi al sicuro',contentment:'soddisfazione' },
+  de:{ joy:'Freude',surprise:'Staunen',anger:'Wut',shame:'Scham',fear:'Angst',sad:'Trauer',stress:'Stress',calm:'Ruhe',
+    relief:'Erleichterung',gratitude:'Dankbarkeit',pride:'Stolz',excitement:'Begeisterung',love:'Liebe',amazement:'Erstaunen',curiosity:'Neugier',shock:'Schock',confusion:'Verwirrung',
+    irritation:'Gereiztheit',frustration:'Frust',resentment:'Groll',jealousy:'Eifersucht',disgust:'Ekel',guilt:'Schuldgefühl',embarrassment:'Verlegenheit',inadequacy:'nicht genug sein',humiliation:'Demütigung',
+    anxiety:'Beklemmung',worry:'Sorge',panic:'Panik',insecurity:'Unsicherheit',nervousness:'Nervosität',loneliness:'Einsamkeit',disappointment:'Enttäuschung',nostalgia:'Sehnsucht',emptiness:'Leere',hurt:'Kränkung',
+    overwhelm:'Überforderung',tension:'Anspannung',exhaustion:'Erschöpfung',restlessness:'Unruhe',numbness:'Taubheit',peace:'Frieden',trust:'Vertrauen',safety:'Geborgenheit',contentment:'Zufriedenheit' },
+  fr:{ joy:'Joie',surprise:'Surprise',anger:'Colère',shame:'Honte',fear:'Peur',sad:'Tristesse',stress:'Stress',calm:'Calme',
+    relief:'soulagement',gratitude:'gratitude',pride:'fierté',excitement:'enthousiasme',love:'amour',amazement:'émerveillement',curiosity:'curiosité',shock:'choc',confusion:'confusion',
+    irritation:'irritation',frustration:'frustration',resentment:'rancœur',jealousy:'jalousie',disgust:'dégoût',guilt:'culpabilité',embarrassment:'gêne',inadequacy:'ne pas être à la hauteur',humiliation:'humiliation',
+    anxiety:'anxiété',worry:'inquiétude',panic:'panique',insecurity:'insécurité',nervousness:'nervosité',loneliness:'solitude',disappointment:'déception',nostalgia:'nostalgie',emptiness:'vide',hurt:'blessure',
+    overwhelm:'débordement',tension:'tension',exhaustion:'épuisement',restlessness:'agitation',numbness:'engourdissement',peace:'paix',trust:'confiance',safety:'sécurité',contentment:'contentement' },
+  es:{ joy:'Alegría',surprise:'Sorpresa',anger:'Rabia',shame:'Vergüenza',fear:'Miedo',sad:'Tristeza',stress:'Estrés',calm:'Calma',
+    relief:'alivio',gratitude:'gratitud',pride:'orgullo',excitement:'entusiasmo',love:'amor',amazement:'asombro',curiosity:'curiosidad',shock:'conmoción',confusion:'confusión',
+    irritation:'irritación',frustration:'frustración',resentment:'rencor',jealousy:'celos',disgust:'asco',guilt:'culpa',embarrassment:'bochorno',inadequacy:'no estar a la altura',humiliation:'humillación',
+    anxiety:'ansiedad',worry:'preocupación',panic:'pánico',insecurity:'inseguridad',nervousness:'nerviosismo',loneliness:'soledad',disappointment:'decepción',nostalgia:'nostalgia',emptiness:'vacío',hurt:'dolor',
+    overwhelm:'agobio',tension:'tensión',exhaustion:'agotamiento',restlessness:'inquietud',numbness:'apatía',peace:'paz',trust:'confianza',safety:'sentirse a salvo',contentment:'satisfacción' },
+  pt:{ joy:'Alegria',surprise:'Surpresa',anger:'Raiva',shame:'Vergonha',fear:'Medo',sad:'Tristeza',stress:'Estresse',calm:'Calma',
+    relief:'alívio',gratitude:'gratidão',pride:'orgulho',excitement:'entusiasmo',love:'amor',amazement:'espanto',curiosity:'curiosidade',shock:'choque',confusion:'confusão',
+    irritation:'irritação',frustration:'frustração',resentment:'ressentimento',jealousy:'ciúme',disgust:'nojo',guilt:'culpa',embarrassment:'constrangimento',inadequacy:'não ser suficiente',humiliation:'humilhação',
+    anxiety:'ansiedade',worry:'preocupação',panic:'pânico',insecurity:'insegurança',nervousness:'nervosismo',loneliness:'solidão',disappointment:'decepção',nostalgia:'saudade',emptiness:'vazio',hurt:'mágoa',
+    overwhelm:'sobrecarga',tension:'tensão',exhaustion:'exaustão',restlessness:'inquietação',numbness:'apatia',peace:'paz',trust:'confiança',safety:'sentir-se seguro',contentment:'satisfação' },
+  nl:{ joy:'Vreugde',surprise:'Verrassing',anger:'Boosheid',shame:'Schaamte',fear:'Angst',sad:'Verdriet',stress:'Stress',calm:'Rust',
+    relief:'opluchting',gratitude:'dankbaarheid',pride:'trots',excitement:'enthousiasme',love:'liefde',amazement:'verbazing',curiosity:'nieuwsgierigheid',shock:'schok',confusion:'verwarring',
+    irritation:'irritatie',frustration:'frustratie',resentment:'wrok',jealousy:'jaloezie',disgust:'walging',guilt:'schuldgevoel',embarrassment:'gêne',inadequacy:'niet goed genoeg zijn',humiliation:'vernedering',
+    anxiety:'onrust',worry:'zorgen',panic:'paniek',insecurity:'onzekerheid',nervousness:'zenuwen',loneliness:'eenzaamheid',disappointment:'teleurstelling',nostalgia:'heimwee',emptiness:'leegte',hurt:'gekwetstheid',
+    overwhelm:'overbelasting',tension:'spanning',exhaustion:'uitputting',restlessness:'rusteloosheid',numbness:'gevoelloosheid',peace:'vrede',trust:'vertrouwen',safety:'veiligheid',contentment:'tevredenheid' }
+};
+function emoLabel(key){
+  const L = EMO_L[LANG] || EMO_L.en;
+  const k = key.split('.').pop();
+  return L[k] || EMO_L.en[k] || k;
+}
+function capFirst(x){ return x ? x.charAt(0).toUpperCase() + x.slice(1) : x; }
+function emoWheelNode(picked){
+  const box = document.createElement('div');
+  box.className = 'emo-wheel';
+  const C = 150, R = 146, r = 40, N = EMO.length, step = 2 * Math.PI / N;
+  const pt = (rad, a) => [(C + rad * Math.sin(a)).toFixed(1), (C - rad * Math.cos(a)).toFixed(1)];
+  let svg = '<svg viewBox="0 0 300 300" role="group" aria-label="' + esc(t('emo.aria')) + '">';
+  EMO.forEach((m, i) => {
+    const a0 = i * step - step / 2, a1 = a0 + step;
+    const [x0, y0] = pt(R, a0), [x1, y1] = pt(R, a1), [x2, y2] = pt(r, a1), [x3, y3] = pt(r, a0);
+    const [ex, ey] = pt(68, i * step), [tx, ty] = pt(112, i * step);
+    const lab = emoLabel(m.k);
+    const fit = lab.length > 8 ? ' textLength="' + Math.min(82, lab.length * 7.4).toFixed(0) + '" lengthAdjust="spacingAndGlyphs"' : '';
+    svg += '<g class="emo-seg" data-core="' + m.k + '" tabindex="0" role="button" aria-label="' + esc(lab) + '">' +
+      '<path d="M' + x0 + ' ' + y0 + ' A' + R + ' ' + R + ' 0 0 1 ' + x1 + ' ' + y1 + ' L' + x2 + ' ' + y2 + ' A' + r + ' ' + r + ' 0 0 0 ' + x3 + ' ' + y3 + 'Z" fill="' + m.c + '"/>' +
+      '<text x="' + ex + '" y="' + (+ey + 8) + '" class="emo-e" text-anchor="middle">' + m.e + '</text>' +
+      '<text x="' + tx + '" y="' + (+ty + 4.5) + '" class="emo-t" text-anchor="middle"' + fit + '>' + esc(lab) + '</text></g>';
+  });
+  svg += '<circle cx="150" cy="150" r="' + (r - 3) + '" class="emo-mid"/><text x="150" y="157" text-anchor="middle" class="emo-n"></text></svg>';
+  box.innerHTML = '<div class="emo-svg">' + svg + '</div><div class="emo-subs" hidden></div><div class="emo-picked"></div>';
+  const subs = box.querySelector('.emo-subs'), list = box.querySelector('.emo-picked'), num = box.querySelector('.emo-n');
+  let core = null;
+  const toggle = key => {
+    const i = picked.indexOf(key);
+    if (i >= 0) picked.splice(i, 1);
+    else { if (picked.length >= 5){ showToast(t('emo.max')); return; } picked.push(key); }
+    paint();
+  };
+  const paint = () => {
+    box.querySelectorAll('.emo-seg').forEach(g => {
+      const k = g.dataset.core;
+      g.classList.toggle('dim', !!core && k !== core);
+      g.classList.toggle('has', picked.some(p => p.split('.')[0] === k));
+    });
+    num.textContent = picked.length ? '✓ ' + picked.length : '';
+    if (core){
+      const m = EMO.find(x => x.k === core);
+      subs.hidden = false;
+      subs.style.setProperty('--emo', m.c);
+      subs.innerHTML = '<div class="emo-q">' + esc(t('emo.which')) + '</div>' +
+        [core].concat(m.sub.map(s => core + '.' + s)).map(key => '<button type="button" class="emo-chip' + (picked.includes(key) ? ' on' : '') + '" data-k="' + key + '">' + esc(capFirst(emoLabel(key))) + '</button>').join('');
+      subs.querySelectorAll('[data-k]').forEach(b => b.addEventListener('click', () => toggle(b.dataset.k)));
+    } else subs.hidden = true;
+    list.innerHTML = picked.length
+      ? '<span class="emo-lab">' + esc(t('emo.picked')) + '</span>' + picked.map(key => {
+          const m = EMO.find(x => x.k === key.split('.')[0]);
+          return '<button type="button" class="emo-pill" style="--emo:' + m.c + '" data-k="' + key + '">' + esc(capFirst(emoLabel(key))) + ' <b aria-hidden="true">×</b></button>';
+        }).join('')
+      : '<span class="emo-lab">' + esc(t('emo.hint')) + '</span>';
+    list.querySelectorAll('[data-k]').forEach(b => b.addEventListener('click', () => toggle(b.dataset.k)));
+  };
+  box.querySelectorAll('.emo-seg').forEach(g => {
+    const pick = () => { core = core === g.dataset.core ? null : g.dataset.core; paint(); if (core) setTimeout(() => subs.scrollIntoView({ block:'nearest', behavior:'smooth' }), 60); };
+    g.addEventListener('click', pick);
+    g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); pick(); } });
+  });
+  paint();
+  return box;
+}
+
+async function askEmotions(question){
+  const gen = chatGen;
+  await baoSay(question, '', 'listening');
+  let picked = [], answer;
+  if (REPLAY && REPLAY.length && REPLAY[0].t === 'text'){
+    picked = (REPLAY[0].tags || []).slice();
+    answer = await waitText();
+    if (ANSWERS.length) ANSWERS[ANSWERS.length - 1].tags = picked.slice();
+  } else {
+    if (REPLAY){ REPLAY = null; FAST = false; }
+    const row = document.createElement('div');
+    row.className = 'msg widget';
+    row.innerHTML = '<div class="msg-face"><span class="bao bao-listening"></span></div>';
+    const bub = document.createElement('div');
+    bub.className = 'widget-bubble emo-bubble';
+    bub.appendChild(emoWheelNode(picked));
+    row.appendChild(bub);
+    baoLog.appendChild(row);
+    lastWho = 'bao';
+    scrollToEnd();
+    let typed = '';
+    PH_SAVED = baoField.placeholder; baoField.placeholder = t('emo.ph');
+    resolveAnswer = null;
+    await new Promise(res => {
+      STEP_BLOCK = () => {
+        typed = baoField.value.trim();
+        if (!typed && !picked.length){ showToast(t('emo.need')); return true; }
+        return false;
+      };
+      STEP_DONE = res;
+      if (pending !== null){ typed = pending; pending = null; STEP_DONE = null; STEP_BLOCK = null; res(); }
+    });
+    STEP_DONE = null; STEP_BLOCK = null;
+    if (PH_SAVED){ baoField.placeholder = PH_SAVED; PH_SAVED = ''; }
+    if (gen !== chatGen) throw STALE;
+    answer = picked.map(emoLabel).map(capFirst).join(', ');
+    if (typed) answer = answer ? answer + ' — ' + typed : typed;
+    row.classList.add('closing');
+    setTimeout(() => row.remove(), 430);
+    lastWho = null;
+    say(answer, 'me');
+    record({ t:'text', v: answer, tags: picked.slice() });
+    await wait(200);
+    await crisisCheck(answer);
+  }
+  entry.emotionTags = picked.slice();
+  const before = feltNow.size;
+  await feelCheck(answer);
+  // emozione difficile scelta sulla ruota: dove si sente nel corpo?
+  const hard = picked.filter(k => EMO_HARD.includes(k.split('.')[0]));
+  if (hard.length && feltNow.size === before){
+    const names = hard.map(emoLabel).map(capFirst).join(', ');
+    const yes = await askYesNo(t('emo.bodyQ', hard.length), 'thinking');
+    if (yes === 'yes'){
+      LAST_POINTS = [];
+      const { parts, rating } = await captureBodyRating(null, 'recap.intensity', {});
+      entry.symptoms.push({ name: names, kind:'feeling', type:'mind', reflection:'', detail:'', parts, points: LAST_POINTS.slice(), rating, situation: answer.includes(' — ') ? answer.split(' — ').slice(1).join(' — ') : '—', repeated:'no' });
+      await baoSay(t('emo.bodyThanks'), '', 'cheer', 700);
+    }
+  }
+  return answer;
+}
+
+Object.assign(I18N.en, { 'emo.aria':'Emotion wheel','emo.which':'Which one fits best? You can pick more than one.','emo.picked':'You picked:','emo.hint':'Tap a colour on the wheel, or just write.',
+  'emo.ph':'Tap the wheel or write','emo.need':'Tap an emotion on the wheel or write a few words.','emo.max':'Up to 5 emotions.',
+  'emo.bodyQ': n => 'Emotions often show up in the body too. Did you notice ' + (n > 1 ? 'these emotions' : 'this emotion') + ' somewhere in your body?',
+  'emo.bodyThanks':'Thank you. That link between feeling and body is exactly what helps.' });
+Object.assign(I18N.it, { 'emo.aria':'Ruota delle emozioni','emo.which':'Quale si avvicina di più? Puoi sceglierne più di una.','emo.picked':'Hai scelto:','emo.hint':'Tocca un colore sulla ruota, oppure scrivi.',
+  'emo.ph':'Tocca la ruota o scrivi','emo.need':'Tocca un’emozione sulla ruota o scrivi qualche parola.','emo.max':'Massimo 5 emozioni.',
+  'emo.bodyQ': n => 'Spesso le emozioni si sentono anche nel corpo. Hai notato ' + (n > 1 ? 'queste emozioni' : 'questa emozione') + ' da qualche parte nel corpo?',
+  'emo.bodyThanks':'Grazie. Proprio questo legame tra emozioni e corpo è quello che aiuta.' });
+Object.assign(I18N.de, { 'emo.aria':'Gefühlsrad','emo.which':'Was passt am besten? Du kannst mehrere wählen.','emo.picked':'Deine Auswahl:','emo.hint':'Tippe auf eine Farbe im Rad oder schreib einfach.',
+  'emo.ph':'Rad antippen oder schreiben','emo.need':'Tippe ein Gefühl im Rad an oder schreib ein paar Worte.','emo.max':'Höchstens 5 Gefühle.',
+  'emo.bodyQ': n => 'Gefühle zeigen sich oft auch im Körper. Hast du ' + (n > 1 ? 'diese Gefühle' : 'dieses Gefühl') + ' irgendwo im Körper bemerkt?',
+  'emo.bodyThanks':'Danke. Genau diese Verbindung zwischen Gefühl und Körper hilft.' });
+Object.assign(I18N.fr, { 'emo.aria':'Roue des émotions','emo.which':'Laquelle te correspond le mieux ? Tu peux en choisir plusieurs.','emo.picked':'Tu as choisi :','emo.hint':'Touche une couleur sur la roue, ou écris simplement.',
+  'emo.ph':'Touche la roue ou écris','emo.need':'Touche une émotion sur la roue ou écris quelques mots.','emo.max':'5 émotions au maximum.',
+  'emo.bodyQ': n => 'Les émotions se sentent souvent aussi dans le corps. As-tu remarqué ' + (n > 1 ? 'ces émotions' : 'cette émotion') + ' quelque part dans ton corps ?',
+  'emo.bodyThanks':'Merci. C’est justement ce lien entre émotions et corps qui aide.' });
+Object.assign(I18N.es, { 'emo.aria':'Rueda de emociones','emo.which':'¿Cuál encaja mejor? Puedes elegir varias.','emo.picked':'Has elegido:','emo.hint':'Toca un color de la rueda o simplemente escribe.',
+  'emo.ph':'Toca la rueda o escribe','emo.need':'Toca una emoción en la rueda o escribe unas palabras.','emo.max':'Máximo 5 emociones.',
+  'emo.bodyQ': n => 'Las emociones a menudo también se sienten en el cuerpo. ¿Notaste ' + (n > 1 ? 'estas emociones' : 'esta emoción') + ' en alguna parte del cuerpo?',
+  'emo.bodyThanks':'Gracias. Justo esa conexión entre emociones y cuerpo es lo que ayuda.' });
+Object.assign(I18N.pt, { 'emo.aria':'Roda das emoções','emo.which':'Qual combina mais? Você pode escolher várias.','emo.picked':'Você escolheu:','emo.hint':'Toque numa cor da roda ou simplesmente escreva.',
+  'emo.ph':'Toque na roda ou escreva','emo.need':'Toque numa emoção da roda ou escreva algumas palavras.','emo.max':'No máximo 5 emoções.',
+  'emo.bodyQ': n => 'As emoções muitas vezes também aparecem no corpo. Você notou ' + (n > 1 ? 'essas emoções' : 'essa emoção') + ' em algum lugar do corpo?',
+  'emo.bodyThanks':'Obrigado. É exatamente essa ligação entre emoções e corpo que ajuda.' });
+Object.assign(I18N.nl, { 'emo.aria':'Gevoelswiel','emo.which':'Wat past het best? Je kunt er meer kiezen.','emo.picked':'Jouw keuze:','emo.hint':'Tik op een kleur in het wiel, of schrijf gewoon.',
+  'emo.ph':'Tik op het wiel of schrijf','emo.need':'Tik een gevoel aan in het wiel of schrijf een paar woorden.','emo.max':'Maximaal 5 gevoelens.',
+  'emo.bodyQ': n => 'Gevoelens merk je vaak ook in je lichaam. Heb je ' + (n > 1 ? 'deze gevoelens' : 'dit gevoel') + ' ergens in je lichaam gemerkt?',
+  'emo.bodyThanks':'Dank je. Juist dat verband tussen gevoel en lichaam helpt.' });
 
 (async function boot(){
   try{
