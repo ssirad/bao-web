@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-fazqCwsN5s/w5FmMlKdfVKd54GZupWjz9tn03A7gP8k='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-OOSCKGgiKH1Efoc+tqQR5LpSmsbyB/j4cxfF5+l/40s='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>BAO &mdash; symptom &amp; wellbeing tracker</title>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -6776,7 +6776,7 @@ const FEEL_WORDS = {
   sad:   /(?<!\p{L})(sad|sadder|saddest|sadness|unhappy|depressed|miserable|heartbroken|hopeless|lonely|tearful|cried|cry|crying|tears|upset(?!\s+(?:stomach|tummy|belly))|gloomy|feel(?:ing|s|t)?\s+(?:so\s+|really\s+|very\s+|a\s+bit\s+)?(?:down|low|blue)|traurig\p{L}*|traurigkeit|niedergeschlagen|bedrückt|deprimiert|geweint|weinen|weinte|einsam|unglücklich|hoffnungslos|triste|tristezza|infelice|depress\p{L}*|piang\p{L}*|pianto|giù di morale|abbattut\p{L}*|sconfortat\p{L}*|tristesse|tristeza|pleur\p{L}*|llor\p{L}*|d[ée]prim\p{L}*|deprimid\p{L}*|chor(?:ei|ar|ando|ou|o)|verdriet\p{L}*|verdrietig|huil\p{L}*|somber|eenzaam|neerslachtig)(?!\p{L})/iu,
   angry: /(?<!\p{L})(angry|angrier|anger|mad|furious|annoyed|irritated|frustrated|frustration|pissed|rage|livid|resentful|wütend|wut|sauer|verärgert|genervt|gereizt|frustriert|ärgerlich|geärgert|zornig|aufgebracht|arrabbiat\p{L}*|rabbia|furios\p{L}*|incazzat\p{L}*|irritat\p{L}*|frustrat\p{L}*|innervosit\p{L}*|col[èe]re|f[âa]ch[ée]\p{L}*|[ée]nerv[ée]\p{L}*|enfadad\p{L}*|enojad\p{L}*|rabia|furieu\p{L}*|raiva|irritad\p{L}*|boos|kwaad|woedend|ge[ïi]rriteerd)(?!\p{L})/iu
 };
-const CRISIS_WORDS = /(suicid|me matar|quero morrer|tirar minha vida|me machucar|me cortar|zelfmoord|dood willen|wil dood|mezelf iets aandoen|mezelf snijden|me tuer|en finir(?!\s+avec\s+(?:ce|cette|ces|le|les|mon|mes|un|une|la\s+(?!vie)|ma\s+(?!vie)))|envie de mourir|veux mourir|me faire du mal|me couper|matarme|quitarme la vida|quiero morir|hacerme da[ñn]o|cortarme|uccidermi|farla finita(?!\s+con\s+(?:questo|questa|questi|queste|il|lo|i|gli|le|un|una|la\s+(?!vita)|sto|sta))|voglio morire|non voglio più vivere|farmi del male|tagliarmi|autolesion|kill myself|end my life|want to die|wanna die|don['’]?t want to live|self[- ]?harm|hurt myself|cut myself|suizid|selbstmord|mich umbringen|nicht mehr leben|sterben will|mir etwas antun|mir was antun|(?<!\p{L})ritzen(?!\p{L})|ich ritze mich|selbstverletz|want to be dead|wish i (?:was|were) dead|(?<!\p{L})kms(?!\p{L})|unalive|take my (?:own )?life|don['’]?t want to (?:be here|exist) any ?more|better off without me|no point (?:in )?living|mi voglio (?:ammazzare|uccidere)|mi ammazzo|mi uccido|non voglio (?:pi[uù] )?vivere|non ce la faccio pi[uù] a vivere|vorrei non esistere|vorrei non (?:essere mai|esser mai) nat[oa]|vorrei essere mort[oa]|voglio essere mort[oa]|meglio senza di me|will tot sein|wäre lieber tot|bring mich um|me quiero matar|je veux disparaître|vou me matar|ik wil er niet meer zijn)/iu;
+const CRISIS_WORDS = /(suicid|me matar|quero morrer|tirar minha vida|me machucar|me cortar|zelfmoord|dood willen|wil dood|mezelf iets aandoen|mezelf snijden|me tuer|en finir(?!\s+avec\s+(?:ce|cette|ces|le|les|mon|mes|un|une|la\s+(?!vie)|ma\s+(?!vie)))|envie de mourir|veux mourir|me faire du mal|me couper|matarme|quitarme la vida|quiero morir|hacerme da[ñn]o|cortarme|uccidermi|farla finita(?!\s+con\s+(?:questo|questa|questi|queste|il|lo|i|gli|le|un|una|la\s+(?!vita)|sto|sta))|voglio morire|non voglio più vivere|farmi del male|tagliarmi|autolesion|kill myself|end my life|want to die|wanna die|don['’]?t want to live|self[- ]?harm|hurt myself|cut myself|suizid|selbstmord|mich umbringen|nicht mehr leben|sterben will|mir etwas antun|mir was antun|(?<!\p{L})ritzen(?!\p{L})|ich ritze mich|selbstverletz|want to be dead|wish i (?:was|were) dead|(?<!\p{L})kms(?!\p{L})|unalive|take my (?:own )?life|don['’]?t want to (?:be here|exist) any ?more|better off without me|no point (?:in )?living|mi voglio (?:ammazzare|uccidere)|mi ammazzo|mi uccido|non voglio (?:pi[uù] )?vivere|non ce la faccio pi[uù] a vivere|vorrei non esistere|vorrei non (?:essere mai|esser mai) nat[oa]|vorrei essere mort[oa]|voglio essere mort[oa]|meglio senza di me|will tot sein|wäre lieber tot|bring mich um|me quiero matar|je veux disparaître|vou me matar|ik wil er niet meer zijn|mi (?:sto|stavo|sono|ero) (?:tagliando|tagliat[oa]|ferendo|ferit[oa]|facendo (?:del )?male|fatt[oa] (?:del )?male)|mi taglio|mi ferisco|mi faccio (?:del )?male|farmi male|ferirmi|(?:cutting|harming|hurting|burning) myself|(?:burned|burnt|harmed) myself|i cut(?: myself)?(?= again)|mich (?:geritzt|geschnitten|verletzt)|schneide mich|verletze mich|je me (?:coupe|suis coup[ée]+|fais du mal|suis fait du mal|scarifie)|scarif|me (?:corto|cort[ée]|hago daño|lastimo|lastim[ée]|estoy cortando)|estoy cort[aá]ndome|me cortei|me machuco|me machuquei|estou me cortando|ik snijd mezelf|mezelf pijn doen|mezelf gesneden)/iu;
 const NEGATION = /(\bnot\b|n't\b|n’t\b|\bnever\b|\bno\b|\bnicht\b|\bnie\b|\bnon\b|\bmai\b|\bpas\b|\bjamais\b|\bnunca\b|\bnão\b|\bniet\b|\bgeen\b|\bnooit\b|(?<!\p{L})kein\p{L}*)/iu;
 
 function feelingsIn(text){
@@ -8457,13 +8457,16 @@ document.querySelectorAll('[data-help-open]').forEach(b => b.addEventListener('c
 
 const CRISIS_MORE = /(ammazzarmi|uccidermi|togliermi la vita|non voglio pi[uù] (?:vivere|esserci|svegliarmi)|vorrei sparire|voglio sparire|vorrei morire|meglio se non ci fossi|meglio morta|meglio morto|non ha (?:pi[uù] )?senso vivere|kill me|better off dead|no reason to live|want to disappear|end it all|(?:want|wish|hope|rather|prefer)(?: to)? (?:just )?not (?:to )?wake up|never wake up again|mich töten|lebensmüde|nicht mehr aufwachen|nicht mehr da sein|keinen sinn mehr zu leben|verschwinden will|plus envie de vivre|disparaître pour toujours|ne plus me réveiller|no quiero vivir|desaparecer para siempre|(?:quiero|ojal[aá]|prefiero|quisiera) no despertar|não quero (?:mais )?viver|sumir para sempre|(?:quero|queria|prefiro|preferia) não acordar|niet meer leven|niet meer wakker|wil verdwijnen)/iu;
 // a match followed by hair, nails or an everyday accident ("tagliarmi i capelli", "I hurt myself at the gym") is not a crisis
-const CRISIS_NOT = /^[\s,]*(?:(?:(?:i|le|la|il|lo|gli|un|una|the|my|a|les|mes|el|los|las|o|os|as|de|het|mijn|die|meine?)\s+)?(?:capelli|unghie|barba|frangia|pelo|cabello|uñas|cheveux|ongles|frange|cabelo|unhas|franja|haare?|nagels|nägel|hair|nails|bangs|fringe)|at (?:the )?(?:gym|work|training|football|soccer)|playing|during (?:training|the game|practice|sport)|while (?:cooking|shaving|running|playing|training)|lifting|running|shaving|cooking|in palestra|giocando|cucinando|facendo sport|beim (?:sport|kochen|rasieren|training)|en cuisinant|en me rasant|au sport|cocinando|afeitándome|jugando|cozinhando|jogando|fazendo a barba|bij het (?:sporten|koken|scheren))(?!\p{L})/iu;
+const CRISIS_NOT = /^[\s,]+(?:(?:(?:i|le|la|il|lo|gli|un|una|the|my|a|les|mes|el|los|las|o|os|as|de|het|mijn|die|meine?)\s+)?(?:capelli|unghie|barba|frangia|pelo|cabello|uñas|cheveux|ongles|frange|cabelo|unhas|franja|haare?|nagels|nägel|hair|nails|bangs|fringe)|(?:al|alla|allo|all['’]|ai|agli|alle)(?!\p{L}))/iu;
+// everyday accidents, anywhere just after the match: "mi sono tagliata un dito cucinando"
+const CRISIS_ACCIDENT = /(?<!\p{L})(?:at (?:the )?(?:gym|work|training|football|soccer)|playing|during (?:training|the game|practice|sport)|while (?:cooking|shaving|running|playing|training)|lifting|running|shaving|cooking|on the (?:stove|oven|pan|iron)|in palestra|giocando|cucinando|facendo sport|correndo|beim (?:sport|kochen|rasieren|training)|en cuisinant|en me rasant|au sport|cocinando|afeitándome|jugando|cozinhando|jogando|fazendo a barba|bij het (?:sporten|koken|scheren))(?!\p{L})/iu;
 function isCrisis(text){
   text = String(text || '');
   for (const re of [CRISIS_WORDS, CRISIS_MORE]){
     for (const m of text.matchAll(new RegExp(re.source, re.flags + 'g'))){
       const end = m.index + m[0].length;
-      if (!CRISIS_NOT.test(text.slice(end, end + 40))) return true;
+      const after = text.slice(end, end + 40);
+      if (!CRISIS_NOT.test(after) && !CRISIS_ACCIDENT.test(after)) return true;
     }
   }
   return false;
@@ -8504,14 +8507,38 @@ async function crisisCard(){
   await baoSay(t('crisis.cont'), '', 'cheer', 600);
 }
 async function crisisCheck(text){
-  if (!isCrisis(text) || feltNow.has('crisis')) return;
-  await crisisCard();
+  if (feltNow.has('crisis')) return;
+  if (isCrisis(text)) return crisisCard();
+  if (hairInDistress(text)) await hairCheck();
+}
+// Cutting one's own hair is not a crisis by itself, but together with sadness or anger it can be
+// a sign of a hard moment: Bao asks once, gently, and shows the help numbers if the answer is yes.
+const HAIR_CUT = /(tagli\p{L}*|taglio|tagliat[oa]|tagliare)\s+(?:(?:i|dei|tutti i|un po['’] di)\s+)?capelli|capelli\s+(?:tagliat|cort)|cut(?:ting)?\s+(?:off\s+)?(?:all\s+)?(?:my|the)\s+hair|haare?\s+(?:ab)?(?:ge)?schn[ie]tt|(?:me\s+)?couper\s+les\s+cheveux|coup[ée]+\s+les\s+cheveux|cort(?:ar|ando|é|arme|ándome)\s+(?:el|mi)\s+pelo|cort(?:ar|ando|ei)\s+(?:o|meu)\s+cabelo|haar\s+(?:af)?(?:ge)?knip/iu;
+function hairInDistress(text){
+  text = String(text || '');
+  if (feltNow.has('hair') || !HAIR_CUT.test(text)) return false;
+  const tags = (entry && entry.emotionTags) || [];
+  return feelingsIn(text).length > 0 || feltNow.has('sad') || feltNow.has('angry') ||
+    tags.some(k => ['sad', 'anger'].includes(k.split('.')[0]));
+}
+async function hairCheck(){
+  feltNow.add('hair');
+  const hurt = await askYesNo(t('hair.q'), 'listening');
+  if (hurt === 'yes') return crisisCard();
+  await baoSay(t('hair.no'), '', 'listening', 700);
 }
 // ogni risposta scritta passa dal controllo, non solo alcune domande
 const _waitText0 = waitText;
 waitText = function(){ return _waitText0().then(async v => { await crisisCheck(v); return v; }); };
 
 I18N.en['aria.sleeping'] = 'Bao the panda, sleeping';
+Object.assign(I18N.en, { 'hair.q':'Thank you for telling me. Sometimes, when we feel really bad, we do something sudden to our body, like cutting our hair. Did you hurt yourself, or think about hurting yourself?', 'hair.no':'Okay. Thank you for answering. If it ever gets too heavy, the help numbers are always one tap away in BAO.' });
+Object.assign(I18N.it, { 'hair.q':'Grazie di avermelo detto. A volte, quando si sta molto male, si fa qualcosa di improvviso al proprio corpo, come tagliarsi i capelli. È successo che ti facessi del male, o ci hai pensato?', 'hair.no':'Va bene. Grazie di avermi risposto. Se diventa troppo pesante, i numeri di aiuto sono sempre a un tocco in BAO.' });
+Object.assign(I18N.de, { 'hair.q':'Danke, dass du es mir erzählst. Manchmal, wenn es uns sehr schlecht geht, tun wir unserem Körper etwas Plötzliches an, zum Beispiel die Haare abschneiden. Hast du dir wehgetan oder daran gedacht, dir wehzutun?', 'hair.no':'Okay. Danke für deine Antwort. Wenn es zu schwer wird, sind die Hilfenummern in BAO immer nur einen Tipp entfernt.' });
+Object.assign(I18N.fr, { 'hair.q':'Merci de me l’avoir dit. Parfois, quand on va très mal, on fait quelque chose de soudain à son corps, comme se couper les cheveux. Est-ce que tu t’es fait du mal, ou as-tu pensé à te faire du mal ?', 'hair.no':'D’accord. Merci de m’avoir répondu. Si ça devient trop lourd, les numéros d’aide sont toujours à portée de main dans BAO.' });
+Object.assign(I18N.es, { 'hair.q':'Gracias por contármelo. A veces, cuando estamos muy mal, hacemos algo repentino a nuestro cuerpo, como cortarnos el pelo. ¿Te hiciste daño o pensaste en hacerte daño?', 'hair.no':'Vale. Gracias por responder. Si se vuelve demasiado pesado, los números de ayuda están siempre a un toque en BAO.' });
+Object.assign(I18N.pt, { 'hair.q':'Obrigado por me contar. Às vezes, quando estamos muito mal, fazemos algo repentino com o nosso corpo, como cortar o cabelo. Você se machucou ou pensou em se machucar?', 'hair.no':'Tudo bem. Obrigado por responder. Se ficar pesado demais, os números de ajuda estão sempre a um toque no BAO.' });
+Object.assign(I18N.nl, { 'hair.q':'Dank je dat je het me vertelt. Soms, als we ons heel slecht voelen, doen we iets plotselings met ons lichaam, zoals ons haar afknippen. Heb je jezelf pijn gedaan, of eraan gedacht?', 'hair.no':'Oké. Dank je voor je antwoord. Als het te zwaar wordt, zijn de hulpnummers in BAO altijd één tik weg.' });
 Object.assign(I18N.en, {
   'crisis.msg':'Thank you for telling me. What you feel matters, and you don’t have to go through it on your own. I’m only a little panda and I can’t help in an emergency, but these people can. Tap a number to call:',
   'crisis.wrong':'If I misunderstood you, that’s completely fine. You can simply carry on.',
