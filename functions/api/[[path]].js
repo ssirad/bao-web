@@ -4,7 +4,7 @@
 //   s:<hash>     session      r:<hash>   reset link     v:<hash>   email confirmation link
 //   rl:<...>     rate limits
 // Settings (Pages > Settings > Variables and Secrets): RESEND_API_KEY (secret), MAIL_FROM, APP_URL.
-import { sendMail, mailConfirm, mailReset } from '../../lib/mail.js';
+import { sendMail, mailConfirm, mailReset, mailClosing, mailTransfer } from '../../lib/mail.js';
 
 const COOKIE = 'bao_session';
 const SESSION_DAYS = 30;
@@ -13,6 +13,7 @@ const RESET_MIN = 30;
 const VERIFY_DAYS = 7;
 const MAX_CHECKINS = 5000;
 const MAX_ENTRY_BYTES = 200 * 1024;
+const CLOSE_DAYS = 30;              // a patient account the therapist ended stays readable this long
 
 const enc = new TextEncoder();
 const hex = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
@@ -49,7 +50,20 @@ async function newPassword(pw){
 }
 
 const getJSON = async (env, key, fallback = null) => (await env.BAO.get(key, 'json')) ?? fallback;
-const putJSON = (env, key, value, opts) => env.BAO.put(key, JSON.stringify(value), opts);
+// an account record keeps its end date: every write of u:<email> carries the closing expiration along
+const putJSON = (env, key, value, opts) => env.BAO.put(key, JSON.stringify(value), opts || (key.startsWith('u:') ? closingOpts(value) : undefined));
+// closing account: read-only, and KV removes its keys by itself at u.closing
+function closingOpts(u){
+  if (!u || !u.closing) return undefined;
+  return { expiration: Math.max(Math.floor(Date.parse(u.closing) / 1000), Math.floor(Date.now() / 1000) + 120) };
+}
+const PATIENT_DATA = ['c:', 'p:', 'sn:', 'dn:'];
+async function rewriteData(env, email, opts){
+  for (const k of PATIENT_DATA){
+    const raw = await env.BAO.get(k + email);
+    if (raw !== null) await env.BAO.put(k + email, raw, opts);
+  }
+}
 
 function cookieValue(request){
   const m = (request.headers.get('Cookie') || '').match(new RegExp('(?:^|;\\s*)' + COOKIE + '=([^;]+)'));
@@ -97,29 +111,42 @@ const failWhy = (msg, status, reason) => json({ error: msg, reason }, status);
 const cleanText = (v, max) => String(v == null ? '' : v).replace(/\r/g, '').trim().slice(0, max);
 // the patient stops sharing: link, code and assigned questions go away; the therapist's private notes are removed too
 async function unlinkPatient(env, pu){
-  const pro = pu.therapist;
-  if (!pro) return;
-  const st = await getJSON(env, 'tp:' + pro, { plan: '', codes: [] });
-  const keep = [];
-  for (const c of st.codes){
-    const k = await getJSON(env, 'k:' + c);
-    if (k && k.email === pu.email && k.used){ await env.BAO.delete('k:' + c); continue; }
-    keep.push(c);
+  for (const pro of [pu.therapist, pu.pendingPro].filter(Boolean)){
+    const st = await getJSON(env, 'tp:' + pro, { plan: '', codes: [] });
+    const keep = [];
+    for (const c of st.codes){
+      const k = await getJSON(env, 'k:' + c);
+      if (k && k.email === pu.email && k.used){ await env.BAO.delete('k:' + c); continue; }
+      keep.push(c);
+    }
+    st.codes = keep;
+    await putJSON(env, 'tp:' + pro, st);
+    await env.BAO.delete('tn:' + pro + '|' + pu.email);
   }
-  st.codes = keep;
-  await putJSON(env, 'tp:' + pro, st);
   await env.BAO.delete('aq:' + pu.email);
-  await env.BAO.delete('tn:' + pro + '|' + pu.email);
   const dn = (await getJSON(env, 'dn:' + pu.email, [])).filter(n => n.author !== 'pro' || n.public);
-  await putJSON(env, 'dn:' + pu.email, dn);
-  delete pu.therapist;
+  await putJSON(env, 'dn:' + pu.email, dn, closingOpts(pu));
+  delete pu.therapist; delete pu.pendingPro; delete pu.pendingFrom;
   await putJSON(env, 'u:' + pu.email, pu);
 }
-// the therapist removes the patient: the patient's whole BAO account is deleted
-async function deletePatientAccount(env, pu){
-  await endAllSessions(env, pu);
-  await Promise.all(['u:', 'c:', 'p:', 'aq:', 'sn:', 'dn:'].map(k => env.BAO.delete(k + pu.email)));
+// The therapist pays for the patient's account. When they end it (or the patient says no to a new
+// therapist) nobody sees the diary any more, and the patient has CLOSE_DAYS to read and save it
+// before KV deletes it. A new code for the same email within that time opens it again.
+async function closePatient(context, pu){
+  const { env, request } = context;
+  pu.closing = new Date(Date.now() + CLOSE_DAYS * 86400000).toISOString();
+  await unlinkPatient(env, pu);
+  await rewriteData(env, pu.email, closingOpts(pu));
+  const lang = cleanLang(pu.lang);
+  const date = new Date(pu.closing).toLocaleDateString(lang, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Berlin' });
+  later(context, sendMail(env, pu.email, mailClosing(env, request, lang, pu.name, appUrl(env, request) + '/', date)));
 }
+async function reopenPatient(env, pu){
+  delete pu.closing;
+  await putJSON(env, 'u:' + pu.email, pu);
+  await rewriteData(env, pu.email, undefined);
+}
+const closingFail = () => failWhy('This account is closing. You can still read and save your diary.', 403, 'closing');
 // day notes: dn:<patient> = [{ id, day, text, public, author:'pro'|'patient', owner, byName, date }]
 function notesFor(list, u){
   if (u.role === 'pro') return list.filter(n => n.public || (n.author === 'pro' && n.owner === u.email));
@@ -172,8 +199,9 @@ async function proState(env, pro){
     let patient = null;
     if (k.used){
       const pu = await getJSON(env, 'u:' + k.email);
-      if (!pu || pu.therapist !== pro.email){ await env.BAO.delete('k:' + c); pruned = true; continue; }   // patient gone: free the place
-      patient = { email: pu.email, name: pu.name || '' };
+      const pending = !!pu && pu.pendingPro === pro.email;   // handed over, the patient has not said yes yet
+      if (!pu || (pu.therapist !== pro.email && !pending)){ await env.BAO.delete('k:' + c); pruned = true; continue; }   // patient gone: free the place
+      patient = { email: pu.email, name: pu.name || '', ...(pending ? { pending: true } : {}) };
     }
     codes.push({ code: c, email: k.email, created: k.created, used: !!k.used, usedAt: k.usedAt || null, patient });
   }
@@ -232,7 +260,12 @@ async function handle(context){
         if (aq && aq.pro === u.therapist) questions = aq.questions || [];
       }
       if (u.role === 'pro') return json(publicUser(u, { safePhone: u.safePhone || '' }));
-      return json(publicUser(u, { shared, questions, therapistPhone }));
+      let transfer = null;
+      if (u.pendingPro){
+        const np = await getJSON(env, 'u:' + u.pendingPro);
+        if (np) transfer = { name: np.name || '', kind: np.kind || 'therapist', from: u.pendingFrom || '' };
+      }
+      return json(publicUser(u, { shared, questions, therapistPhone, closing: u.closing || '', transfer }));
     }
 
     case 'POST /api/auth/register': {
@@ -245,8 +278,9 @@ async function handle(context){
       if (pw.length < 8) return fail('The password needs at least 8 characters.');
       if (!name) return fail('Please write a name.');
       if (!await limit(env, 'reg:' + (request.headers.get('CF-Connecting-IP') || 'x'), 10, 3600)) return fail('Too many new accounts from here. Try again later.', 429);
-      if (await env.BAO.get('u:' + email)) return fail('That email is already registered. Sign in instead.', 409);
+      const existing = await getJSON(env, 'u:' + email);
       const role = b.role === 'pro' ? 'pro' : 'patient';
+      if (existing && !(existing.closing && role === 'patient')) return fail('That email is already registered. Sign in instead.', 409);
       let codeRec = null, code = '';
       if (role === 'patient'){
         code = cleanCode(b.code);
@@ -255,6 +289,16 @@ async function handle(context){
         if (codeRec.used) return failWhy('This patient code was already used.', 400, 'code_used');
         if (codeRec.email !== email) return failWhy('This patient code belongs to a different email address.', 400, 'code_email');
         if (b.share !== true) return failWhy('Please agree to share your check-ins with your therapist or doctor.', 400, 'share_consent');
+      }
+      if (existing){
+        // a closing account gets a new code from a therapist: same password, everything comes back
+        if (!sameString(await hashPassword(pw, existing.salt), existing.hash)) return failWhy('This email still has a BAO account. Use the password you had before.', 409, 'reopen_pw');
+        existing.therapist = codeRec.pro;
+        codeRec.used = true; codeRec.usedAt = new Date().toISOString();
+        await putJSON(env, 'k:' + code, codeRec);
+        await reopenPatient(env, existing);
+        const cookie = await startSession(env, existing);
+        return json(publicUser(existing), 200, { 'Set-Cookie': cookie });
       }
       const user = { email, name, lang, verified: false, created: new Date().toISOString(), ...(await newPassword(pw)), sessions: [] };
       if (role === 'pro'){ user.role = 'pro'; user.kind = b.kind === 'doctor' ? 'doctor' : 'therapist'; }
@@ -295,6 +339,7 @@ async function handle(context){
     case 'POST /api/auth/name': {
       const u = await currentUser(env, request);
       if (!u) return fail('Not signed in.', 401);
+      if (u.closing) return closingFail();
       const name = String((await readBody(request)).name || '').trim().slice(0, 40);
       if (!name) return fail('Please write a name.');
       u.name = name;
@@ -312,12 +357,12 @@ async function handle(context){
         const st = await getJSON(env, 'tp:' + u.email, { codes: [] });
         for (const c of st.codes){
           const k = await getJSON(env, 'k:' + c);
-          if (k && k.used){ const pu = await getJSON(env, 'u:' + k.email); if (pu && pu.therapist === u.email){ delete pu.therapist; await putJSON(env, 'u:' + pu.email, pu); } }
+          if (k && k.used){ const pu = await getJSON(env, 'u:' + k.email); if (pu && (pu.therapist === u.email || pu.pendingPro === u.email)) await closePatient(context, pu); }
           await env.BAO.delete('k:' + c);
         }
         await env.BAO.delete('tp:' + u.email);
       }
-      if (u.therapist) await unlinkPatient(env, u);
+      if (u.therapist || u.pendingPro) await unlinkPatient(env, u);
       await Promise.all(['u:', 'c:', 'p:', 'aq:', 'sn:', 'dn:'].map(k => env.BAO.delete(k + u.email)));
       return json({ ok: true }, 200, { 'Set-Cookie': sessionCookie('', 0) });
     }
@@ -390,6 +435,7 @@ async function handle(context){
     case 'POST /api/checkin': {
       const u = await currentUser(env, request);
       if (!u) return fail('Not signed in.', 401);
+      if (u.closing) return closingFail();
       const raw = await request.text();
       if (raw.length > MAX_ENTRY_BYTES) return fail('This check-in is too long.', 413);
       let entry;
@@ -410,7 +456,7 @@ async function handle(context){
       if (!u) return fail('Not signed in.', 401);
       const id = String((await readBody(request)).id || '');
       const list = (await getJSON(env, 'c:' + u.email, [])).filter(e => e.id !== id);
-      await putJSON(env, 'c:' + u.email, list);
+      await putJSON(env, 'c:' + u.email, list, closingOpts(u));
       return json({ ok: true, checkins: list });
     }
 
@@ -430,6 +476,7 @@ async function handle(context){
     case 'POST /api/pet': {
       const u = await currentUser(env, request);
       if (!u) return fail('Not signed in.', 401);
+      if (u.closing) return closingFail();
       const pet = (await readBody(request)).pet;
       if (pet && typeof pet === 'object' && JSON.stringify(pet).length < 4000) await putJSON(env, 'p:' + u.email, pet);
       else await env.BAO.delete('p:' + u.email);
@@ -467,7 +514,8 @@ async function handle(context){
       const st = await getJSON(env, 'tp:' + u.email, { plan: '', codes: [] });
       if (b.plan && PLANS[b.plan]) st.plan = b.plan;
       if (!PLANS[st.plan]) return failWhy('Choose a plan first.', 400, 'plan_none');
-      if (await env.BAO.get('u:' + email)) return failWhy('This email already has a BAO account.', 409, 'email_taken');
+      const taken = await getJSON(env, 'u:' + email);
+      if (taken && !taken.closing) return failWhy('This email already has a BAO account.', 409, 'email_taken');
       const live = [];
       for (const c of st.codes){ const k = await getJSON(env, 'k:' + c); if (k){ live.push(c); if (!k.used && k.email === email) return json({ ok: true, code: c, plan: st.plan, again: true }); } }
       st.codes = live;
@@ -514,7 +562,7 @@ async function handle(context){
       if (!k || k.pro !== u.email) return fail('Not found.', 404);
       if (k.used){
         const pu = await getJSON(env, 'u:' + k.email);
-        if (pu && pu.therapist === u.email){ delete pu.therapist; await putJSON(env, 'u:' + pu.email, pu); }
+        if (pu && (pu.therapist === u.email || pu.pendingPro === u.email)) await closePatient(context, pu);
       }
       await env.BAO.delete('k:' + code);
       const st = await getJSON(env, 'tp:' + u.email, { plan: '', codes: [] });
@@ -534,7 +582,7 @@ async function handle(context){
         const k = await getJSON(env, 'k:' + c);
         if (!k || k.email !== email || !k.used) continue;
         const pu = await getJSON(env, 'u:' + email);
-        if (pu && pu.therapist === u.email) await deletePatientAccount(env, pu);
+        if (pu && (pu.therapist === u.email || pu.pendingPro === u.email)) await closePatient(context, pu);
         await env.BAO.delete('k:' + c);
         await env.BAO.delete('tn:' + u.email + '|' + email);
         st.codes = st.codes.filter(x => x !== c);
@@ -549,8 +597,22 @@ async function handle(context){
     case 'POST /api/me/unlink': {
       const u = await currentUser(env, request);
       if (!u) return fail('Not signed in.', 401);
-      if (u.therapist) await unlinkPatient(env, u);
+      if (u.therapist || u.pendingPro) await unlinkPatient(env, u);
       return json({ ok: true });
+    }
+    // a therapist handed this patient over: the patient decides whether the new one may read the diary
+    case 'POST /api/me/transfer': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      if (!u.pendingPro) return fail('Nothing to answer.', 400);
+      const np = await getJSON(env, 'u:' + u.pendingPro);
+      if ((await readBody(request)).accept === true && np){
+        u.therapist = u.pendingPro; delete u.pendingPro; delete u.pendingFrom;
+        await putJSON(env, 'u:' + u.email, u);
+        return json({ ok: true, shared: np.name || '' });
+      }
+      await closePatient(context, u);
+      return json({ ok: true, closing: u.closing });
     }
     case 'GET /api/me/notes': {
       const u = await currentUser(env, request);
@@ -560,6 +622,7 @@ async function handle(context){
     case 'POST /api/me/note': {
       const u = await currentUser(env, request);
       if (!u) return fail('Not signed in.', 401);
+      if (u.closing) return closingFail();
       const text = cleanText((await readBody(request)).text, 1500);
       if (!text) return fail('Write something first.');
       const list = await getJSON(env, 'sn:' + u.email, []);
@@ -573,7 +636,7 @@ async function handle(context){
       if (!u) return fail('Not signed in.', 401);
       const id = String((await readBody(request)).id || '');
       const list = (await getJSON(env, 'sn:' + u.email, [])).filter(n => n.id !== id);
-      await putJSON(env, 'sn:' + u.email, list);
+      await putJSON(env, 'sn:' + u.email, list, closingOpts(u));
       return json({ ok: true, notes: list });
     }
 
@@ -642,6 +705,7 @@ async function handle(context){
       const b = await readBody(request);
       const pt = await notesTarget(env, u, b.email);
       if (!pt) return fail('Not found.', 404);
+      if (pt.closing) return closingFail();
       const day = String(b.day || '');
       if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) return fail('Bad day.');
       const text = cleanText(b.text, 4000);
@@ -665,8 +729,9 @@ async function handle(context){
       const n = list.find(x => x.id === b.id);
       if (!n || n.owner !== u.email) return fail('Not found.', 404);
       if (route === 'POST /api/notes/delete') list = list.filter(x => x !== n);
+      else if (pt.closing) return closingFail();
       else { if (typeof b.public === 'boolean') n.public = (u.role === 'pro' || !!u.therapist) && b.public; if (b.text != null){ const tx = cleanText(b.text, 4000); if (tx) n.text = tx; } }
-      await putJSON(env, 'dn:' + pt.email, list);
+      await putJSON(env, 'dn:' + pt.email, list, closingOpts(pt));
       return json({ ok: true, notes: notesFor(list, u) });
     }
 
@@ -710,14 +775,17 @@ async function handle(context){
         if (!fit) return failWhy('Your plan does not have room for these patients.', 400, 'plan_full');
         newSt.plan = fit;
       }
-      const fromUser = { email: tr.from };
+      const fromUser = await getJSON(env, 'u:' + tr.from) || { email: tr.from };
       let moved = 0;
       for (const [c, k] of live){
         if (k.used){
           const pu = await getJSON(env, 'u:' + k.email);
-          if (!pu || pu.therapist !== tr.from){ await env.BAO.delete('k:' + c); continue; }
+          if (!pu || (pu.therapist !== tr.from && pu.pendingPro !== tr.from)){ await env.BAO.delete('k:' + c); continue; }
           await migrateTN(env, fromUser, pu.email);
-          pu.therapist = u.email; await putJSON(env, 'u:' + pu.email, pu);
+          // the patient agreed to share with the old therapist, not with this one: nobody reads the diary until they say yes
+          delete pu.therapist; pu.pendingPro = u.email; pu.pendingFrom = fromUser.name || '';
+          await putJSON(env, 'u:' + pu.email, pu);
+          later(context, sendMail(env, pu.email, mailTransfer(env, request, cleanLang(pu.lang), pu.name, appUrl(env, request) + '/', fromUser.name || '', u.name || '')));
           const aq = await getJSON(env, 'aq:' + pu.email);
           if (aq && aq.pro === tr.from){ aq.pro = u.email; await putJSON(env, 'aq:' + pu.email, aq); }
           let dn = await getJSON(env, 'dn:' + pu.email, []);
@@ -743,7 +811,7 @@ async function handle(context){
       const { codes } = await proState(env, u);
       const patients = [], checkins = [];
       for (const c of codes){
-        if (!c.patient || c.patient.gone) continue;
+        if (!c.patient || c.patient.pending) continue;
         patients.push(c.patient);
         for (const e of await getJSON(env, 'c:' + c.patient.email, [])){ const x = { ...e, patient: c.patient }; delete x.personal; checkins.push(x); }
       }

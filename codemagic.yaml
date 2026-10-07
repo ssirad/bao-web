@@ -8,9 +8,9 @@ workflows:
     environment:
       ios_signing:
         distribution_type: app_store
-        bundle_identifier: com.sofiasirad.bao 
+        bundle_identifier: com.sofiasirad.bao
       vars:
-        APP_STORE_APPLE_ID: 6816904374        
+        APP_STORE_APPLE_ID: 6816904374
       node: 20
       xcode: latest
       cocoapods: default
@@ -39,7 +39,8 @@ workflows:
           N=$((LATEST + 1))
           if [ "$N" -lt 6 ]; then N=6; fi
           if [ "${BUILD_NUMBER:-0}" -gt "$N" ]; then N=$BUILD_NUMBER; fi
-          agvtool new-version -all $N      - name: Build the app
+          agvtool new-version -all $N
+      - name: Build the app
         script: |
           cd $CM_BUILD_DIR/app-ios/ios/App
           xcode-project build-ipa --workspace App.xcworkspace --scheme App
