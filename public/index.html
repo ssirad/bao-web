@@ -1612,7 +1612,7 @@ body.pro .help-card{display:none}
 
 const $  = id => document.getElementById(id);
 const $$ = sel => [...document.querySelectorAll(sel)];
-var FAST = false, REPLAY = null, ANSWERS = [], REPLY_CACHE = {};
+var FAST = false, REPLAY = null, ANSWERS = [];
 const wait = ms => new Promise(r => setTimeout(r, FAST ? 0 : ms));
 
 const LANGS = ['en', 'de', 'it', 'fr', 'es', 'pt', 'nl'];
@@ -2217,8 +2217,8 @@ I18N.it = {
   'chat.intro': 'Sarò il tuo assistente personale in questa app :),\nriempiamo insieme quello che mi serve per seguire i tuoi sintomi...\nTi farò qualche domanda semplice.',
   'chat.almost': 'Abbiamo quasi finito :)',
   'chat.multi': '\n- È successo più volte durante la giornata -',
-  'chat.thanks': n => 'Grazie per questo minuto, ' + n + '. Salvalo quando sei pronta.',
-  'chat.friend': 'amica',
+  'chat.thanks': n => 'Grazie per questo minuto' + (n ? ', ' + n : '') + '. Salvalo quando vuoi.',
+  'chat.friend': '',
   'body.marker': '- ZONE DEL CORPO -',
   'body.title': 'Dove lo senti? Tocca una o più zone.',
   'body.confirm': 'È qui che lo sento',
@@ -2266,7 +2266,7 @@ I18N.it = {
       times + (times === 1 ? ' volta' : ' volte') + (multi ? ', e ' + multi + (multi === 1 ? ' sintomo è comparso' : ' sintomi sono comparsi') + ' più volte in un giorno' : '') +
       '. È qualcosa da esplorare, non una conclusione.',
   'prompts': ['Cosa è stato diverso oggi, anche una piccola cosa?', 'Dove ti ha chiesto attenzione il corpo per primo?',
-              'Cosa hai portato con te oggi che domani potresti lasciare giù?', 'C’è stato un momento in cui ti sei sentita tranquilla?'],
+              'Cosa hai portato con te oggi che domani potresti lasciare giù?', 'C’è stato un momento di tranquillità per te?'],
   'pat.count': (c, s) => c + ' check-in · ' + s + (s === 1 ? ' sintomo registrato' : ' sintomi registrati'),
   'pat.head': ['Zona del corpo', 'Volte', 'Intensità media', 'Ultima volta'],
   'pat.empty': 'Niente registrato in questo periodo.',
@@ -2327,7 +2327,7 @@ I18N.it = {
   'rem.noteError': 'Non sono riuscito a impostare il promemoria. Riprova tra poco.',
   'rem.noteWeb': 'Salvato. I promemoria arrivano nell’app BAO per iPhone.',
   'acc.deleted': 'Il tuo account e tutti i tuoi check-in sono stati eliminati.',
-  'forgot.lede': 'Scrivi l’email con cui ti sei registrata. Ti mandiamo un link per scegliere una nuova password.',
+  'forgot.lede': 'Scrivi l’email del tuo account. Ti mandiamo un link per scegliere una nuova password.',
   'forgot.send': 'Mandami il link',
   'forgot.back': 'Torna all’accesso',
   'forgot.sent': 'Se questa email ha un account BAO, il link sta arrivando. Vale 30 minuti. Controlla anche lo spam.',
@@ -2342,15 +2342,15 @@ I18N.it = {
   'set.companion': 'Il tuo avatar',
   'set.companionSub': 'Disegna il piccolo animale che ti rappresenta. Compare accanto ai tuoi messaggi nella chat.',
   'pet.save': 'Salva il mio avatar',
-  'feel.notice.sad': 'Sembra che ti sia sentita triste. Conta anche questo. Mi racconti un po’ di più?',
+  'feel.notice.sad': 'Sembra che tu abbia provato tristezza. Conta anche questo. Mi racconti un po’ di più?',
   'feel.notice.angry': 'Sembra che qualcosa ti abbia fatto arrabbiare. Mi racconti un po’ di più di cosa è successo?',
   'feel.body': 'Grazie di avermelo detto. Spesso le emozioni stanno anche da qualche parte nel corpo.',
   'feel.back': 'Annotato, l’ho aggiunto ai sintomi di oggi. Torniamo a dove eravamo.',
   'feel.name.sad': 'Tristezza',
   'feel.name.angry': 'Rabbia',
-  'q.feelSituation': 'In che situazione ti sei sentita così?',
-  'q.feelRepeated': 'Ti sei sentita così più di una volta dall’ultimo check-in?',
-  'feel.crisis': 'Grazie di avermelo affidato. Sono solo un piccolo panda e non posso aiutarti in un’emergenza, ma non devi portare questo peso da sola. Se sei in pericolo o temi di farti del male, chiama subito il 112. Puoi anche parlare con Telefono Amico Italia allo 02 2327 2327. C’è una persona di cui ti fidi a cui puoi scrivere oggi?',
+  'q.feelSituation': 'In che situazione hai provato questa sensazione?',
+  'q.feelRepeated': 'Hai provato questa sensazione più di una volta dall’ultimo check-in?',
+  'feel.crisis': 'Grazie di avermelo affidato. Sono solo un piccolo panda e non posso aiutarti in un’emergenza, ma non devi portare questo peso senza nessuno. Se sei in pericolo o temi di farti del male, chiama subito il 112. Puoi anche parlare con Telefono Amico Italia allo 02 2327 2327. C’è una persona di cui ti fidi a cui puoi scrivere oggi?',
   'past.btn': 'Registra questo giorno',
   'past.add': 'Aggiungi a questo giorno',
   'past.future': 'Questo giorno non è ancora arrivato.',
@@ -2542,7 +2542,7 @@ const BUILTIN_IT = {
       "Annotato. Da quanto tempo li senti così?"]],
     ["mascella|mandibola|digrign|serro i denti|stringo i denti|bruxismo", [
       "La mascella trattiene tante cose che non diciamo ad alta voce. È un dolore sordo o una fitta quando apri la bocca?",
-      "Grazie di averlo annotato. C’è da quando ti sei svegliata?"]],
+      "Grazie di averlo annotato. C’è da quando hai aperto gli occhi stamattina?"]],
     ["nodo alla gola|gola chiusa|gola stretta|fatica a deglutire|difficoltà a deglutire", [
       "Questa sensazione spaventa ed è molto comune quando siamo tese. Sembra una pressione, o come se qualcosa fosse bloccato?",
       "Grazie di avermelo detto. C’è sempre, o va e viene?"]],
@@ -2707,7 +2707,7 @@ I18N.fr = {
   'chat.intro': 'Je serai ton assistant personnel dans cette application :),\nremplissons ensemble ce dont j’ai besoin pour suivre tes symptômes...\nJe vais te poser quelques questions simples.',
   'chat.almost': 'Presque fini :)',
   'chat.multi': '\n- C’est arrivé plusieurs fois dans la journée -',
-  'chat.thanks': n => 'Merci pour cette minute, ' + n + '. Enregistre-la quand tu es prêt·e.',
+  'chat.thanks': n => 'Merci pour cette minute, ' + n + '. Enregistre-la quand tu veux.',
   'chat.friend': 'ami·e',
   'body.marker': '- ZONES DU CORPS -',
   'body.title': 'Où le ressens-tu ? Touche une ou plusieurs zones.',
@@ -3127,7 +3127,7 @@ I18N.es = {
   'chat.intro': 'Voy a ser tu asistente personal en esta aplicación :),\nrellenemos juntos lo que necesito para seguir tus síntomas...\nTe haré unas preguntas sencillas.',
   'chat.almost': 'Ya casi hemos terminado :)',
   'chat.multi': '\n- Pasó varias veces durante el día -',
-  'chat.thanks': n => 'Gracias por este minuto, ' + n + '. Guárdalo cuando estés list@.',
+  'chat.thanks': n => 'Gracias por este minuto, ' + n + '. Guárdalo cuando quieras.',
   'chat.friend': 'amig@',
   'body.marker': '- ZONAS DEL CUERPO -',
   'body.title': '¿Dónde lo sientes? Toca una o varias zonas.',
@@ -3547,7 +3547,7 @@ I18N.pt = {
   'chat.intro': 'Vou ser seu assistente pessoal neste aplicativo :),\nvamos preencher juntos o que eu preciso para acompanhar seus sintomas...\nVou fazer algumas perguntas simples.',
   'chat.almost': 'Quase acabando :)',
   'chat.multi': '\n- Aconteceu várias vezes durante o dia -',
-  'chat.thanks': n => 'Obrigado por este minuto, ' + n + '. Salve quando estiver pronto(a).',
+  'chat.thanks': n => 'Obrigado por este minuto, ' + n + '. Salve quando quiser.',
   'chat.friend': 'amigo(a)',
   'body.marker': '- ÁREAS DO CORPO -',
   'body.title': 'Onde você sente? Toque em uma ou mais áreas.',
@@ -5023,18 +5023,9 @@ function usePatternBundle(bundle, label){
   else { PATTERNS_DE = compilePairs(BUILTIN_DE.patterns); ZONES_DE = compilePairs(BUILTIN_DE.zones); }
   return true;
 }
+// Bao's phrases are part of the page: the server has no /api/patterns any more.
 async function loadPatterns(){
-  try{
-    const bundle = await jget('/api/patterns');
-    if (usePatternBundle(bundle, 'patterns_bao_salute.py (live)')){
-      try{ localStorage.setItem(LS_PATTERNS, JSON.stringify(bundle)); }catch(e){}
-      return;
-    }
-  }catch(e){}
-  try{
-    const cached = JSON.parse(localStorage.getItem(LS_PATTERNS) || 'null');
-    if (cached && usePatternBundle(cached, 'patterns_bao_salute.py (saved copy)')) return;
-  }catch(e){}
+  try{ localStorage.removeItem(LS_PATTERNS); }catch(e){}   // copy saved by older versions
   usePatternBundle(BUILTIN, 'built-in example patterns');
 }
 
@@ -5308,18 +5299,8 @@ async function runConversation(){
 
       const name = await ask(t(LOG_DAY ? 'past.symptoms' : 'q.symptoms'), 'listening');
 
-      // Python answers in the chosen language when patterns_bao_salute.py has it.
-      let reply = null, zone = null, fromServer = false;
-      const cached = REPLY_CACHE[LANG + '|' + name];
-      if (cached){ reply = cached.reply; zone = cached.zone; fromServer = true; }
-      else if (MODE === 'server' && (LANG === 'en' || LANG === 'de')){
-        try{
-          const d = await jpost('/api/bao', { text: name, lang: LANG });
-          reply = d.response; zone = d.zone; fromServer = true;
-        }catch(e){}
-      }
-      if (!fromServer){ reply = respondLocal(name); zone = zoneLocal(name); }
-      REPLY_CACHE[LANG + '|' + name] = { reply, zone };
+      // Bao answers with the phrases built into the page, in the chosen language.
+      const reply = respondLocal(name), zone = zoneLocal(name);
 
       let detail = '';
       if (reply){
@@ -5862,7 +5843,9 @@ function renderDayPanel(){
   const list = entriesOn(calSel);
 
   if (!list.length){
-    el.innerHTML = '<div class="day-empty"><span class="bao bao-resting" style="width:76px;height:76px;margin:0 auto"></span>' +
+    // same sleeping Bao with floating "z" as in the settings
+    el.innerHTML = '<div class="day-empty"><span class="sleepy" style="margin:0 auto"><span class="sleepy-img"><span class="bao bao-resting bao-resting-round" role="img" aria-label="' + esc(t('aria.sleeping')) + '"></span></span>' +
+      '<i class="zzz">z</i><i class="zzz">z</i><i class="zzz">z</i></span>' +
       '<h3>' + t('day.nothing') + '</h3><p>' + esc(prettyKey(calSel)) + '</p>' +
       '<p>' + t('day.nothingSub') + '</p>' +
       logButton('btn secondary', t(calSel === localKey(new Date()) ? 'day.start' : 'past.btn')) + '</div>';
@@ -6789,7 +6772,7 @@ const FEEL_WORDS = {
   sad:   /(?<!\p{L})(sad|sadder|saddest|sadness|unhappy|depressed|miserable|heartbroken|hopeless|lonely|tearful|cried|cry|crying|tears|upset(?!\s+(?:stomach|tummy|belly))|gloomy|feel(?:ing|s|t)?\s+(?:so\s+|really\s+|very\s+|a\s+bit\s+)?(?:down|low|blue)|traurig\p{L}*|traurigkeit|niedergeschlagen|bedrückt|deprimiert|geweint|weinen|weinte|einsam|unglücklich|hoffnungslos|triste|tristezza|infelice|depress\p{L}*|piang\p{L}*|pianto|giù di morale|abbattut\p{L}*|sconfortat\p{L}*|tristesse|tristeza|pleur\p{L}*|llor\p{L}*|d[ée]prim\p{L}*|deprimid\p{L}*|chor(?:ei|ar|ando|ou|o)|verdriet\p{L}*|verdrietig|huil\p{L}*|somber|eenzaam|neerslachtig)(?!\p{L})/iu,
   angry: /(?<!\p{L})(angry|angrier|anger|mad|furious|annoyed|irritated|frustrated|frustration|pissed|rage|livid|resentful|wütend|wut|sauer|verärgert|genervt|gereizt|frustriert|ärgerlich|geärgert|zornig|aufgebracht|arrabbiat\p{L}*|rabbia|furios\p{L}*|incazzat\p{L}*|irritat\p{L}*|frustrat\p{L}*|innervosit\p{L}*|col[èe]re|f[âa]ch[ée]\p{L}*|[ée]nerv[ée]\p{L}*|enfadad\p{L}*|enojad\p{L}*|rabia|furieu\p{L}*|raiva|irritad\p{L}*|boos|kwaad|woedend|ge[ïi]rriteerd)(?!\p{L})/iu
 };
-const CRISIS_WORDS = /(suicid|me matar|quero morrer|tirar minha vida|me machucar|me cortar|zelfmoord|dood willen|wil dood|mezelf iets aandoen|mezelf snijden|me tuer|en finir|envie de mourir|veux mourir|me faire du mal|me couper|matarme|quitarme la vida|quiero morir|hacerme da[ñn]o|cortarme|uccidermi|farla finita|voglio morire|non voglio più vivere|farmi del male|tagliarmi|autolesion|kill myself|end my life|want to die|wanna die|don['’]?t want to live|self[- ]?harm|hurt myself|cut myself|suizid|selbstmord|mich umbringen|nicht mehr leben|sterben will|mir etwas antun|mir was antun|ritzen|selbstverletz)/i;
+const CRISIS_WORDS = /(suicid|me matar|quero morrer|tirar minha vida|me machucar|me cortar|zelfmoord|dood willen|wil dood|mezelf iets aandoen|mezelf snijden|me tuer|en finir(?!\s+avec\s+(?:ce|cette|ces|le|les|mon|mes|un|une|la\s+(?!vie)|ma\s+(?!vie)))|envie de mourir|veux mourir|me faire du mal|me couper|matarme|quitarme la vida|quiero morir|hacerme da[ñn]o|cortarme|uccidermi|farla finita(?!\s+con\s+(?:questo|questa|questi|queste|il|lo|i|gli|le|un|una|la\s+(?!vita)|sto|sta))|voglio morire|non voglio più vivere|farmi del male|tagliarmi|autolesion|kill myself|end my life|want to die|wanna die|don['’]?t want to live|self[- ]?harm|hurt myself|cut myself|suizid|selbstmord|mich umbringen|nicht mehr leben|sterben will|mir etwas antun|mir was antun|(?<!\p{L})ritzen(?!\p{L})|ich ritze mich|selbstverletz|want to be dead|wish i (?:was|were) dead|(?<!\p{L})kms(?!\p{L})|unalive|take my (?:own )?life|don['’]?t want to (?:be here|exist) any ?more|better off without me|no point (?:in )?living|mi voglio (?:ammazzare|uccidere)|mi ammazzo|mi uccido|non voglio (?:pi[uù] )?vivere|non ce la faccio pi[uù] a vivere|vorrei non esistere|vorrei non (?:essere mai|esser mai) nat[oa]|vorrei essere mort[oa]|voglio essere mort[oa]|meglio senza di me|will tot sein|wäre lieber tot|bring mich um|me quiero matar|je veux disparaître|vou me matar|ik wil er niet meer zijn)/iu;
 const NEGATION = /(\bnot\b|n't\b|n’t\b|\bnever\b|\bno\b|\bnicht\b|\bnie\b|\bnon\b|\bmai\b|\bpas\b|\bjamais\b|\bnunca\b|\bnão\b|\bniet\b|\bgeen\b|\bnooit\b|(?<!\p{L})kein\p{L}*)/iu;
 
 function feelingsIn(text){
@@ -6813,7 +6796,7 @@ async function askFeel(question, mood){
 async function feelCheck(text){
   text = String(text || '');
   if (!text) return;
-  if (CRISIS_WORDS.test(text)){
+  if (isCrisis(text)){
     if (feltNow.has('crisis')) return;
     feltNow.add('crisis');
     await crisisCard();
@@ -6827,12 +6810,15 @@ async function feelCheck(text){
 }
 
 async function feelingDetour(kind){
+  const hadCrisis = feltNow.has('crisis');
+  // waitText already shows the crisis card, with "continue" / "stop here", when the answer needs it
   const more = await ask(t('feel.notice.' + kind), 'listening');
-  if (CRISIS_WORDS.test(more) && !feltNow.has('crisis')){
-    feltNow.add('crisis');
-    await crisisCard();
-  }
   const parts = [], rating = undefined;
+  if (!hadCrisis && feltNow.has('crisis')){
+    // right after the help numbers Bao does not ask tracking questions: note it and move on gently
+    entry.symptoms.push({ name: t('feel.name.' + kind), kind: 'feeling', type: 'mind', reflection: '', detail: '', parts, rating, situation: more, repeated: 'no' });
+    return;
+  }
   // la risposta vale gia' come situazione: niente seconda domanda
   const repeated = await askYesNo(t('q.feelRepeated'), 'thinking');
   const situation = repeated === 'yes' ? more + t('chat.multi') : more;
@@ -7130,7 +7116,7 @@ Object.assign(I18N.it, {
   'ver.note': '📩 Conferma la tua email: ti abbiamo mandato un link.', 'ver.resend': 'Mandalo di nuovo',
   'ver.sent': 'Email di conferma inviata 💌 Controlla la posta (anche lo spam).', 'ver.wait': 'Aspetta un attimo prima di chiederlo di nuovo.',
   'ver.done': 'La tua email è confermata 💚', 'ver.bad': 'Questo link di conferma è scaduto o è già stato usato.',
-  'reg.sent': 'Benvenuta 🐼 Ti abbiamo mandato una mail per confermare l’account.',
+  'reg.sent': 'Ti diamo il benvenuto 🐼 Ti abbiamo mandato una mail per confermare l’account.',
   'pw.change': 'Cambia password', 'pw.sent': 'Ti abbiamo mandato una mail con il link per cambiare la password 💌',
   'lang.remove': 'Togli questa lingua'
 });
@@ -8028,7 +8014,7 @@ $('signOutBtn').addEventListener('click', e => {
 }, true);
 addEventListener('beforeunload', e => { if (unsavedCheckin()){ e.preventDefault(); e.returnValue = ''; } });
 Object.assign(I18N.en, { 'uns.title':'Save your check-in?', 'uns.text':'Are you sure you don’t want to save this check-in? What you wrote today will be lost.', 'uns.save':'Save my check-in', 'uns.drop':'Don’t save', 'uns.stay':'Back to the check-in' });
-Object.assign(I18N.it, { 'uns.title':'Salvi il check-in?', 'uns.text':'Sei sicura di non voler salvare il check-in? Quello che hai scritto andrà perso.', 'uns.save':'Salva il check-in', 'uns.drop':'Non salvare', 'uns.stay':'Torna al check-in' });
+Object.assign(I18N.it, { 'uns.title':'Salvi il check-in?', 'uns.text':'Vuoi davvero uscire senza salvare il check-in? Quello che hai scritto andrà perso.', 'uns.save':'Salva il check-in', 'uns.drop':'Non salvare', 'uns.stay':'Torna al check-in' });
 Object.assign(I18N.de, { 'uns.title':'Check-in speichern?', 'uns.text':'Bist du sicher, dass du diesen Check-in nicht speichern möchtest? Was du geschrieben hast, geht verloren.', 'uns.save':'Check-in speichern', 'uns.drop':'Nicht speichern', 'uns.stay':'Zurück zum Check-in' });
 Object.assign(I18N.fr, { 'uns.title':'Enregistrer ton check-in ?', 'uns.text':'Es-tu sûr·e de ne pas vouloir enregistrer ce check-in ? Ce que tu as écrit sera perdu.', 'uns.save':'Enregistrer le check-in', 'uns.drop':'Ne pas enregistrer', 'uns.stay':'Revenir au check-in' });
 Object.assign(I18N.es, { 'uns.title':'¿Guardar tu check-in?', 'uns.text':'¿Seguro que no quieres guardar este check-in? Lo que escribiste se perderá.', 'uns.save':'Guardar el check-in', 'uns.drop':'No guardar', 'uns.stay':'Volver al check-in' });
@@ -8465,8 +8451,19 @@ $('helpModal').addEventListener('click', e => { if (e.target.id === 'helpModal' 
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('helpModal').hidden) $('helpModal').hidden = true; });
 document.querySelectorAll('[data-help-open]').forEach(b => b.addEventListener('click', openHelp));
 
-const CRISIS_MORE = /(ammazzarmi|uccidermi|togliermi la vita|non voglio pi[uù] (?:vivere|esserci|svegliarmi)|vorrei sparire|voglio sparire|vorrei morire|meglio se non ci fossi|meglio morta|meglio morto|non ha (?:pi[uù] )?senso vivere|kill me|better off dead|no reason to live|want to disappear|end it all|not wake up|mich töten|lebensmüde|nicht mehr aufwachen|nicht mehr da sein|keinen sinn mehr zu leben|verschwinden will|plus envie de vivre|disparaître pour toujours|ne plus me réveiller|no quiero vivir|desaparecer para siempre|no despertar|não quero (?:mais )?viver|sumir para sempre|não acordar|niet meer leven|niet meer wakker|wil verdwijnen)/iu;
-function isCrisis(text){ text = String(text || ''); return CRISIS_WORDS.test(text) || CRISIS_MORE.test(text); }
+const CRISIS_MORE = /(ammazzarmi|uccidermi|togliermi la vita|non voglio pi[uù] (?:vivere|esserci|svegliarmi)|vorrei sparire|voglio sparire|vorrei morire|meglio se non ci fossi|meglio morta|meglio morto|non ha (?:pi[uù] )?senso vivere|kill me|better off dead|no reason to live|want to disappear|end it all|(?:want|wish|hope|rather|prefer)(?: to)? (?:just )?not (?:to )?wake up|never wake up again|mich töten|lebensmüde|nicht mehr aufwachen|nicht mehr da sein|keinen sinn mehr zu leben|verschwinden will|plus envie de vivre|disparaître pour toujours|ne plus me réveiller|no quiero vivir|desaparecer para siempre|(?:quiero|ojal[aá]|prefiero|quisiera) no despertar|não quero (?:mais )?viver|sumir para sempre|(?:quero|queria|prefiro|preferia) não acordar|niet meer leven|niet meer wakker|wil verdwijnen)/iu;
+// a match followed by hair, nails or an everyday accident ("tagliarmi i capelli", "I hurt myself at the gym") is not a crisis
+const CRISIS_NOT = /^[\s,]*(?:(?:(?:i|le|la|il|lo|gli|un|una|the|my|a|les|mes|el|los|las|o|os|as|de|het|mijn|die|meine?)\s+)?(?:capelli|unghie|barba|frangia|pelo|cabello|uñas|cheveux|ongles|frange|cabelo|unhas|franja|haare?|nagels|nägel|hair|nails|bangs|fringe)|at (?:the )?(?:gym|work|training|football|soccer)|playing|during (?:training|the game|practice|sport)|while (?:cooking|shaving|running|playing|training)|lifting|running|shaving|cooking|in palestra|giocando|cucinando|facendo sport|beim (?:sport|kochen|rasieren|training)|en cuisinant|en me rasant|au sport|cocinando|afeitándome|jugando|cozinhando|jogando|fazendo a barba|bij het (?:sporten|koken|scheren))(?!\p{L})/iu;
+function isCrisis(text){
+  text = String(text || '');
+  for (const re of [CRISIS_WORDS, CRISIS_MORE]){
+    for (const m of text.matchAll(new RegExp(re.source, re.flags + 'g'))){
+      const end = m.index + m[0].length;
+      if (!CRISIS_NOT.test(text.slice(end, end + 40))) return true;
+    }
+  }
+  return false;
+}
 
 async function crisisCard(){
   const gen = chatGen;
@@ -8510,6 +8507,7 @@ async function crisisCheck(text){
 const _waitText0 = waitText;
 waitText = function(){ return _waitText0().then(async v => { await crisisCheck(v); return v; }); };
 
+I18N.en['aria.sleeping'] = 'Bao the panda, sleeping';
 Object.assign(I18N.en, {
   'crisis.msg':'Thank you for telling me. What you feel matters, and you don’t have to go through it on your own. I’m only a little panda and I can’t help in an emergency, but these people can. Tap a number to call:',
   'crisis.wrong':'If I misunderstood you, that’s completely fine. You can simply carry on.',
