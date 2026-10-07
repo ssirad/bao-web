@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-JkMOm6Y2SR+SVHk9UH9jCM2ej3o5V77IF1Fe6sdOLd0='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-fazqCwsN5s/w5FmMlKdfVKd54GZupWjz9tn03A7gP8k='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>BAO &mdash; symptom &amp; wellbeing tracker</title>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -5203,7 +5203,7 @@ async function inlineStep(node, opts){
   done.className = 'btn primary widget-done';
   done.type = 'button';
   done.textContent = opts.confirm;
-  if (!opts.viaForm) box.appendChild(done);
+  box.appendChild(done);
 
   row.append(av, box);
   baoLog.appendChild(row);
@@ -5222,9 +5222,15 @@ async function inlineStep(node, opts){
     const inp = node.querySelector('input[type=range]');
     if (inp && rv.val != null){ inp.value = rv.val; inp.dispatchEvent(new Event('input', { bubbles:true })); }
   } else {
-    if (opts.viaForm){ STEP_BLOCK = opts.block || null; STEP_DONE = () => done.click(); PH_SAVED = baoField.placeholder; baoField.placeholder = t('body.sendHint'); }
-    await new Promise(res => done.addEventListener('click', res, { once:true }));
-    STEP_DONE = null; if (PH_SAVED){ baoField.placeholder = PH_SAVED; PH_SAVED = ''; }
+    // the widget is the answer: the text field is hidden until it is confirmed
+    baoForm.classList.add('swapped');
+    await new Promise(res => done.addEventListener('click', function ok(){
+      if (opts.block && opts.block()) return;
+      done.removeEventListener('click', ok);
+      res();
+    }));
+    if (gen !== chatGen) throw STALE;
+    baoForm.classList.remove('swapped');
   }
   record({ t:'step', parts: node.id === 'bodyCapture' ? selectedParts() : [], points: node.id === 'bodyCapture' ? POINTS.slice() : [], val: (node.querySelector('input[type=range]') || {}).value });
 
@@ -6728,8 +6734,7 @@ async function captureBodyRating(zone, label, opts){
   if (!(opts && opts.noBody)) await inlineStep($('bodyCapture'), {
     marker : t('body.marker'),
     title  : t('body.title'),
-    confirm: t('chat.send'),
-    viaForm: true,
+    confirm: t('body.confirm'),
     block  : () => { if (!AIR_BAD) return false; airWarn(); return true; },
     back   : true,
     onShow : async box => {
@@ -6759,8 +6764,7 @@ async function captureBodyRating(zone, label, opts){
   await inlineStep(rateBox, {
     marker : t('rate.marker'),
     title  : t('rate.title'),
-    confirm: t('rate.confirm'),
-    viaForm: true
+    confirm: t('rate.confirm')
   });
   const rating = rateBox.querySelector('input').value;
   say(t(label || 'recap.rating') + rating + ' / 10', 'bao', 'recap', 'checkin');
@@ -8754,27 +8758,26 @@ async function askEmotions(question){
     const bub = document.createElement('div');
     bub.className = 'widget-bubble emo-bubble';
     bub.appendChild(emoWheelNode(picked));
+    const ok = document.createElement('button');
+    ok.type = 'button';
+    ok.className = 'btn primary widget-done';
+    ok.textContent = t('emo.done');
+    bub.appendChild(ok);
     row.appendChild(bub);
     baoLog.appendChild(row);
     lastWho = 'bao';
     scrollToEnd();
-    let typed = '';
-    PH_SAVED = baoField.placeholder; baoField.placeholder = t('emo.ph');
-    resolveAnswer = null;
-    await new Promise(res => {
-      STEP_BLOCK = () => {
-        typed = baoField.value.trim();
-        if (!typed && !picked.length){ showToast(t('emo.need')); return true; }
-        return false;
-      };
-      STEP_DONE = res;
-      if (pending !== null){ typed = pending; pending = null; STEP_DONE = null; STEP_BLOCK = null; res(); }
-    });
-    STEP_DONE = null; STEP_BLOCK = null;
-    if (PH_SAVED){ baoField.placeholder = PH_SAVED; PH_SAVED = ''; }
+    // the wheel is the answer: the text field is hidden until at least one emotion is picked
+    resolveAnswer = null; pending = null;
+    baoForm.classList.add('swapped');
+    await new Promise(res => ok.addEventListener('click', function done(){
+      if (!picked.length){ showToast(t('emo.need')); return; }
+      ok.removeEventListener('click', done);
+      res();
+    }));
     if (gen !== chatGen) throw STALE;
+    baoForm.classList.remove('swapped');
     answer = picked.map(emoLabel).map(capFirst).join(', ');
-    if (typed) answer = answer ? answer + ' — ' + typed : typed;
     row.classList.add('closing');
     setTimeout(() => row.remove(), 430);
     lastWho = null;
@@ -8801,32 +8804,32 @@ async function askEmotions(question){
   return answer;
 }
 
-Object.assign(I18N.en, { 'emo.aria':'Emotion wheel','emo.which':'Which one fits best? You can pick more than one.','emo.picked':'You picked:','emo.hint':'Tap a colour on the wheel, or just write.',
-  'emo.ph':'Tap the wheel or write','emo.need':'Tap an emotion on the wheel or write a few words.','emo.max':'Up to 5 emotions.',
+Object.assign(I18N.en, { 'emo.aria':'Emotion wheel','emo.which':'Which one fits best? You can pick more than one.','emo.picked':'You picked:','emo.hint':'Tap a colour on the wheel.',
+  'emo.ph':'Tap the wheel or write','emo.need':'Tap at least one emotion on the wheel.','emo.done':'These are my emotions','emo.max':'Up to 5 emotions.',
   'emo.bodyQ': n => 'Emotions often show up in the body too. Did you notice ' + (n > 1 ? 'these emotions' : 'this emotion') + ' somewhere in your body?',
   'emo.bodyThanks':'Thank you. That link between feeling and body is exactly what helps.' });
-Object.assign(I18N.it, { 'emo.aria':'Ruota delle emozioni','emo.which':'Quale si avvicina di più? Puoi sceglierne più di una.','emo.picked':'Hai scelto:','emo.hint':'Tocca un colore sulla ruota, oppure scrivi.',
-  'emo.ph':'Tocca la ruota o scrivi','emo.need':'Tocca un’emozione sulla ruota o scrivi qualche parola.','emo.max':'Massimo 5 emozioni.',
+Object.assign(I18N.it, { 'emo.aria':'Ruota delle emozioni','emo.which':'Quale si avvicina di più? Puoi sceglierne più di una.','emo.picked':'Hai scelto:','emo.hint':'Tocca un colore sulla ruota.',
+  'emo.ph':'Tocca la ruota o scrivi','emo.need':'Tocca almeno un’emozione sulla ruota.','emo.done':'Ecco le mie emozioni','emo.max':'Massimo 5 emozioni.',
   'emo.bodyQ': n => 'Spesso le emozioni si sentono anche nel corpo. Hai notato ' + (n > 1 ? 'queste emozioni' : 'questa emozione') + ' da qualche parte nel corpo?',
   'emo.bodyThanks':'Grazie. Proprio questo legame tra emozioni e corpo è quello che aiuta.' });
-Object.assign(I18N.de, { 'emo.aria':'Gefühlsrad','emo.which':'Was passt am besten? Du kannst mehrere wählen.','emo.picked':'Deine Auswahl:','emo.hint':'Tippe auf eine Farbe im Rad oder schreib einfach.',
-  'emo.ph':'Rad antippen oder schreiben','emo.need':'Tippe ein Gefühl im Rad an oder schreib ein paar Worte.','emo.max':'Höchstens 5 Gefühle.',
+Object.assign(I18N.de, { 'emo.aria':'Gefühlsrad','emo.which':'Was passt am besten? Du kannst mehrere wählen.','emo.picked':'Deine Auswahl:','emo.hint':'Tippe auf eine Farbe im Rad.',
+  'emo.ph':'Rad antippen oder schreiben','emo.need':'Tippe mindestens ein Gefühl im Rad an.','emo.done':'Das sind meine Gefühle','emo.max':'Höchstens 5 Gefühle.',
   'emo.bodyQ': n => 'Gefühle zeigen sich oft auch im Körper. Hast du ' + (n > 1 ? 'diese Gefühle' : 'dieses Gefühl') + ' irgendwo im Körper bemerkt?',
   'emo.bodyThanks':'Danke. Genau diese Verbindung zwischen Gefühl und Körper hilft.' });
-Object.assign(I18N.fr, { 'emo.aria':'Roue des émotions','emo.which':'Laquelle te correspond le mieux ? Tu peux en choisir plusieurs.','emo.picked':'Tu as choisi :','emo.hint':'Touche une couleur sur la roue, ou écris simplement.',
-  'emo.ph':'Touche la roue ou écris','emo.need':'Touche une émotion sur la roue ou écris quelques mots.','emo.max':'5 émotions au maximum.',
+Object.assign(I18N.fr, { 'emo.aria':'Roue des émotions','emo.which':'Laquelle te correspond le mieux ? Tu peux en choisir plusieurs.','emo.picked':'Tu as choisi :','emo.hint':'Touche une couleur sur la roue.',
+  'emo.ph':'Touche la roue ou écris','emo.need':'Touche au moins une émotion sur la roue.','emo.done':'Voilà mes émotions','emo.max':'5 émotions au maximum.',
   'emo.bodyQ': n => 'Les émotions se sentent souvent aussi dans le corps. As-tu remarqué ' + (n > 1 ? 'ces émotions' : 'cette émotion') + ' quelque part dans ton corps ?',
   'emo.bodyThanks':'Merci. C’est justement ce lien entre émotions et corps qui aide.' });
-Object.assign(I18N.es, { 'emo.aria':'Rueda de emociones','emo.which':'¿Cuál encaja mejor? Puedes elegir varias.','emo.picked':'Has elegido:','emo.hint':'Toca un color de la rueda o simplemente escribe.',
-  'emo.ph':'Toca la rueda o escribe','emo.need':'Toca una emoción en la rueda o escribe unas palabras.','emo.max':'Máximo 5 emociones.',
+Object.assign(I18N.es, { 'emo.aria':'Rueda de emociones','emo.which':'¿Cuál encaja mejor? Puedes elegir varias.','emo.picked':'Has elegido:','emo.hint':'Toca un color de la rueda.',
+  'emo.ph':'Toca la rueda o escribe','emo.need':'Toca al menos una emoción en la rueda.','emo.done':'Estas son mis emociones','emo.max':'Máximo 5 emociones.',
   'emo.bodyQ': n => 'Las emociones a menudo también se sienten en el cuerpo. ¿Notaste ' + (n > 1 ? 'estas emociones' : 'esta emoción') + ' en alguna parte del cuerpo?',
   'emo.bodyThanks':'Gracias. Justo esa conexión entre emociones y cuerpo es lo que ayuda.' });
-Object.assign(I18N.pt, { 'emo.aria':'Roda das emoções','emo.which':'Qual combina mais? Você pode escolher várias.','emo.picked':'Você escolheu:','emo.hint':'Toque numa cor da roda ou simplesmente escreva.',
-  'emo.ph':'Toque na roda ou escreva','emo.need':'Toque numa emoção da roda ou escreva algumas palavras.','emo.max':'No máximo 5 emoções.',
+Object.assign(I18N.pt, { 'emo.aria':'Roda das emoções','emo.which':'Qual combina mais? Você pode escolher várias.','emo.picked':'Você escolheu:','emo.hint':'Toque numa cor da roda.',
+  'emo.ph':'Toque na roda ou escreva','emo.need':'Toque em pelo menos uma emoção da roda.','emo.done':'Estas são minhas emoções','emo.max':'No máximo 5 emoções.',
   'emo.bodyQ': n => 'As emoções muitas vezes também aparecem no corpo. Você notou ' + (n > 1 ? 'essas emoções' : 'essa emoção') + ' em algum lugar do corpo?',
   'emo.bodyThanks':'Obrigado. É exatamente essa ligação entre emoções e corpo que ajuda.' });
-Object.assign(I18N.nl, { 'emo.aria':'Gevoelswiel','emo.which':'Wat past het best? Je kunt er meer kiezen.','emo.picked':'Jouw keuze:','emo.hint':'Tik op een kleur in het wiel, of schrijf gewoon.',
-  'emo.ph':'Tik op het wiel of schrijf','emo.need':'Tik een gevoel aan in het wiel of schrijf een paar woorden.','emo.max':'Maximaal 5 gevoelens.',
+Object.assign(I18N.nl, { 'emo.aria':'Gevoelswiel','emo.which':'Wat past het best? Je kunt er meer kiezen.','emo.picked':'Jouw keuze:','emo.hint':'Tik op een kleur in het wiel.',
+  'emo.ph':'Tik op het wiel of schrijf','emo.need':'Tik minstens één gevoel aan in het wiel.','emo.done':'Dit zijn mijn gevoelens','emo.max':'Maximaal 5 gevoelens.',
   'emo.bodyQ': n => 'Gevoelens merk je vaak ook in je lichaam. Heb je ' + (n > 1 ? 'deze gevoelens' : 'dit gevoel') + ' ergens in je lichaam gemerkt?',
   'emo.bodyThanks':'Dank je. Juist dat verband tussen gevoel en lichaam helpt.' });
 
