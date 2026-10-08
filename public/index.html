@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-UGtq5Q6+TriPy/R2Zn4xoG9ad4IGCnrICjdwGX6WjaA=' 'sha256-gNMVBXOFK0bgMAiegR3y2d0QxDzgoHzJis1BmhPSCWM='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-UGtq5Q6+TriPy/R2Zn4xoG9ad4IGCnrICjdwGX6WjaA=' 'sha256-KwQL4r+93JQCoeQGtVaHdfmj8xar0TDj57j8nLpnr7k='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
 <title>PAO &mdash; symptom &amp; wellbeing diary</title>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -5327,6 +5327,13 @@ async function runConversation(){
   await baoSay(t('chat.intro'), '', 'happy');
   if (LOG_DAY) await baoSay(t('past.intro', prettyKey(LOG_DAY)), '', 'checkin');
 
+  // first the day and the emotions, then the symptoms
+  const feltBefore = feltNow.size;
+  entry.day    = await askFeel(t(LOG_DAY ? 'past.day' : 'q.day'), 'happy');
+  if (feltNow.size === feltBefore){ const r = dayReaction(entry.day); if (r) await baoSay(r, '', 'listening', 700); }
+  entry.emotionsQ = emotionsQuestion(entry);
+  entry.emotions = await askEmotions(entry.emotionsQ);
+
   const log = await askYesNo(LOG_DAY ? t('past.log', shortKey(LOG_DAY)) : t('q.log'), 'checkin');
 
   if (log === 'yes'){
@@ -5363,12 +5370,6 @@ async function runConversation(){
       if (more !== 'yes') break;
     }
   }
-
-  const feltBefore = feltNow.size;
-  entry.day    = await askFeel(t(LOG_DAY ? 'past.day' : 'q.day'), 'happy');
-  if (feltNow.size === feltBefore){ const r = dayReaction(entry.day); if (r) await baoSay(r, '', 'listening', 700); }
-  entry.emotionsQ = emotionsQuestion(entry);
-  entry.emotions = await askEmotions(entry.emotionsQ);
 
   await baoSay(t('chat.almost'), '', 'cheer', 700);
   await askAssigned();
@@ -9015,7 +9016,6 @@ const EMO = [
   { k:'stress',   c:'#9AA6B2', e:'😵', sub:['overwhelm','tension','exhaustion','restlessness','numbness'] },
   { k:'calm',     c:'#86C5A4', e:'😌', sub:['peace','trust','safety','contentment'] }
 ];
-const EMO_HARD = ['anger','shame','fear','sad','stress'];
 const EMO_L = {
   en:{ joy:'Joy',surprise:'Surprise',anger:'Anger',shame:'Shame',fear:'Fear',sad:'Sadness',stress:'Stress',calm:'Calm',
     relief:'relief',gratitude:'gratitude',pride:'pride',excitement:'excitement',love:'love',amazement:'amazement',curiosity:'curiosity',shock:'shock',confusion:'confusion',
@@ -9163,51 +9163,24 @@ async function askEmotions(question){
     await crisisCheck(answer);
   }
   entry.emotionTags = picked.slice();
-  const before = feltNow.size;
   await feelCheck(answer);
-  // emozione difficile scelta sulla ruota: dove si sente nel corpo?
-  const hard = picked.filter(k => EMO_HARD.includes(k.split('.')[0]));
-  if (hard.length && feltNow.size === before){
-    const names = hard.map(emoLabel).map(capFirst).join(', ');
-    const yes = await askYesNo(t('emo.bodyQ', hard.length), 'thinking');
-    if (yes === 'yes'){
-      LAST_POINTS = [];
-      const { parts, rating } = await captureBodyRating(null, 'recap.intensity', {});
-      entry.symptoms.push({ name: names, kind:'feeling', type:'mind', reflection:'', detail:'', parts, points: LAST_POINTS.slice(), rating, situation: answer.includes(' — ') ? answer.split(' — ').slice(1).join(' — ') : '—', repeated:'no' });
-      await baoSay(t('emo.bodyThanks'), '', 'cheer', 700);
-    }
-  }
   return answer;
 }
 
 Object.assign(I18N.en, { 'emo.aria':'Emotion wheel','emo.which':'Which one fits best? You can pick more than one.','emo.picked':'You picked:','emo.hint':'Tap a colour on the wheel.',
-  'emo.ph':'Tap the wheel or write','emo.need':'Tap at least one emotion on the wheel.','emo.done':'These are my emotions','emo.max':'Up to 5 emotions.',
-  'emo.bodyQ': n => 'Emotions often show up in the body too. Did you notice ' + (n > 1 ? 'these emotions' : 'this emotion') + ' somewhere in your body?',
-  'emo.bodyThanks':'Thank you. That link between feeling and body is exactly what helps.' });
+  'emo.ph':'Tap the wheel or write','emo.need':'Tap at least one emotion on the wheel.','emo.done':'These are my emotions','emo.max':'Up to 5 emotions.' });
 Object.assign(I18N.it, { 'emo.aria':'Ruota delle emozioni','emo.which':'Quale si avvicina di più? Puoi sceglierne più di una.','emo.picked':'Hai scelto:','emo.hint':'Tocca un colore sulla ruota.',
-  'emo.ph':'Tocca la ruota o scrivi','emo.need':'Tocca almeno un’emozione sulla ruota.','emo.done':'Ecco le mie emozioni','emo.max':'Massimo 5 emozioni.',
-  'emo.bodyQ': n => 'Spesso le emozioni si sentono anche nel corpo. Hai notato ' + (n > 1 ? 'queste emozioni' : 'questa emozione') + ' da qualche parte nel corpo?',
-  'emo.bodyThanks':'Grazie. Proprio questo legame tra emozioni e corpo è quello che aiuta.' });
+  'emo.ph':'Tocca la ruota o scrivi','emo.need':'Tocca almeno un’emozione sulla ruota.','emo.done':'Ecco le mie emozioni','emo.max':'Massimo 5 emozioni.' });
 Object.assign(I18N.de, { 'emo.aria':'Gefühlsrad','emo.which':'Was passt am besten? Du kannst mehrere wählen.','emo.picked':'Deine Auswahl:','emo.hint':'Tippe auf eine Farbe im Rad.',
-  'emo.ph':'Rad antippen oder schreiben','emo.need':'Tippe mindestens ein Gefühl im Rad an.','emo.done':'Das sind meine Gefühle','emo.max':'Höchstens 5 Gefühle.',
-  'emo.bodyQ': n => 'Gefühle zeigen sich oft auch im Körper. Hast du ' + (n > 1 ? 'diese Gefühle' : 'dieses Gefühl') + ' irgendwo im Körper bemerkt?',
-  'emo.bodyThanks':'Danke. Genau diese Verbindung zwischen Gefühl und Körper hilft.' });
+  'emo.ph':'Rad antippen oder schreiben','emo.need':'Tippe mindestens ein Gefühl im Rad an.','emo.done':'Das sind meine Gefühle','emo.max':'Höchstens 5 Gefühle.' });
 Object.assign(I18N.fr, { 'emo.aria':'Roue des émotions','emo.which':'Laquelle te correspond le mieux ? Tu peux en choisir plusieurs.','emo.picked':'Tu as choisi :','emo.hint':'Touche une couleur sur la roue.',
-  'emo.ph':'Touche la roue ou écris','emo.need':'Touche au moins une émotion sur la roue.','emo.done':'Voilà mes émotions','emo.max':'5 émotions au maximum.',
-  'emo.bodyQ': n => 'Les émotions se sentent souvent aussi dans le corps. As-tu remarqué ' + (n > 1 ? 'ces émotions' : 'cette émotion') + ' quelque part dans ton corps ?',
-  'emo.bodyThanks':'Merci. C’est justement ce lien entre émotions et corps qui aide.' });
+  'emo.ph':'Touche la roue ou écris','emo.need':'Touche au moins une émotion sur la roue.','emo.done':'Voilà mes émotions','emo.max':'5 émotions au maximum.' });
 Object.assign(I18N.es, { 'emo.aria':'Rueda de emociones','emo.which':'¿Cuál encaja mejor? Puedes elegir varias.','emo.picked':'Has elegido:','emo.hint':'Toca un color de la rueda.',
-  'emo.ph':'Toca la rueda o escribe','emo.need':'Toca al menos una emoción en la rueda.','emo.done':'Estas son mis emociones','emo.max':'Máximo 5 emociones.',
-  'emo.bodyQ': n => 'Las emociones a menudo también se sienten en el cuerpo. ¿Notaste ' + (n > 1 ? 'estas emociones' : 'esta emoción') + ' en alguna parte del cuerpo?',
-  'emo.bodyThanks':'Gracias. Justo esa conexión entre emociones y cuerpo es lo que ayuda.' });
+  'emo.ph':'Toca la rueda o escribe','emo.need':'Toca al menos una emoción en la rueda.','emo.done':'Estas son mis emociones','emo.max':'Máximo 5 emociones.' });
 Object.assign(I18N.pt, { 'emo.aria':'Roda das emoções','emo.which':'Qual combina mais? Você pode escolher várias.','emo.picked':'Você escolheu:','emo.hint':'Toque numa cor da roda.',
-  'emo.ph':'Toque na roda ou escreva','emo.need':'Toque em pelo menos uma emoção da roda.','emo.done':'Estas são minhas emoções','emo.max':'No máximo 5 emoções.',
-  'emo.bodyQ': n => 'As emoções muitas vezes também aparecem no corpo. Você notou ' + (n > 1 ? 'essas emoções' : 'essa emoção') + ' em algum lugar do corpo?',
-  'emo.bodyThanks':'Obrigado. É exatamente essa ligação entre emoções e corpo que ajuda.' });
+  'emo.ph':'Toque na roda ou escreva','emo.need':'Toque em pelo menos uma emoção da roda.','emo.done':'Estas são minhas emoções','emo.max':'No máximo 5 emoções.' });
 Object.assign(I18N.nl, { 'emo.aria':'Gevoelswiel','emo.which':'Wat past het best? Je kunt er meer kiezen.','emo.picked':'Jouw keuze:','emo.hint':'Tik op een kleur in het wiel.',
-  'emo.ph':'Tik op het wiel of schrijf','emo.need':'Tik minstens één gevoel aan in het wiel.','emo.done':'Dit zijn mijn gevoelens','emo.max':'Maximaal 5 gevoelens.',
-  'emo.bodyQ': n => 'Gevoelens merk je vaak ook in je lichaam. Heb je ' + (n > 1 ? 'deze gevoelens' : 'dit gevoel') + ' ergens in je lichaam gemerkt?',
-  'emo.bodyThanks':'Dank je. Juist dat verband tussen gevoel en lichaam helpt.' });
+  'emo.ph':'Tik op het wiel of schrijf','emo.need':'Tik minstens één gevoel aan in het wiel.','emo.done':'Dit zijn mijn gevoelens','emo.max':'Maximaal 5 gevoelens.' });
 
 (async function boot(){
   try{
