@@ -9,7 +9,7 @@ ICONSET=ios/App/App/Assets.xcassets/AppIcon.appiconset
 PB=/usr/libexec/PlistBuddy
 
 # nome sotto l'icona
-$PB -c "Set :CFBundleDisplayName BAO" "$PLIST" 2>/dev/null || $PB -c "Add :CFBundleDisplayName string BAO" "$PLIST"
+$PB -c "Set :CFBundleDisplayName PAO" "$PLIST" 2>/dev/null || $PB -c "Add :CFBundleDisplayName string PAO" "$PLIST"
 
 # BAO usa solo la crittografia standard di HTTPS: niente documenti sull'esportazione
 $PB -c "Delete :ITSAppUsesNonExemptEncryption" "$PLIST" 2>/dev/null || true

@@ -1,6 +1,6 @@
 {
-  "name": "BAO — symptom & wellbeing diary",
-  "short_name": "BAO",
+  "name": "PAO — symptom & wellbeing diary",
+  "short_name": "PAO",
   "description": "A calm place to notice what your body is telling you.",
   "start_url": "/",
   "scope": "/",

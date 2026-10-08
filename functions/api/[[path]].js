@@ -292,7 +292,7 @@ async function handle(context){
       }
       if (existing){
         // a closing account gets a new code from a therapist: same password, everything comes back
-        if (!sameString(await hashPassword(pw, existing.salt), existing.hash)) return failWhy('This email still has a BAO account. Use the password you had before.', 409, 'reopen_pw');
+        if (!sameString(await hashPassword(pw, existing.salt), existing.hash)) return failWhy('This email still has a PAO account. Use the password you had before.', 409, 'reopen_pw');
         existing.therapist = codeRec.pro;
         codeRec.used = true; codeRec.usedAt = new Date().toISOString();
         await putJSON(env, 'k:' + code, codeRec);
@@ -515,7 +515,7 @@ async function handle(context){
       if (b.plan && PLANS[b.plan]) st.plan = b.plan;
       if (!PLANS[st.plan]) return failWhy('Choose a plan first.', 400, 'plan_none');
       const taken = await getJSON(env, 'u:' + email);
-      if (taken && !taken.closing) return failWhy('This email already has a BAO account.', 409, 'email_taken');
+      if (taken && !taken.closing) return failWhy('This email already has a PAO account.', 409, 'email_taken');
       const live = [];
       for (const c of st.codes){ const k = await getJSON(env, 'k:' + c); if (k){ live.push(c); if (!k.used && k.email === email) return json({ ok: true, code: c, plan: st.plan, again: true }); } }
       st.codes = live;
