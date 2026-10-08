@@ -57,7 +57,8 @@ function closingOpts(u){
   if (!u || !u.closing) return undefined;
   return { expiration: Math.max(Math.floor(Date.parse(u.closing) / 1000), Math.floor(Date.now() / 1000) + 120) };
 }
-const PATIENT_DATA = ['c:', 'p:', 'sn:', 'dn:'];
+const COMMON_SYMPTOMS = ['stomach', 'back', 'limbs', 'period', 'sex', 'headache', 'chest', 'dizzy', 'faint', 'heart', 'breath', 'bowel', 'nausea', 'sleep', 'tired'];
+const PATIENT_DATA = ['c:', 'p:', 'sn:', 'dn:', 'cs:'];
 async function rewriteData(env, email, opts){
   for (const k of PATIENT_DATA){
     const raw = await env.BAO.get(k + email);
@@ -363,7 +364,7 @@ async function handle(context){
         await env.BAO.delete('tp:' + u.email);
       }
       if (u.therapist || u.pendingPro) await unlinkPatient(env, u);
-      await Promise.all(['u:', 'c:', 'p:', 'aq:', 'sn:', 'dn:'].map(k => env.BAO.delete(k + u.email)));
+      await Promise.all(['u:', 'c:', 'p:', 'aq:', 'sn:', 'dn:', 'cs:'].map(k => env.BAO.delete(k + u.email)));
       return json({ ok: true }, 200, { 'Set-Cookie': sessionCookie('', 0) });
     }
 
@@ -480,6 +481,23 @@ async function handle(context){
       const pet = (await readBody(request)).pet;
       if (pet && typeof pet === 'object' && JSON.stringify(pet).length < 4000) await putJSON(env, 'p:' + u.email, pet);
       else await env.BAO.delete('p:' + u.email);
+      return json({ ok: true });
+    }
+
+    // the common symptoms the patient picked on first login
+    case 'GET /api/me/common': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      return json({ common: await getJSON(env, 'cs:' + u.email) });
+    }
+
+    case 'POST /api/me/common': {
+      const u = await currentUser(env, request);
+      if (!u) return fail('Not signed in.', 401);
+      if (u.closing) return closingFail();
+      const list = (await readBody(request)).list;
+      const clean = Array.isArray(list) ? [...new Set(list.filter(k => COMMON_SYMPTOMS.includes(k)))] : [];
+      await putJSON(env, 'cs:' + u.email, { asked: true, list: clean, date: new Date().toISOString() });
       return json({ ok: true });
     }
 
