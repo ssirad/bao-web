@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <!-- Only the script below may run (matched by its SHA-256 hash). After editing the script,
      update the hash: python -c "import hashlib,base64;s=open('index (1).html',encoding='utf-8').read();js=s.rsplit('<scr'+'ipt>',1)[1].split('</scr'+'ipt>')[0];print(base64.b64encode(hashlib.sha256(js.encode()).digest()).decode())" -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-OOSCKGgiKH1Efoc+tqQR5LpSmsbyB/j4cxfF5+l/40s='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jf4pE2E/Q+gjYN4p78s26HeKLRdgbVDNsg3cm/pJX5I=' 'sha256-eDlwg6FsITUsq8EJOmUyUeX6OvD9cp7bd65uiI5XP1A=' 'sha256-tSGs9+htP6GlpspPN4SqtHMs/jndTK3M1insCn+vf9Y='; style-src 'unsafe-inline'; img-src data: 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
 <meta name="referrer" content="no-referrer" />
-<title>BAO &mdash; symptom &amp; wellbeing tracker</title>
+<title>BAO &mdash; symptom &amp; wellbeing diary</title>
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" href="/icons/favicon-64.png">
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
@@ -689,6 +689,8 @@ html.shell .content{flex:1 1 auto;width:100%;max-width:none;overflow-y:auto;-web
 .tour-arrow svg{width:100%;height:100%;transform:rotate(var(--rot,0deg));animation:tourBob 1s ease-in-out infinite}
 @keyframes tourBob{50%{translate:var(--bx,0) var(--by,8px)}}
 .tour-box{position:relative;z-index:4}
+.tour.at-top{place-items:start center;align-content:start;padding-top:16px}
+.tour.at-bottom{place-items:end center;align-content:end;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
 @keyframes tourIn{from{opacity:0}to{opacity:1}}
 .tour-box{background:#fff;border-radius:26px;width:100%;max-width:420px;padding:26px 24px 16px;text-align:center;
   box-shadow:0 24px 60px rgba(20,60,58,.22);animation:tourPop .28s cubic-bezier(.2,.9,.3,1.2)}
@@ -722,7 +724,7 @@ body:not(.pro) .pro-only{display:none!important}
 body.pro .nav [data-view=home],body.pro .nav [data-view=checkin],body.pro .nav [data-view=patterns],body.pro .nav [data-view=report],
 body.pro .tabbar [data-view=home],body.pro .tabbar [data-view=checkin],body.pro .tabbar [data-view=patterns],body.pro .tabbar [data-view=report],
 body.pro #newCheckinBtn,body.pro #calendar>.hero:not(.pro-only),body.pro .sym-del,body.pro .day-del,body.pro [data-log-day],
-body.pro #dayPanel .bao-side,body.pro [data-i18n="cal.foot"],body.pro .day-empty p:nth-of-type(2),body.pro .how-card,body.pro .pet-card,body.pro .reminder-card,body.pro .tour-card{display:none!important}
+body.pro #dayPanel .bao-side,body.pro [data-i18n="cal.foot"],body.pro .day-empty p:nth-of-type(2),body.pro .how-card,body.pro .pet-card,body.pro .reminder-card{display:none!important}
 body.pro .settings-cols .acc-card{grid-row:auto}
 .role-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .role-opts button{border:1px solid var(--line);background:#fff;color:#4f6163;border-radius:12px;padding:10px 6px;font-weight:750;font-size:13px;cursor:pointer}
@@ -752,9 +754,17 @@ body.pro .settings-cols .acc-card{grid-row:auto}
 .plan .plan-tag.cur{background:#34494a}
 .code-form{margin:6px 0 14px}
 .code-form[hidden],.code-new[hidden]{display:none}
+.code-steps{margin:14px 0 18px;padding:0;list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;counter-reset:cs}
+.code-steps li{counter-increment:cs;background:#f6faf9;border:1px solid var(--line);border-radius:14px;padding:12px 14px 12px 48px;position:relative;font-size:13px;line-height:1.45;color:#3d4d54}
+.code-steps li:before{content:counter(cs);position:absolute;left:13px;top:11px;width:24px;height:24px;border-radius:50%;background:var(--teal);color:#fff;font-weight:800;font-size:13px;display:grid;place-items:center}
+@media(max-width:760px){.code-steps{grid-template-columns:1fr}}
+.code-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.code-actions .btn{min-width:150px}
+#codeCard{margin-bottom:20px}
 .code-new{background:#f3faf8;border:1px dashed #9fd0c7;border-radius:16px;padding:16px;margin:4px 0 16px;text-align:center}
 .code-new .code-big{font:800 26px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;color:var(--teal-dark);margin:6px 0}
 .code-new p{margin:6px 0 10px;color:#5b6d6e;font-size:13px}
+.c-mail-btn{color:var(--teal);font-weight:750;font-size:13px;text-decoration:none}
 .code-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 0;border-top:1px solid var(--line)}
 .code-row .c-code{font:800 14px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.05em;color:#1f2f30;min-width:130px}
 .code-row .c-mail{flex:1 1 180px;min-width:0;color:#5b6d6e;font-size:13px;overflow:hidden;text-overflow:ellipsis}
@@ -818,6 +828,8 @@ body:not(.pro) .tabbar [data-view=patients]{display:none!important}
 .rate-ticks i{font-style:normal;font-size:11px;color:#9fb0ae;width:18px;text-align:center;cursor:pointer;border-radius:6px;font-weight:700}
 .rate-ticks i.on{color:#fff;background:var(--rc)}
 .rating-widget .scale{margin-top:8px;font-size:11px}
+.rating-widget .scale small{display:block;font-weight:600;opacity:.75}.rating-widget .scale span:last-child{text-align:right}
+.rate-word small{font-size:12px;font-weight:650;color:#7a8b8c}
 .bao-chat-form{align-items:flex-end}
 .bao-chat-form textarea{flex:1;border:1px solid #cce4df;border-radius:15px;padding:14px 18px;background:#fff;font:inherit;font-size:16px;line-height:1.4;
   box-shadow:0 6px 18px rgba(39,78,79,.06);resize:none;overflow-y:hidden;max-height:7.2em;min-height:52px;min-width:0;color:inherit}
@@ -970,6 +982,22 @@ body.pro .help-card{display:none}
 .emo-lab{font-size:12px;color:#6b7c7d}
 .emo-pill{border:0;background:var(--emo);color:#1f2f30;border-radius:999px;padding:5px 10px;font-weight:750;font-size:12.5px;cursor:pointer}
 .emo-pill b{opacity:.6;margin-left:2px}
+
+/* Settings: one tidy grid. "How Bao works" on top, then the cards two by two with equal heights,
+   the tutorial and the session notes across the whole width. Replaces the older spans and overrides. */
+#settings .settings-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:stretch}
+#settings .settings-cols>.set-col{display:contents}
+#settings .settings-cols>.set-col>.card{grid-row:auto;grid-column:auto;margin:0;flex:none;width:auto;height:auto;align-self:stretch;display:flex;flex-direction:column}
+#settings .settings-cols>.set-col>.how-card{grid-column:1/-1;order:0}
+#settings .settings-cols .acc-card{order:1}
+#settings .settings-cols .reminder-card,#settings .settings-cols .safephone-card{order:2}
+#settings .settings-cols .lang-card{order:3}
+#settings .settings-cols .help-card,#settings .settings-cols .transfer-card{order:4}
+#settings .settings-cols>.set-col>.tour-card{grid-column:1/-1;order:5}
+#settings .settings-cols>.set-col>.session-card{grid-column:1/-1;order:6}
+#settings .settings-cols>.set-col>.card[hidden]{display:none}
+#settings .pet-card{margin-top:20px}
+@media(max-width:930px){#settings .settings-cols{grid-template-columns:1fr}#settings .settings-cols .how-card .fact-list{grid-template-columns:1fr}}
 </style>
 <script>try{ if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) document.documentElement.classList.add('native'); if (/BAOApp\/2/.test(navigator.userAgent)) document.documentElement.classList.add('shell'); }catch(e){}</script>
 <script>
@@ -1197,7 +1225,7 @@ body.pro .help-card{display:none}
           <div>
             <div class="eyebrow" data-i18n="pat.eyebrow">Pattern explorer</div>
             <h2 class="title" data-i18n="pat.h">Connections,<br><em>not conclusions.</em></h2>
-            <p class="lede" data-i18n="pat.lede">Repeated relationships between your context and your symptoms. The longer you track, the clearer the picture can become.</p>
+            <p class="lede" data-i18n="pat.lede">Repeated relationships between your context and your symptoms. The longer you keep your diary, the clearer the picture can become.</p>
           </div>
           <div style="display:flex;align-items:center;gap:12px">
             <div class="bao-inline">
@@ -1347,10 +1375,10 @@ body.pro .help-card{display:none}
             <p class="lede" data-i18n="subs.lede">Choose a plan and create a code for each patient. Payments are not active yet: every plan is free for now.</p>
           </div>
         </div>
-        <div class="plan-grid" id="planGrid"></div>
         <div class="card code-card" id="codeCard">
           <div class="card-head"><div><h2 data-i18n="subs.codesTitle">Patient codes</h2><div class="muted" id="codeUsage"></div></div></div>
-          <div class="code-form" id="codeForm" hidden>
+          <ol class="code-steps" id="codeSteps"></ol>
+          <div class="code-form" id="codeForm">
             <label class="form-label" for="codeEmail" data-i18n="subs.emailLabel">Patient’s email</label>
             <div class="inline-form small">
               <input class="input" id="codeEmail" type="email" autocomplete="off" placeholder="patient@example.com">
@@ -1361,6 +1389,7 @@ body.pro .help-card{display:none}
           <div class="code-new" id="codeNew" hidden></div>
           <div class="code-list" id="codeList"></div>
         </div>
+        <div class="plan-grid" id="planGrid"></div>
       </section>
 
       <section class="view" id="settings">
@@ -1626,7 +1655,7 @@ let LANG = (() => {
 const I18N = {
   en: {
     'locale': 'en',
-    'doc.title': 'BAO — symptom & wellbeing tracker',
+    'doc.title': 'BAO — symptom & wellbeing diary',
     'days': ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
     'title.home':     ['Overview',       'A calm place to notice what your body is telling you'],
     'title.checkin':  ['Daily check-in', 'A minute to notice what is here'],
@@ -1690,7 +1719,7 @@ const I18N = {
     'ans.yes': 'yes',
     'ans.no':  'no',
     'chat.hi': n => 'Hii ' + n + ', my name is BAO.',
-    'chat.intro': "I'm going to be your personal assistant in the tracker application :),\n" +
+    'chat.intro': "I'm going to be your personal assistant in this diary :),\n" +
                   "let's fill together all that I need to track your symptoms...\n" +
                   "I'm going to ask you some simple questions.",
     'chat.almost': 'Almost finished :)',
@@ -1714,7 +1743,7 @@ const I18N = {
     'recap.title':      '* RECAP *',
     'recap.symptoms':   '* SYMPTOMS * --> ',
     'recap.parts':      '* BODY PARTS * --> ',
-    'recap.rating':     '* PAIN RATING * --> ',
+    'recap.rating':     '* INTENSITY * --> ',
     'recap.situations': '* SITUATIONS * --> ',
     'recap.thoughts':   '* THOUGHTS * --> ',
     'recap.feelings':   '* FEELINGS * --> ',
@@ -1808,7 +1837,7 @@ const I18N = {
 
   de: {
     'locale': 'de-DE',
-    'doc.title': 'BAO — Symptom- & Wohlbefindens-Tracker',
+    'doc.title': 'BAO — Symptom- & Wohlbefindens-Tagebuch',
     'days': ['So','Mo','Di','Mi','Do','Fr','Sa'],
     'title.home':     ['Übersicht',          'Ein ruhiger Ort, um zu bemerken, was dein Körper dir sagt'],
     'title.checkin':  ['Täglicher Check-in', 'Ein Moment, um wahrzunehmen, was du fühlst'],
@@ -1886,7 +1915,7 @@ const I18N = {
     'ans.yes': 'ja',
     'ans.no':  'nein',
     'chat.hi': n => 'Hii ' + n + ', ich heiße BAO.',
-    'chat.intro': 'Ich bin dein persönlicher Assistent in dieser Tracker-App :),\n' +
+    'chat.intro': 'Ich bin dein persönlicher Assistent in diesem Tagebuch :),\n' +
                   'lass uns gemeinsam alles ausfüllen, was ich brauche, um deine Symptome festzuhalten...\n' +
                   'Ich stelle dir ein paar einfache Fragen.',
     'chat.almost': 'Fast geschafft :)',
@@ -1910,7 +1939,7 @@ const I18N = {
     'recap.title':      '* ZUSAMMENFASSUNG *',
     'recap.symptoms':   '* SYMPTOME * --> ',
     'recap.parts':      '* KÖRPERSTELLEN * --> ',
-    'recap.rating':     '* SCHMERZSTÄRKE * --> ',
+    'recap.rating':     '* INTENSITÄT * --> ',
     'recap.situations': '* SITUATIONEN * --> ',
     'recap.thoughts':   '* GEDANKEN * --> ',
     'recap.feelings':   '* GEFÜHLE * --> ',
@@ -2049,7 +2078,7 @@ Object.assign(I18N.de, {
   "prec.help": "Klicke genau dorthin, wo du es spürst. Du kannst die Markierung verschieben.",
   "pat.eyebrow": "Muster-Explorer",
   "pat.h": "Zusammenhänge,<br><em>keine Schlussfolgerungen.</em>",
-  "pat.lede": "Wiederkehrende Zusammenhänge zwischen deinem Alltag und deinen Symptomen. Je länger du trackst, desto klarer kann das Bild werden.",
+  "pat.lede": "Wiederkehrende Zusammenhänge zwischen deinem Alltag und deinen Symptomen. Je länger du dein Tagebuch führst, desto klarer kann das Bild werden.",
   "aria.listening": "Bao, der Panda, hört zu",
   "pat.line": "<b>Bao liest mit dir.</b>Muster sind Hinweise, keine Urteile.",
   "pat.add": "+ Check-in hinzufügen",
@@ -2234,7 +2263,7 @@ I18N.it = {
   'recap.title': '* RIEPILOGO *',
   'recap.symptoms': '* SINTOMI * --> ',
   'recap.parts': '* ZONE DEL CORPO * --> ',
-  'recap.rating': '* INTENSITÀ DEL DOLORE * --> ',
+  'recap.rating': '* INTENSITÀ * --> ',
   'recap.situations': '* SITUAZIONI * --> ',
   'recap.thoughts': '* PENSIERI * --> ',
   'recap.feelings': '* EMOZIONI * --> ',
@@ -2724,7 +2753,7 @@ I18N.fr = {
   'recap.title': '* RÉCAPITULATIF *',
   'recap.symptoms': '* SYMPTÔMES * --> ',
   'recap.parts': '* ZONES DU CORPS * --> ',
-  'recap.rating': '* INTENSITÉ DE LA DOULEUR * --> ',
+  'recap.rating': '* INTENSITÉ * --> ',
   'recap.situations': '* SITUATIONS * --> ',
   'recap.thoughts': '* PENSÉES * --> ',
   'recap.feelings': '* ÉMOTIONS * --> ',
@@ -3144,7 +3173,7 @@ I18N.es = {
   'recap.title': '* RESUMEN *',
   'recap.symptoms': '* SÍNTOMAS * --> ',
   'recap.parts': '* ZONAS DEL CUERPO * --> ',
-  'recap.rating': '* INTENSIDAD DEL DOLOR * --> ',
+  'recap.rating': '* INTENSIDAD * --> ',
   'recap.situations': '* SITUACIONES * --> ',
   'recap.thoughts': '* PENSAMIENTOS * --> ',
   'recap.feelings': '* EMOCIONES * --> ',
@@ -3564,7 +3593,7 @@ I18N.pt = {
   'recap.title': '* RESUMO *',
   'recap.symptoms': '* SINTOMAS * --> ',
   'recap.parts': '* ÁREAS DO CORPO * --> ',
-  'recap.rating': '* INTENSIDADE DA DOR * --> ',
+  'recap.rating': '* INTENSIDADE * --> ',
   'recap.situations': '* SITUAÇÕES * --> ',
   'recap.thoughts': '* PENSAMENTOS * --> ',
   'recap.feelings': '* EMOÇÕES * --> ',
@@ -3984,7 +4013,7 @@ I18N.nl = {
   'recap.title': '* SAMENVATTING *',
   'recap.symptoms': '* KLACHTEN * --> ',
   'recap.parts': '* LICHAAMSDELEN * --> ',
-  'recap.rating': '* PIJNSCORE * --> ',
+  'recap.rating': '* INTENSITEIT * --> ',
   'recap.situations': '* SITUATIES * --> ',
   'recap.thoughts': '* GEDACHTEN * --> ',
   'recap.feelings': '* GEVOELENS * --> ',
@@ -5249,7 +5278,7 @@ function ratingWidget(){
     '<div class="rate-word"></div>' +
     '<input class="rate-range" type="range" min="0" max="10" step="1" value="4" aria-label="' + t('rate.aria') + '">' +
     '<div class="rate-ticks">' + Array.from({ length: 11 }, (_, i) => '<i>' + i + '</i>').join('') + '</div>' +
-    '<div class="scale"><span>0 · ' + t('rate.low') + '</span><span>' + t('rate.high') + ' · 10</span></div>';
+    '<div class="scale"><span>0 · ' + t('rate.low') + '<small>' + t('rate.feel0') + '</small></span><span>' + t('rate.high') + ' · 10<small>' + t('rate.feel4') + '</small></span></div>';
   const input = box.querySelector('input');
   let last = null;
   const paint = () => {
@@ -5257,7 +5286,7 @@ function ratingWidget(){
     box.style.setProperty('--rv', v);
     box.style.setProperty('--rc', rateColour(v));
     box.querySelector('.rate-num b').textContent = v;
-    box.querySelector('.rate-word').textContent = t('rate.word' + rateBand(v));
+    box.querySelector('.rate-word').innerHTML = esc(t('rate.word' + rateBand(v))) + ' <small>· ' + esc(t('rate.feel' + rateBand(v))) + '</small>';
     box.querySelector('.rate-face').textContent = ['🙂','🙂','😐','😐','😕','😕','😣','😣','😖','😫','😫'][v];
     box.querySelectorAll('.rate-ticks i').forEach((x, i) => x.classList.toggle('on', i === v));
     if (last !== null && last !== v){ haptic(v); const n = box.querySelector('.rate-num'); n.classList.remove('pop'); void n.offsetWidth; n.classList.add('pop'); }
@@ -6311,7 +6340,7 @@ async function enterApp(){
   document.body.classList.toggle('pro', USER_ROLE === 'pro');
   paintSharing();
   renderAll();
-  if (USER_ROLE === 'pro'){ await loadPro(); TOUR_PENDING = false; }
+  if (USER_ROLE === 'pro') await loadPro();
   else loadDayNotes();
   setTimeout(checkTransfer, 600);
   go('home');
@@ -6420,6 +6449,8 @@ function setLang(lang, auto){
   const current = document.querySelector('.view.active');
   if (current) paintTitle(current.id);
   renderAll();
+  // boxes painted once at sign-in also follow the new language
+  if (USER){ paintSharing(); if (USER_ROLE === 'pro' && typeof renderSubs === 'function') renderSubs(); }
   if (!$('loginScreen').hidden){ paintLoginText(); paintRole(); }
   // Nothing is saved until the end of a check-in, so an open chat simply restarts in the new language.
   if (convo !== 'idle'){
@@ -6776,7 +6807,7 @@ const FEEL_WORDS = {
   sad:   /(?<!\p{L})(sad|sadder|saddest|sadness|unhappy|depressed|miserable|heartbroken|hopeless|lonely|tearful|cried|cry|crying|tears|upset(?!\s+(?:stomach|tummy|belly))|gloomy|feel(?:ing|s|t)?\s+(?:so\s+|really\s+|very\s+|a\s+bit\s+)?(?:down|low|blue)|traurig\p{L}*|traurigkeit|niedergeschlagen|bedrückt|deprimiert|geweint|weinen|weinte|einsam|unglücklich|hoffnungslos|triste|tristezza|infelice|depress\p{L}*|piang\p{L}*|pianto|giù di morale|abbattut\p{L}*|sconfortat\p{L}*|tristesse|tristeza|pleur\p{L}*|llor\p{L}*|d[ée]prim\p{L}*|deprimid\p{L}*|chor(?:ei|ar|ando|ou|o)|verdriet\p{L}*|verdrietig|huil\p{L}*|somber|eenzaam|neerslachtig)(?!\p{L})/iu,
   angry: /(?<!\p{L})(angry|angrier|anger|mad|furious|annoyed|irritated|frustrated|frustration|pissed|rage|livid|resentful|wütend|wut|sauer|verärgert|genervt|gereizt|frustriert|ärgerlich|geärgert|zornig|aufgebracht|arrabbiat\p{L}*|rabbia|furios\p{L}*|incazzat\p{L}*|irritat\p{L}*|frustrat\p{L}*|innervosit\p{L}*|col[èe]re|f[âa]ch[ée]\p{L}*|[ée]nerv[ée]\p{L}*|enfadad\p{L}*|enojad\p{L}*|rabia|furieu\p{L}*|raiva|irritad\p{L}*|boos|kwaad|woedend|ge[ïi]rriteerd)(?!\p{L})/iu
 };
-const CRISIS_WORDS = /(suicid|me matar|quero morrer|tirar minha vida|me machucar|me cortar|zelfmoord|dood willen|wil dood|mezelf iets aandoen|mezelf snijden|me tuer|en finir(?!\s+avec\s+(?:ce|cette|ces|le|les|mon|mes|un|une|la\s+(?!vie)|ma\s+(?!vie)))|envie de mourir|veux mourir|me faire du mal|me couper|matarme|quitarme la vida|quiero morir|hacerme da[ñn]o|cortarme|uccidermi|farla finita(?!\s+con\s+(?:questo|questa|questi|queste|il|lo|i|gli|le|un|una|la\s+(?!vita)|sto|sta))|voglio morire|non voglio più vivere|farmi del male|tagliarmi|autolesion|kill myself|end my life|want to die|wanna die|don['’]?t want to live|self[- ]?harm|hurt myself|cut myself|suizid|selbstmord|mich umbringen|nicht mehr leben|sterben will|mir etwas antun|mir was antun|(?<!\p{L})ritzen(?!\p{L})|ich ritze mich|selbstverletz|want to be dead|wish i (?:was|were) dead|(?<!\p{L})kms(?!\p{L})|unalive|take my (?:own )?life|don['’]?t want to (?:be here|exist) any ?more|better off without me|no point (?:in )?living|mi voglio (?:ammazzare|uccidere)|mi ammazzo|mi uccido|non voglio (?:pi[uù] )?vivere|non ce la faccio pi[uù] a vivere|vorrei non esistere|vorrei non (?:essere mai|esser mai) nat[oa]|vorrei essere mort[oa]|voglio essere mort[oa]|meglio senza di me|will tot sein|wäre lieber tot|bring mich um|me quiero matar|je veux disparaître|vou me matar|ik wil er niet meer zijn|mi (?:sto|stavo|sono|ero) (?:tagliando|tagliat[oa]|ferendo|ferit[oa]|facendo (?:del )?male|fatt[oa] (?:del )?male)|mi taglio|mi ferisco|mi faccio (?:del )?male|farmi male|ferirmi|(?:cutting|harming|hurting|burning) myself|(?:burned|burnt|harmed) myself|i cut(?: myself)?(?= again)|mich (?:geritzt|geschnitten|verletzt)|schneide mich|verletze mich|je me (?:coupe|suis coup[ée]+|fais du mal|suis fait du mal|scarifie)|scarif|me (?:corto|cort[ée]|hago daño|lastimo|lastim[ée]|estoy cortando)|estoy cort[aá]ndome|me cortei|me machuco|me machuquei|estou me cortando|ik snijd mezelf|mezelf pijn doen|mezelf gesneden)/iu;
+const CRISIS_WORDS = /(suicid|me matar|quero morrer|tirar minha vida|me machucar|me cortar|zelfmoord|dood willen|wil dood|mezelf iets aandoen|mezelf snijden|me tuer|en finir(?!\s+avec\s+(?:ce|cette|ces|le|les|mon|mes|un|une|la\s+(?!vie)|ma\s+(?!vie)))|envie de mourir|veux mourir|me faire du mal|me couper|matarme|quitarme la vida|quiero morir|hacerme da[ñn]o|cortarme|uccidermi|farla finita(?!\s+con\s+(?:questo|questa|questi|queste|il|lo|i|gli|le|un|una|la\s+(?!vita)|sto|sta))|voglio morire|non voglio più vivere|farmi del male|tagliarmi|autolesion|kill myself|end my life|want to die|wanna die|don['’]?t want to live|self[- ]?harm|hurt myself|cut myself|suizid|selbstmord|mich umbringen|nicht mehr leben|sterben will|mir etwas antun|mir was antun|(?<!\p{L})ritzen(?!\p{L})|ich ritze mich|selbstverletz|want to be dead|wish i (?:was|were) dead|(?<!\p{L})kms(?!\p{L})|unalive|take my (?:own )?life|don['’]?t want to (?:be here|exist) any ?more|better off without me|no point (?:in )?living|mi voglio (?:ammazzare|uccidere)|mi ammazzo|mi uccido|non voglio (?:pi[uù] )?vivere|non ce la faccio pi[uù] a vivere|vorrei non esistere|vorrei non (?:essere mai|esser mai) nat[oa]|vorrei essere mort[oa]|voglio essere mort[oa]|meglio senza di me|will tot sein|wäre lieber tot|bring mich um|me quiero matar|je veux disparaître|vou me matar|ik wil er niet meer zijn|mi (?:sto|stavo|sono|ero) (?:tagliando|tagliat[oa]|ferendo|facendo del male|fatt[oa] del male)|mi taglio|mi faccio del male|impiccarmi|(?:buttarmi|gettarmi|lanciarmi) (?:gi[uù]|dal|dalla|da un|da una|sotto)|spararmi|avvelenarmi|tagliarmi le vene|(?:prendere|preso|prender[oò]|ingoiare|ingoiato) tutte (?:le|quelle|le mie) (?:pastiglie|pillole|compresse|medicine)|overdos|(?:lettera|biglietto|messaggio) d['’]addio|(?:ho|avevo) (?:gi[aà] )?(?:pensato|pianificato|deciso|capito) come (?:farlo|farla finita|uccidermi|ammazzarmi|morire)|so (?:gi[aà] )?come farlo|(?:ho|avevo) (?:comprato|preparato|nascosto|messo da parte) (?:una corda|delle pillole|delle pastiglie|le pillole|le pastiglie|dei farmaci|i farmaci)|(?:cutting|harming|hurting|burning) myself|(?:burned|burnt|harmed) myself|i cut(?: myself)?(?= again)|hang myself|jump (?:off|from) (?:a|the) (?:bridge|building|roof)|jump in front of|took all (?:my|the) (?:pills|meds)|swallow(?:ed)? all (?:my|the) pills|suicide note|goodbye (?:note|letter)|(?:planned|know|decided) how (?:i['’]?ll|i will|to) do it|shoot myself|slit my wrists|(?:saved|hidden|hid|bought) (?:up )?(?:pills|a rope)|mich (?:geritzt|geschnitten)|schneide mich|mich (?:erhängen|aufhängen|erschießen)|von (?:der|einer) brücke springen|vor den zug|abschiedsbrief|alle tabletten|pulsadern|weiß schon,? wie ich es mache|je me (?:coupe|suis coup[ée]+|fais du mal|suis fait du mal|scarifie)|scarif|me pendre|sauter d['’]un pont|sous un train|lettre d['’]adieu|tous mes médicaments|me tirer une balle|m['’]ouvrir les veines|me (?:corto|cort[ée]|hago daño|estoy cortando)|estoy cort[aá]ndome|ahorcarme|tirarme (?:de|por|desde|bajo)|tirar(?:me)? (?:de|por|desde|bajo) (?:un|una|el|la) (?:puente|edificio|tren|balc[oó]n|ventana|azotea)|sobredosis|carta de despedida|tom[ée] todas las pastillas|pegarme un tiro|cortarme las venas|me cortei|estou me cortando|me enforcar|me jogar (?:da|de|na frente)|tomei todos os comprimidos|me dar um tiro|cortar os pulsos|ik snijd mezelf|mezelf pijn doen|mezelf gesneden|mezelf ophangen|van een brug springen|voor de trein|afscheidsbrief|alle pillen|polsen doorsnijden)/iu;
 const NEGATION = /(\bnot\b|n't\b|n’t\b|\bnever\b|\bno\b|\bnicht\b|\bnie\b|\bnon\b|\bmai\b|\bpas\b|\bjamais\b|\bnunca\b|\bnão\b|\bniet\b|\bgeen\b|\bnooit\b|(?<!\p{L})kein\p{L}*)/iu;
 
 function feelingsIn(text){
@@ -6911,7 +6942,10 @@ function armed(btn, label){
 }
 function wireDelete(el){
   el.querySelectorAll('[data-del-sym]').forEach(b => b.addEventListener('click', async () => {
-    if (!armed(b, t('del.sure'))) return;
+    // the last symptom takes the whole check-in with it, so the warning says so
+    const e = DATA.find(x => x.id === b.dataset.delSym.split('|')[0]);
+    const last = !!e && (e.symptoms || []).length <= 1;
+    if (!armed(b, t(last ? 'del.sureEntry' : 'del.sure'))) return;
     b.disabled = true;
     const [id, n] = b.dataset.delSym.split('|');
     await deleteSymptom(id, Number(n));
@@ -6929,6 +6963,13 @@ function wireDelete(el){
 async function deleteSymptom(id, n){
   const old = DATA.find(e => e.id === id);
   if (!old || !old.symptoms || !old.symptoms[n]) return;
+  // without symptoms the check-in would still be counted while looking empty: remove it whole
+  if (old.symptoms.length === 1){
+    await store.remove(id);
+    renderAll();
+    showToast(t('del.entryDone'));
+    return;
+  }
   const copy = JSON.parse(JSON.stringify(old));
   copy.symptoms.splice(n, 1);
   copy.forDay = copy.forDay || localKey(dOf(old));
@@ -7276,7 +7317,45 @@ Object.assign(I18N.nl, { 'forgot.wait': 'Je hebt in korte tijd meerdere e-mails 
 
 
 // ---- tutorial ----
-const TOUR = [
+// A step can open a page (view), or a patient's diary for a therapist (patient), point at things on it (to)
+// and be left out when it does not apply (when). Texts: k + 'h' is the title, k + 'p' the text.
+const TOUR_PATIENT = [
+  { art:'cheer',     k:'tp.hi.',    view:'home' },
+  { art:'happy',     k:'tp.home.',  view:'home', to:['#homeStats'] },
+  { art:'checkin',   k:'tp.start.', view:'home', to:['#newCheckinBtn'] },
+  { art:'listening', k:'tp.chat.' },
+  { art:'checkin',   k:'tp.body.' },
+  { art:'thinking',  k:'tp.rate.' },
+  { art:'happy',     k:'tp.emo.' },
+  { art:'cheer',     k:'tp.save.' },
+  { art:'thinking',  k:'tp.cal.',   view:'calendar', to:['#calGrid'] },
+  { art:'listening', k:'tp.day.',   view:'calendar', to:['#dayPanel'] },
+  { art:'phone',     k:'tp.pat.',   view:'patterns', to:['[data-view=patterns]'] },
+  { art:'phone',     k:'tp.rep.',   view:'report',   to:['[data-view=report]'] },
+  { art:'happy',     k:'tp.share.', view:'settings', to:['#shareBox', '#sessionCard'], when: () => !!USER_SHARED },
+  { art:'listening', k:'tp.help.',  view:'settings', to:['.help-card'] },
+  { art:'happy',     k:'tp.set.',   view:'settings', to:['.acc-card', '.reminder-card'] },
+  { art:'cheer',     k:'tp.end.',   view:'home' }
+];
+const hasPatients = () => typeof PRO_PATIENTS !== 'undefined' && PRO_PATIENTS.length > 0;
+const TOUR_PRO = [
+  { art:'cheer',     k:'tq.hi.',     view:'subs' },
+  { art:'checkin',   k:'tq.code.',   view:'subs', to:['#codeForm'] },
+  { art:'listening', k:'tq.send.',   view:'subs', to:['#codeSteps'] },
+  { art:'happy',     k:'tq.signup.', view:'subs' },
+  { art:'thinking',  k:'tq.wait.',   view:'subs', to:['#codeList'] },
+  { art:'phone',     k:'tq.plans.',  view:'subs', to:['#planGrid'] },
+  { art:'happy',     k:'tq.list.',   view:'subs', to:['#proList', '.tabbar [data-view=patients]'] },
+  { art:'thinking',  k:'tq.cal.',    patient:true, to:['#calGrid'], when: hasPatients },
+  { art:'listening', k:'tq.notes.',  patient:true, to:['#proPanel'], when: hasPatients },
+  { art:'checkin',   k:'tq.day.',    patient:true, to:['#dayPanel'], when: hasPatients },
+  { art:'thinking',  k:'tq.remove.', patient:true, to:['#proRemove'], when: hasPatients },
+  { art:'listening', k:'tq.later.',  view:'subs', when: () => !hasPatients() },
+  { art:'phone',     k:'tq.set.',    view:'settings', to:['.safephone-card', '.transfer-card'] },
+  { art:'cheer',     k:'tq.end.',    view:'subs', to:['#codeForm'] }
+];
+// the short tour stays for the languages that do not have the long one yet
+const TOUR_SHORT = [
   { art:'cheer',     k:'tour.s1' },
   { art:'checkin',   k:'tour.s2', to:['#newCheckinBtn'] },
   { art:'listening', k:'tour.s3', to:['#newCheckinBtn'] },
@@ -7284,6 +7363,21 @@ const TOUR = [
   { art:'phone',     k:'tour.s5', to:['[data-view=patterns]', '[data-view=report]'] },
   { art:'happy',     k:'tour.s6', to:['[data-view=settings]'] }
 ];
+let TOUR = TOUR_SHORT;
+function tourSteps(){
+  if (USER_ROLE === 'pro') return TOUR_PRO.filter(st => !st.when || st.when());
+  if (!('tp.hi.h' in (I18N[LANG] || {}))) return TOUR_SHORT;
+  return TOUR_PATIENT.filter(st => !st.when || st.when());
+}
+// open the page of the step and bring what it points at into view
+function tourGo(st){
+  if (st.patient && hasPatients()){ if (!PRO_CUR) openPatient(PRO_PATIENTS[0].email); else _go0('calendar'); }
+  else if (st.view) _go0(st.view);
+  const el = (st.to || []).map(tourVisible).filter(Boolean)[0];
+  if (el && innerWidth <= 680){ el.scrollIntoView({ block:'start' }); (scroller() || window).scrollBy(0, -76); }
+  else if (el) el.scrollIntoView({ block:'center' });
+  else { const sc = scroller(); if (sc) sc.scrollTop = 0; window.scrollTo(0, 0); }
+}
 function tourVisible(sel){
   return [...document.querySelectorAll(sel)].find(el => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(el).visibility !== 'hidden'; });
 }
@@ -7292,7 +7386,12 @@ function placeTour(){
   holes.innerHTML = ''; rings.innerHTML = '';
   document.querySelectorAll('.tour-arrow.extra').forEach(a => a.remove());
   const els = (st.to || []).map(tourVisible).filter(Boolean);
+  const tour = $('tour');
+  tour.classList.remove('at-top', 'at-bottom');
   if (!els.length){ arrow.hidden = true; holes.innerHTML = ''; return; }
+  const r0 = els[0].getBoundingClientRect();
+  if (innerWidth <= 680) tour.classList.add(r0.top < innerHeight * 0.3 ? 'at-bottom' : 'at-top');
+  else if (r0.right >= 300) tour.classList.add(r0.top + r0.height / 2 < innerHeight / 2 ? 'at-bottom' : 'at-top');
   const P = 6, NS = 'http://www.w3.org/2000/svg';
   els.forEach(el => {
     const r = el.getBoundingClientRect(), rad = Math.min(16, r.height / 2 + P);
@@ -7318,9 +7417,10 @@ function placeTour(){
   });
 }
 let tourI = 0;
-function tourNames(){ return { cal:t('nav.calendar'), pat:t('nav.patterns'), rep:t('nav.report'), set:t('nav.settings') }; }
+function tourNames(){ return { cal:t('nav.calendar'), pat:t('nav.patterns'), rep:t('nav.report'), set:t('nav.settings'), subs:t('nav.subs') }; }
 function paintTour(){
   const st = TOUR[tourI], n = tourNames(), last = tourI === TOUR.length - 1;
+  if (TOUR !== TOUR_SHORT) tourGo(st);
   $('tourArt').className = 'bao bao-' + st.art;
   $('tourStep').textContent = t('tour.step', tourI + 1, TOUR.length);
   $('tourTitle').textContent = t(st.k + 'h', displayName());
@@ -7332,17 +7432,19 @@ function paintTour(){
   $('tourSkip').textContent = t('tour.skip');
   $('tourSkip').hidden = last;
   placeTour();
+  setTimeout(placeTour, 320);   // after the page change has settled
 }
 function openTour(){
-  // parte sempre dalla pagina Panoramica, in cima, con il menu chiuso
-  go('home');
+  // parte sempre dalla prima pagina del giro, in cima, con il menu chiuso
+  TOUR = tourSteps();
+  _go0(TOUR[0].view || 'home');
   document.querySelector('.sidebar').classList.remove('open');
   const sc = typeof scroller === 'function' && scroller(); if (sc) sc.scrollTop = 0; window.scrollTo(0, 0);
   tourI = 0; $('tour').hidden = false; paintTour();
   setTimeout(() => { placeTour(); $('tourNext').focus(); }, 350);
 }
 addEventListener('resize', () => { if (!$('tour').hidden) placeTour(); });
-function closeTour(){ $('tour').hidden = true; document.querySelectorAll('.tour-arrow.extra').forEach(a => a.remove()); }
+function closeTour(){ $('tour').hidden = true; $('tour').classList.remove('at-top', 'at-bottom'); document.querySelectorAll('.tour-arrow.extra').forEach(a => a.remove()); }
 $('tourNext').addEventListener('click', () => { if (tourI < TOUR.length - 1){ tourI++; paintTour(); } else closeTour(); });
 $('tourBack').addEventListener('click', () => { if (tourI > 0){ tourI--; paintTour(); } });
 $('tourSkip').addEventListener('click', closeTour);
@@ -7355,9 +7457,197 @@ document.addEventListener('keydown', e => {
 });
 $('tourOpen').addEventListener('click', openTour);
 
+// ---- long tutorial texts (patients: tp.*, therapists and doctors: tq.*) ----
+Object.assign(I18N.en, {
+  'tp.hi.h': name => 'Hi ' + (name || 'there') + ', I’m Bao! 🐼',
+  'tp.hi.p': () => 'I’m a little diary for your body and your feelings. Every day I ask you a few short questions, and over time we see together what comes back. This tour shows you every page, step by step. You can stop it any time and watch it again in Settings.',
+  'tp.home.h': () => 'Your overview',
+  'tp.home.p': () => 'This is the first page. Here you see how many check-ins you have, the average strength of your symptoms out of 10, and the body area that comes back most often. Further down there is a chart of the last 7 days and your latest check-ins.',
+  'tp.start.h': () => 'Start your daily check-in',
+  'tp.start.p': () => 'Tap this button to talk with me. One check-in a day is enough and takes about a minute. You can also add more than one on the same day.',
+  'tp.chat.h': () => 'Answer like a message',
+  'tp.chat.p': () => 'I ask simple questions, one at a time. Write a few words and press Send, or tap Yes / No when I show the buttons. Made a mistake? “Undo” takes you one step back. Nothing is saved until you press save at the end.',
+  'tp.body.h': () => 'Show me where you feel it',
+  'tp.body.p': () => 'When you tell me about a symptom, a body appears. Tap the area where you feel it. You can tap more than one, turn the body to see the back, and zoom in to place small points exactly. Then press “That is where I feel it”.',
+  'tp.rate.h': () => 'How strong was it?',
+  'tp.rate.p': () => 'Move the slider from 0 (barely there) to 10 (unbearable), or tap a number, then press “Save this rating”. While the body or the slider is open, the writing bar is hidden: just use the buttons.',
+  'tp.emo.h': () => 'Your emotions',
+  'tp.emo.p': () => 'Near the end I show a wheel of emotions. Tap a colour, then the word that fits best. You can choose up to 5. Press “These are my emotions” when you are done.',
+  'tp.save.h': () => 'Check and save',
+  'tp.save.p': () => 'At the end I show a short summary of everything you told me. Read it and press “Save this check-in”. If something is wrong, tap “Undo” and change it.',
+  'tp.cal.h': () => 'Your calendar',
+  'tp.cal.p': n => 'In “' + n.cal + '” every day with a check-in has dots: one dot per symptom, the higher the stronger. Use the arrows to change month, and “Today” to come back.',
+  'tp.day.h': () => 'Read, add or delete',
+  'tp.day.p': () => 'Tap a day to read everything you wrote. Here you can add a check-in you forgot, write a note, delete one symptom with ✕ or the whole check-in. If you delete the last symptom, the whole check-in goes too.',
+  'tp.pat.h': () => 'Patterns',
+  'tp.pat.p': n => '“' + n.pat + '” shows which symptoms and body areas come back most often, and how strong they were over time. It shows what you wrote: it is never a diagnosis.',
+  'tp.rep.h': () => 'Your report',
+  'tp.rep.p': n => 'In “' + n.rep + '” you prepare a summary to bring to your doctor. You choose what goes in, for example your personal notes or not. Print it or save it as a PDF: nothing is sent by itself.',
+  'tp.share.h': () => 'You and your therapist',
+  'tp.share.p': () => 'Your therapist or doctor can read your check-ins, but never the private line at the end. In “For my next session” you write what you want to talk about together. You can stop sharing at any time.',
+  'tp.help.h': () => 'Help, any time',
+  'tp.help.p': () => 'If things get too heavy, “Help right now” shows numbers you can call straight away. If you write something worrying in a check-in, I show them to you myself.',
+  'tp.set.h': () => 'Make it yours',
+  'tp.set.p': n => 'In “' + n.set + '” you change your name and password, choose your language, set a daily reminder, design your avatar for the chat and watch this tour again.',
+  'tp.end.h': () => 'You’re ready! 💚',
+  'tp.end.p': () => 'Start your first check-in whenever you like: a few words are enough. I’m here every day.',
+  'tq.hi.h': name => 'Welcome' + (name ? ', ' + name : '') + '! 🐼',
+  'tq.hi.p': () => 'With BAO your patients keep a short daily diary of symptoms and feelings, and you read it before your sessions. This tour shows you how to invite a patient and what you will see. You can watch it again in Settings.',
+  'tq.code.h': () => 'Step 1: write the email',
+  'tq.code.p': () => 'Everything starts here. Write your patient’s email address and press “Create code”. Each code works only once, and only with that email.',
+  'tq.send.h': () => 'Step 2: send the code',
+  'tq.send.p': () => 'The new code appears in big letters. Press “Send by email” or “Share”: the message is already written and tells your patient exactly what to do. Or copy the code and send it however you like.',
+  'tq.signup.h': () => 'Step 3: your patient signs up',
+  'tq.signup.p': () => 'Your patient opens BAO, taps “No account yet? Create one”, chooses “Patient”, writes the same email and the code, and agrees to share the check-ins with you. From then on you see their diary.',
+  'tq.wait.h': () => 'Codes waiting',
+  'tq.wait.p': () => 'Codes not used yet stay here as “Waiting for sign-up”. You can copy or send them again, or remove one if you made a mistake.',
+  'tq.plans.h': () => 'Plans',
+  'tq.plans.p': () => 'The free plan is for up to 3 patients. If you need more, choose a bigger plan here. During the beta every plan is free.',
+  'tq.list.h': () => 'Your patients',
+  'tq.list.p': () => 'Everyone who signed up with your code appears here. Search by name or email, and tap a name to open their diary.',
+  'tq.cal.h': () => 'The patient’s calendar',
+  'tq.cal.p': () => 'You see every check-in day by day: one dot per symptom, the higher the stronger. Tap a day to read the answers, body areas, intensity and emotions. The private line at the end of each check-in is never shown to you.',
+  'tq.notes.h': () => 'Next session and questions',
+  'tq.notes.p': () => '“Notes for the next session” are topics your patient wants to talk about: tick them once you have discussed them. In “Questions for your patient” you add up to 10 questions, and Bao asks them at the end of every check-in.',
+  'tq.day.h': () => 'Your notes on a day',
+  'tq.day.p': () => 'Under each day you can write a note. “Only me” keeps it private; “Share” lets your patient read it too.',
+  'tq.remove.h': () => 'Ending the work together',
+  'tq.remove.p': () => '“Remove patient” stops the sharing. Nobody can read the diary any more, and your patient has 30 days to read and save it before it is deleted. A new code for the same email opens it again.',
+  'tq.later.h': () => 'When a patient joins',
+  'tq.later.p': () => 'As soon as your first patient signs up, their name appears in the list. You will see their calendar and their notes for the next session, and you can add questions for Bao to ask them.',
+  'tq.set.h': () => 'Your practice settings',
+  'tq.set.p': n => 'In “' + n.set + '” you can add a safety phone number your patients see in their help card, and hand all your patients over to a colleague if you need to.',
+  'tq.end.h': () => 'You’re ready! 💚',
+  'tq.end.p': () => 'Start by creating a code for your first patient. Questions? Write to support@baotracker.com.'
+});
+Object.assign(I18N.it, {
+  'tp.hi.h': name => 'Ciao ' + (name || '') + ', sono Bao! 🐼',
+  'tp.hi.p': () => 'Sono un piccolo diario per il tuo corpo e le tue emozioni. Ogni giorno ti faccio qualche domanda breve e, col tempo, vediamo insieme cosa torna. Questo giro ti mostra tutte le pagine, passo per passo. Puoi fermarlo quando vuoi e rivederlo nelle Impostazioni.',
+  'tp.home.h': () => 'La tua panoramica',
+  'tp.home.p': () => 'Questa è la prima pagina. Qui vedi quanti check-in hai fatto, la forza media dei tuoi sintomi su 10 e la zona del corpo che torna più spesso. Più in basso c’è il grafico degli ultimi 7 giorni e i tuoi check-in recenti.',
+  'tp.start.h': () => 'Inizia il check-in del giorno',
+  'tp.start.p': () => 'Tocca questo pulsante per parlare con me. Basta un check-in al giorno e ci vuole circa un minuto. Puoi anche farne più di uno nello stesso giorno.',
+  'tp.chat.h': () => 'Rispondi come in un messaggio',
+  'tp.chat.p': () => 'Ti faccio domande semplici, una alla volta. Scrivi qualche parola e premi Invia, oppure tocca Sì / No quando compaiono i pulsanti. Hai sbagliato? «Annulla» torna indietro di un passo. Niente viene salvato finché non premi salva alla fine.',
+  'tp.body.h': () => 'Mostrami dove lo senti',
+  'tp.body.p': () => 'Quando mi racconti un sintomo, compare un corpo. Tocca la zona dove lo senti. Puoi toccarne più di una, girare il corpo per vedere la schiena e ingrandire per mettere dei punti precisi. Poi premi «È qui che lo sento».',
+  'tp.rate.h': () => 'Quanto era forte?',
+  'tp.rate.p': () => 'Sposta il cursore da 0 (si notava appena) a 10 (insopportabile), oppure tocca un numero, poi premi «Salva questo valore». Mentre il corpo o il cursore sono aperti la barra per scrivere sparisce: usa solo i pulsanti.',
+  'tp.emo.h': () => 'Le tue emozioni',
+  'tp.emo.p': () => 'Verso la fine ti mostro una ruota delle emozioni. Tocca un colore e poi la parola che ti somiglia di più. Puoi sceglierne fino a 5. Quando hai finito premi «Ecco le mie emozioni».',
+  'tp.save.h': () => 'Controlla e salva',
+  'tp.save.p': () => 'Alla fine ti mostro un breve riepilogo di tutto quello che mi hai detto. Leggilo e premi «Salva questo check-in». Se qualcosa non va, tocca «Annulla» e cambialo.',
+  'tp.cal.h': () => 'Il tuo calendario',
+  'tp.cal.p': n => 'In «' + n.cal + '» ogni giorno con un check-in ha dei puntini: un puntino per sintomo, più è in alto più era forte. Con le frecce cambi mese, con «Oggi» torni a oggi.',
+  'tp.day.h': () => 'Rileggi, aggiungi o elimina',
+  'tp.day.p': () => 'Tocca un giorno per rileggere tutto quello che hai scritto. Qui puoi aggiungere un check-in che avevi dimenticato, scrivere una nota, eliminare un sintomo con ✕ o tutto il check-in. Se elimini l’ultimo sintomo, se ne va tutto il check-in.',
+  'tp.pat.h': () => 'Schemi',
+  'tp.pat.p': n => '«' + n.pat + '» ti mostra quali sintomi e quali zone del corpo tornano più spesso, e quanto erano forti nel tempo. Mostra quello che hai scritto tu: non è mai una diagnosi.',
+  'tp.rep.h': () => 'Il tuo report',
+  'tp.rep.p': n => 'In «' + n.rep + '» prepari un riassunto da portare al tuo medico. Scegli tu cosa metterci, per esempio se includere le note personali. Puoi stamparlo o salvarlo come PDF: non viene mandato a nessuno da solo.',
+  'tp.share.h': () => 'Tu e chi ti segue',
+  'tp.share.p': () => 'Il tuo terapeuta o medico può leggere i tuoi check-in, ma mai la riga privata alla fine. In «Per la prossima seduta» scrivi di cosa vuoi parlare insieme. Puoi smettere di condividere quando vuoi.',
+  'tp.help.h': () => 'Aiuto, sempre',
+  'tp.help.p': () => 'Se diventa tutto troppo pesante, «Aiuto subito» ti mostra numeri che puoi chiamare subito. Se in un check-in scrivi qualcosa che mi preoccupa, te li mostro io.',
+  'tp.set.h': () => 'Rendilo tuo',
+  'tp.set.p': n => 'In «' + n.set + '» cambi nome e password, scegli la lingua, imposti un promemoria ogni giorno, disegni il tuo avatar per la chat e rivedi questo giro.',
+  'tp.end.h': () => 'Tutto pronto! 💚',
+  'tp.end.p': () => 'Inizia il primo check-in quando vuoi: bastano poche parole. Io sono qui ogni giorno.',
+  'tq.hi.h': name => 'Ti diamo il benvenuto' + (name ? ', ' + name : '') + '! 🐼',
+  'tq.hi.p': () => 'Con BAO i tuoi pazienti tengono un breve diario quotidiano di sintomi ed emozioni, e tu lo leggi prima delle sedute. Questo giro ti mostra come invitare un paziente e cosa vedrai. Puoi rivederlo nelle Impostazioni.',
+  'tq.code.h': () => 'Passo 1: scrivi l’email',
+  'tq.code.p': () => 'Tutto parte da qui. Scrivi l’email del paziente e premi «Crea il codice». Ogni codice funziona una sola volta e solo con quella email.',
+  'tq.send.h': () => 'Passo 2: manda il codice',
+  'tq.send.p': () => 'Il nuovo codice compare in grande. Premi «Invia per email» o «Condividi»: il messaggio è già scritto e spiega al paziente esattamente cosa fare. Oppure copia il codice e mandalo come preferisci.',
+  'tq.signup.h': () => 'Passo 3: il paziente si iscrive',
+  'tq.signup.p': () => 'Il paziente apre BAO, tocca «Non hai un account? Creane uno», sceglie «Paziente», scrive la stessa email e il codice e accetta di condividere i check-in con te. Da quel momento vedi il suo diario.',
+  'tq.wait.h': () => 'Codici in attesa',
+  'tq.wait.p': () => 'I codici non ancora usati restano qui come «In attesa di iscrizione». Puoi copiarli o mandarli di nuovo, oppure toglierne uno se hai sbagliato.',
+  'tq.plans.h': () => 'Piani',
+  'tq.plans.p': () => 'Il piano gratuito è per al massimo 3 pazienti. Se te ne servono di più, scegli qui un piano più grande. Durante la beta tutti i piani sono gratuiti.',
+  'tq.list.h': () => 'I tuoi pazienti',
+  'tq.list.p': () => 'Qui compare chi si è iscritto con il tuo codice. Cerca per nome o email e tocca un nome per aprire il suo diario.',
+  'tq.cal.h': () => 'Il calendario del paziente',
+  'tq.cal.p': () => 'Vedi ogni check-in giorno per giorno: un puntino per sintomo, più è in alto più era forte. Tocca un giorno per leggere risposte, zone del corpo, intensità ed emozioni. La riga privata alla fine di ogni check-in non ti viene mai mostrata.',
+  'tq.notes.h': () => 'Prossima seduta e domande',
+  'tq.notes.p': () => 'Le «Note per la prossima seduta» sono gli argomenti di cui il paziente vuole parlare: spuntale quando ne avete parlato. In «Domande per il paziente» aggiungi fino a 10 domande, e Bao gliele fa alla fine di ogni check-in.',
+  'tq.day.h': () => 'Le tue note su un giorno',
+  'tq.day.p': () => 'Sotto ogni giorno puoi scrivere una nota. «Solo io» la tiene privata; «Condividi» la fa leggere anche al paziente.',
+  'tq.remove.h': () => 'Chiudere il percorso',
+  'tq.remove.p': () => '«Togli paziente» interrompe la condivisione. Nessuno può più leggere il diario, e il paziente ha 30 giorni per rileggerlo e salvarlo prima che venga cancellato. Un nuovo codice per la stessa email lo riapre.',
+  'tq.later.h': () => 'Quando arriva un paziente',
+  'tq.later.p': () => 'Appena il primo paziente si iscrive, il suo nome compare nell’elenco. Vedrai il suo calendario e le sue note per la prossima seduta, e potrai aggiungere domande che Bao gli farà.',
+  'tq.set.h': () => 'Le impostazioni dello studio',
+  'tq.set.p': n => 'In «' + n.set + '» puoi aggiungere un numero di sicurezza che i pazienti vedono nella loro scheda di aiuto, e passare tutti i pazienti a un collega se ti serve.',
+  'tq.end.h': () => 'Tutto pronto! 💚',
+  'tq.end.p': () => 'Inizia creando un codice per il tuo primo paziente. Domande? Scrivi a support@baotracker.com.'
+});
+Object.assign(I18N.de, {
+  'tp.hi.h': name => 'Hallo ' + (name || '') + ', ich bin Bao! 🐼',
+  'tp.hi.p': () => 'Ich bin ein kleines Tagebuch für deinen Körper und deine Gefühle. Jeden Tag stelle ich dir ein paar kurze Fragen, und mit der Zeit sehen wir gemeinsam, was wiederkommt. Diese Tour zeigt dir alle Seiten, Schritt für Schritt. Du kannst sie jederzeit beenden und in den Einstellungen wieder ansehen.',
+  'tp.home.h': () => 'Deine Übersicht',
+  'tp.home.p': () => 'Das ist die erste Seite. Hier siehst du, wie viele Check-ins du hast, wie stark deine Symptome im Schnitt waren (von 10) und welche Körperstelle am häufigsten vorkommt. Weiter unten gibt es ein Diagramm der letzten 7 Tage und deine letzten Check-ins.',
+  'tp.start.h': () => 'Starte deinen täglichen Check-in',
+  'tp.start.p': () => 'Tippe auf diesen Knopf, um mit mir zu sprechen. Ein Check-in am Tag reicht und dauert etwa eine Minute. Du kannst auch mehrere am selben Tag machen.',
+  'tp.chat.h': () => 'Antworte wie in einer Nachricht',
+  'tp.chat.p': () => 'Ich stelle einfache Fragen, eine nach der anderen. Schreib ein paar Worte und tippe auf Senden, oder tippe auf Ja / Nein, wenn die Knöpfe erscheinen. Vertippt? „Zurück“ geht einen Schritt zurück. Gespeichert wird erst, wenn du am Ende auf Speichern tippst.',
+  'tp.body.h': () => 'Zeig mir, wo du es spürst',
+  'tp.body.p': () => 'Wenn du mir von einem Symptom erzählst, erscheint ein Körper. Tippe auf die Stelle, wo du es spürst. Du kannst mehrere wählen, den Körper umdrehen, um den Rücken zu sehen, und hineinzoomen, um genaue Punkte zu setzen. Dann tippe auf „Genau dort spüre ich es“.',
+  'tp.rate.h': () => 'Wie stark war es?',
+  'tp.rate.p': () => 'Schieb den Regler von 0 (kaum spürbar) bis 10 (unerträglich) oder tippe auf eine Zahl, dann auf „Bewertung speichern“. Solange der Körper oder der Regler offen ist, verschwindet das Schreibfeld: nutze einfach die Knöpfe.',
+  'tp.emo.h': () => 'Deine Gefühle',
+  'tp.emo.p': () => 'Gegen Ende zeige ich dir ein Gefühlsrad. Tippe auf eine Farbe und dann auf das Wort, das am besten passt. Du kannst bis zu 5 wählen. Wenn du fertig bist, tippe auf „Das sind meine Gefühle“.',
+  'tp.save.h': () => 'Prüfen und speichern',
+  'tp.save.p': () => 'Am Ende zeige ich dir eine kurze Zusammenfassung von allem, was du mir erzählt hast. Lies sie und tippe auf „Diesen Check-in speichern“. Stimmt etwas nicht, tippe auf „Zurück“ und ändere es.',
+  'tp.cal.h': () => 'Dein Kalender',
+  'tp.cal.p': n => 'Im „' + n.cal + '“ hat jeder Tag mit Check-in Punkte: ein Punkt pro Symptom, je höher, desto stärker. Mit den Pfeilen wechselst du den Monat, mit „Heute“ kommst du zurück.',
+  'tp.day.h': () => 'Nachlesen, nachtragen, löschen',
+  'tp.day.p': () => 'Tippe auf einen Tag, um alles nachzulesen. Hier kannst du einen vergessenen Check-in nachtragen, eine Notiz schreiben, ein Symptom mit ✕ oder den ganzen Check-in löschen. Löschst du das letzte Symptom, verschwindet der ganze Check-in.',
+  'tp.pat.h': () => 'Muster',
+  'tp.pat.p': n => '„' + n.pat + '“ zeigt, welche Symptome und Körperstellen am häufigsten wiederkommen und wie stark sie über die Zeit waren. Es zeigt, was du geschrieben hast: nie eine Diagnose.',
+  'tp.rep.h': () => 'Dein Bericht',
+  'tp.rep.p': n => 'Im „' + n.rep + '“ bereitest du eine Zusammenfassung für deine Ärztin oder deinen Arzt vor. Du entscheidest, was hineinkommt, zum Beispiel ob deine persönlichen Notizen dabei sind. Druck sie aus oder speichere sie als PDF: Nichts wird von selbst verschickt.',
+  'tp.share.h': () => 'Du und deine Begleitung',
+  'tp.share.p': () => 'Deine Therapeutin, dein Therapeut oder deine Ärztin bzw. dein Arzt kann deine Check-ins lesen, aber nie die private Zeile am Ende. In „Für meine nächste Sitzung“ schreibst du, worüber du sprechen möchtest. Du kannst das Teilen jederzeit beenden.',
+  'tp.help.h': () => 'Hilfe, jederzeit',
+  'tp.help.p': () => 'Wenn es zu schwer wird, zeigt „Sofort Hilfe“ Nummern, die du sofort anrufen kannst. Schreibst du in einem Check-in etwas Besorgniserregendes, zeige ich sie dir selbst.',
+  'tp.set.h': () => 'Mach es zu deinem',
+  'tp.set.p': n => 'In den „' + n.set + '“ änderst du Name und Passwort, wählst die Sprache, stellst eine tägliche Erinnerung ein, gestaltest deinen Avatar für den Chat und siehst diese Tour wieder.',
+  'tp.end.h': () => 'Du bist bereit! 💚',
+  'tp.end.p': () => 'Starte deinen ersten Check-in, wann du willst: ein paar Worte reichen. Ich bin jeden Tag da.',
+  'tq.hi.h': name => 'Willkommen' + (name ? ', ' + name : '') + '! 🐼',
+  'tq.hi.p': () => 'Mit BAO führen deine Patient:innen ein kurzes tägliches Tagebuch über Symptome und Gefühle, und du liest es vor den Sitzungen. Diese Tour zeigt dir, wie du jemanden einlädst und was du siehst. Du kannst sie in den Einstellungen wieder ansehen.',
+  'tq.code.h': () => 'Schritt 1: E-Mail eingeben',
+  'tq.code.p': () => 'Hier fängt alles an. Schreib die E-Mail-Adresse der Person und tippe auf „Code erstellen“. Jeder Code funktioniert nur einmal und nur mit dieser E-Mail.',
+  'tq.send.h': () => 'Schritt 2: Code schicken',
+  'tq.send.p': () => 'Der neue Code erscheint groß. Tippe auf „Per E-Mail senden“ oder „Teilen“: Die Nachricht ist schon geschrieben und erklärt genau, was zu tun ist. Oder kopiere den Code und schick ihn, wie du möchtest.',
+  'tq.signup.h': () => 'Schritt 3: Anmeldung',
+  'tq.signup.p': () => 'Die Person öffnet BAO, tippt auf „Noch kein Konto? Jetzt erstellen“, wählt „Patient:in“, gibt dieselbe E-Mail und den Code ein und stimmt dem Teilen der Check-ins zu. Ab dann siehst du ihr Tagebuch.',
+  'tq.wait.h': () => 'Offene Codes',
+  'tq.wait.p': () => 'Noch nicht genutzte Codes bleiben hier als „Wartet auf Anmeldung“. Du kannst sie erneut kopieren oder schicken, oder einen entfernen, wenn du dich vertan hast.',
+  'tq.plans.h': () => 'Pläne',
+  'tq.plans.p': () => 'Der kostenlose Plan reicht für bis zu 3 Personen. Brauchst du mehr, wähle hier einen größeren Plan. Während der Beta sind alle Pläne kostenlos.',
+  'tq.list.h': () => 'Deine Patient:innen',
+  'tq.list.p': () => 'Hier erscheint, wer sich mit deinem Code angemeldet hat. Suche nach Name oder E-Mail und tippe auf einen Namen, um das Tagebuch zu öffnen.',
+  'tq.cal.h': () => 'Der Kalender der Person',
+  'tq.cal.p': () => 'Du siehst jeden Check-in Tag für Tag: ein Punkt pro Symptom, je höher, desto stärker. Tippe auf einen Tag, um Antworten, Körperstellen, Intensität und Gefühle zu lesen. Die private Zeile am Ende jedes Check-ins wird dir nie gezeigt.',
+  'tq.notes.h': () => 'Nächste Sitzung und Fragen',
+  'tq.notes.p': () => '„Notizen für die nächste Sitzung“ sind Themen, über die die Person sprechen möchte: Hake sie ab, wenn ihr darüber gesprochen habt. Unter „Fragen an die Person“ fügst du bis zu 10 Fragen hinzu, die Bao am Ende jedes Check-ins stellt.',
+  'tq.day.h': () => 'Deine Notizen zu einem Tag',
+  'tq.day.p': () => 'Unter jedem Tag kannst du eine Notiz schreiben. „Nur ich“ hält sie privat; „Teilen“ lässt die Person sie auch lesen.',
+  'tq.remove.h': () => 'Die Begleitung beenden',
+  'tq.remove.p': () => '„Patient:in entfernen“ beendet das Teilen. Niemand kann das Tagebuch mehr lesen, und die Person hat 30 Tage Zeit, es nachzulesen und zu speichern, bevor es gelöscht wird. Ein neuer Code für dieselbe E-Mail öffnet es wieder.',
+  'tq.later.h': () => 'Wenn jemand dazukommt',
+  'tq.later.p': () => 'Sobald sich die erste Person anmeldet, erscheint ihr Name in der Liste. Du siehst ihren Kalender und ihre Notizen für die nächste Sitzung und kannst Fragen hinzufügen, die Bao stellt.',
+  'tq.set.h': () => 'Einstellungen deiner Praxis',
+  'tq.set.p': n => 'In den „' + n.set + '“ kannst du eine Sicherheitsnummer hinterlegen, die deine Patient:innen in ihrer Hilfekarte sehen, und bei Bedarf alle an eine Kollegin oder einen Kollegen übergeben.',
+  'tq.end.h': () => 'Alles bereit! 💚',
+  'tq.end.p': () => 'Fang an, indem du einen Code für deine erste Person erstellst. Fragen? Schreib an support@baotracker.com.'
+});
+
 Object.assign(I18N.en, { 'nav.patterns': I18N.en['nav.patterns'] || 'Patterns', 'nav.report': I18N.en['nav.report'] || 'My report', 'nav.settings': I18N.en['nav.settings'] || 'Settings', 'nav.calendar': I18N.en['nav.calendar'] || 'Calendar' });
 Object.assign(I18N.en, {
-  'tour.cardTitle': 'How BAO works, step by step', 'tour.cardSub': 'A one-minute tour with Bao. Watch it again whenever you like.', 'tour.cardBtn': 'Start the tutorial',
+  'tour.cardTitle': 'How BAO works, step by step', 'tour.cardSub': 'A guided tour of every page with Bao. Watch it again whenever you like.', 'tour.cardBtn': 'Start the tutorial',
   'tour.step': (i, n) => 'Step ' + i + ' of ' + n, 'tour.back': 'Back', 'tour.next': 'Next', 'tour.go': 'Show me', 'tour.done': 'Let’s start!', 'tour.skip': 'Skip the tutorial',
   'tour.s1h': name => 'Hi ' + (name || 'there') + ', I’m Bao! 🐼', 'tour.s1p': () => 'I’ll help you notice how your body and your feelings talk to each other. Let me show you around, it takes one minute.',
   'tour.s2h': () => 'Your daily check-in', 'tour.s2p': () => 'Tap the + button (or “Daily check-in”) and I’ll ask you a few simple questions. Answer like a message: a few words are enough. Wrote something wrong? Tap Undo.',
@@ -7367,7 +7657,7 @@ Object.assign(I18N.en, {
   'tour.s6h': () => 'Make it yours', 'tour.s6p': n => 'In “' + n.set + '” you can design your avatar, choose your language, set a gentle daily reminder and watch this tutorial again.'
 });
 Object.assign(I18N.de, {
-  'tour.cardTitle': 'So funktioniert BAO, Schritt für Schritt', 'tour.cardSub': 'Eine kurze Tour mit Bao. Du kannst sie jederzeit wieder ansehen.', 'tour.cardBtn': 'Tutorial starten',
+  'tour.cardTitle': 'So funktioniert BAO, Schritt für Schritt', 'tour.cardSub': 'Eine geführte Tour durch alle Seiten mit Bao. Du kannst sie jederzeit wieder ansehen.', 'tour.cardBtn': 'Tutorial starten',
   'tour.step': (i, n) => 'Schritt ' + i + ' von ' + n, 'tour.back': 'Zurück', 'tour.next': 'Weiter', 'tour.go': 'Zeig es mir', 'tour.done': 'Los geht’s!', 'tour.skip': 'Tutorial überspringen',
   'tour.s1h': name => 'Hallo ' + (name || '') + ', ich bin Bao! 🐼', 'tour.s1p': () => 'Ich helfe dir zu bemerken, wie dein Körper und deine Gefühle miteinander sprechen. Ich zeige dir alles, es dauert nur eine Minute.',
   'tour.s2h': () => 'Dein täglicher Check-in', 'tour.s2p': () => 'Tippe auf + (oder „Täglicher Check-in“) und ich stelle dir ein paar einfache Fragen. Antworte wie in einer Nachricht: ein paar Worte reichen. Vertippt? Tippe auf Zurück.',
@@ -7377,7 +7667,7 @@ Object.assign(I18N.de, {
   'tour.s6h': () => 'Mach es zu deinem', 'tour.s6p': n => 'In den „' + n.set + '“ gestaltest du deinen Avatar, wählst deine Sprache, stellst eine sanfte tägliche Erinnerung ein und kannst dieses Tutorial wieder ansehen.'
 });
 Object.assign(I18N.it, {
-  'tour.cardTitle': 'Come funziona BAO, passo per passo', 'tour.cardSub': 'Un giro di un minuto con Bao. Puoi rivederlo quando vuoi.', 'tour.cardBtn': 'Inizia il tutorial',
+  'tour.cardTitle': 'Come funziona BAO, passo per passo', 'tour.cardSub': 'Un giro guidato di tutte le pagine con Bao. Puoi rivederlo quando vuoi.', 'tour.cardBtn': 'Inizia il tutorial',
   'tour.step': (i, n) => 'Passo ' + i + ' di ' + n, 'tour.back': 'Indietro', 'tour.next': 'Avanti', 'tour.go': 'Fammi vedere', 'tour.done': 'Iniziamo!', 'tour.skip': 'Salta il tutorial',
   'tour.s1h': name => 'Ciao ' + (name || '') + ', sono Bao! 🐼', 'tour.s1p': () => 'Ti aiuto a notare come il tuo corpo e le tue emozioni si parlano. Ti faccio fare un giro, ci vuole un minuto.',
   'tour.s2h': () => 'Il tuo check-in del giorno', 'tour.s2p': () => 'Tocca il + (o “Check-in del giorno”) e ti faccio qualche domanda semplice. Rispondi come in un messaggio: bastano poche parole. Hai sbagliato? Tocca Annulla.',
@@ -7541,9 +7831,11 @@ function renderSubs(){
     $('codeCard').scrollIntoView({ behavior:'smooth', block:'start' });
     setTimeout(() => $('codeEmail').focus(), 400);
   }));
-  const plan = SUBS_PICK || SUBS.plan, lim = plan && plans[plan] ? plans[plan].patients : 0;
-  $('codeUsage').textContent = plan ? t('subs.usage', SUBS.codes.length, lim, t('plan.' + plan)) : t('subs.noPlan');
-  $('codeForm').hidden = !plan;
+  // no plan chosen yet: the free one is used, so a code can be made straight away
+  const plan = SUBS_PICK || SUBS.plan || 'starter', lim = plans[plan] ? plans[plan].patients : 0;
+  $('codeUsage').textContent = lim ? t('subs.usage', SUBS.codes.length, lim, t('plan.' + plan)) : '';
+  $('codeSteps').innerHTML = t('inv.steps').map(x => '<li>' + esc(x) + '</li>').join('');
+  $('codeForm').hidden = false;
   const waiting = SUBS.codes.filter(c => !c.used);
   const shown = $('codeNew').querySelector('.code-big');
   if (shown && !waiting.some(c => c.code === shown.textContent)) $('codeNew').hidden = true;
@@ -7553,6 +7845,7 @@ function renderSubs(){
              : '<span class="c-st">' + esc(t('subs.waiting')) + '</span>';
     return '<div class="code-row"><span class="c-code">' + esc(c.code) + '</span><span class="c-mail">' + esc(c.email) + '</span>' + st +
       '<button type="button" data-copy="' + esc(c.code) + '">' + esc(t('subs.copy')) + '</button>' +
+      '<a class="c-mail-btn" href="' + esc(inviteMailto(c.code, c.email)) + '">' + esc(t('inv.mail')) + '</a>' +
       '<button type="button" class="rm" data-rm="' + esc(c.code) + '">' + esc(t('subs.remove')) + '</button></div>';
   }).join('') : '<p class="muted" style="margin:6px 0 0">' + esc(t('subs.none')) + '</p>';
   wireCopy($('codeList'));
@@ -7562,6 +7855,11 @@ function renderSubs(){
     $('codeNew').hidden = true;
     loadSubs();
   }));
+}
+// the message the patient receives: where to go, which email to use, the code
+function inviteText(code, email){ return t('inv.body', code, email, location.origin + '/', displayName()); }
+function inviteMailto(code, email){
+  return 'mailto:' + encodeURIComponent(email) + '?subject=' + encodeURIComponent(t('inv.subject')) + '&body=' + encodeURIComponent(inviteText(code, email));
 }
 function wireCopy(root){
   root.querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', async () => {
@@ -7577,11 +7875,18 @@ $('codeMake').addEventListener('click', async () => {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){ $('codeErr').textContent = t('why.email_bad'); $('codeErr').hidden = false; return; }
   $('codeMake').disabled = true;
   try{
-    const r = await jpost('/api/pro/code', { email, plan: SUBS_PICK || SUBS.plan });
+    const r = await jpost('/api/pro/code', { email, plan: SUBS_PICK || SUBS.plan || 'starter' });
     $('codeNew').innerHTML = '<div class="muted">' + esc(t('subs.codeFor', email)) + '</div><div class="code-big">' + esc(r.code) + '</div>' +
-      '<p>' + esc(t('subs.give')) + '</p><button class="btn primary" type="button" data-copy="' + esc(r.code) + '">' + esc(t('subs.copy')) + '</button>';
+      '<p>' + esc(t('inv.after')) + '</p><div class="code-actions">' +
+      '<a class="btn primary" href="' + esc(inviteMailto(r.code, email)) + '">✉️ ' + esc(t('inv.mail')) + '</a>' +
+      (navigator.share ? '<button class="btn outline" type="button" data-share="' + esc(r.code) + '" data-share-mail="' + esc(email) + '">📤 ' + esc(t('inv.share')) + '</button>' : '') +
+      '<button class="btn outline" type="button" data-copy="' + esc(r.code) + '">📋 ' + esc(t('subs.copy')) + '</button></div>';
     $('codeNew').hidden = false;
     wireCopy($('codeNew'));
+    $('codeNew').querySelectorAll('[data-share]').forEach(b => b.addEventListener('click', () => {
+      navigator.share({ title: t('inv.subject'), text: inviteText(b.dataset.share, b.dataset.shareMail) }).catch(() => {});
+    }));
+    $('codeNew').scrollIntoView({ behavior:'smooth', block:'center' });
     $('codeEmail').value = '';
     SUBS_PICK = r.plan || SUBS_PICK;
     await loadSubs();
@@ -7592,6 +7897,22 @@ $('codeMake').addEventListener('click', async () => {
   }finally{ $('codeMake').disabled = false; }
 });
 $('codeEmail').addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); $('codeMake').click(); } });
+
+// ---- invite for a new patient: the three steps and the ready-made message ----
+Object.assign(I18N.en, { 'inv.steps': ['Write your patient’s email address and press “Create code”.', 'Send the code: by email, by message, or copy it. The text is ready.', 'Your patient opens BAO, taps “No account yet? Create one”, chooses “Patient”, and uses the same email and the code.'], 'inv.after': 'Send it to your patient: the message already explains what to do.', 'inv.mail': 'Send by email', 'inv.share': 'Share', 'inv.subject': 'Your code for BAO',
+  'inv.body': (code, email, url, pro) => 'Hello,\n\n' + (pro || 'Your therapist') + ' invites you to keep a diary with BAO, so you can talk about how you feel at your next sessions.\n\n1. Open ' + url + ' (or the BAO app on iPhone)\n2. Tap “No account yet? Create one” and choose “Patient”\n3. Use this email: ' + email + '\n4. Enter your patient code: ' + code + '\n\nBAO is a diary, not a medical device. In an emergency call 112.' });
+Object.assign(I18N.it, { 'inv.steps': ['Scrivi l’email del paziente e premi «Crea il codice».', 'Manda il codice: per email, per messaggio o copialo. Il testo è già pronto.', 'Il paziente apre BAO, tocca «Non hai un account? Creane uno», sceglie «Paziente» e usa la stessa email e il codice.'], 'inv.after': 'Mandalo al paziente: il messaggio spiega già cosa fare.', 'inv.mail': 'Invia per email', 'inv.share': 'Condividi', 'inv.subject': 'Il tuo codice per BAO',
+  'inv.body': (code, email, url, pro) => 'Ciao,\n\n' + (pro || 'Chi ti segue') + ' ti invita a tenere un diario con BAO, così potrete parlare di come stai nelle prossime sedute.\n\n1. Apri ' + url + ' (o l’app BAO su iPhone)\n2. Tocca «Non hai un account? Creane uno» e scegli «Paziente»\n3. Usa questa email: ' + email + '\n4. Inserisci il codice paziente: ' + code + '\n\nBAO è un diario, non un dispositivo medico. In caso di emergenza chiama il 112.' });
+Object.assign(I18N.de, { 'inv.steps': ['Schreib die E-Mail-Adresse deiner Patientin oder deines Patienten und tippe auf „Code erstellen“.', 'Schick den Code: per E-Mail, per Nachricht oder kopiere ihn. Der Text ist schon fertig.', 'Die Person öffnet BAO, tippt auf „Noch kein Konto? Jetzt erstellen“, wählt „Patient:in“ und nutzt dieselbe E-Mail und den Code.'], 'inv.after': 'Schick ihn weiter: Die Nachricht erklärt schon, was zu tun ist.', 'inv.mail': 'Per E-Mail senden', 'inv.share': 'Teilen', 'inv.subject': 'Dein Code für BAO',
+  'inv.body': (code, email, url, pro) => 'Hallo,\n\n' + (pro || 'Deine Therapeutin / dein Therapeut') + ' lädt dich ein, mit BAO ein Tagebuch zu führen, damit ihr in den nächsten Sitzungen darüber sprechen könnt, wie es dir geht.\n\n1. Öffne ' + url + ' (oder die BAO-App auf dem iPhone)\n2. Tippe auf „Noch kein Konto? Jetzt erstellen“ und wähle „Patient:in“\n3. Nutze diese E-Mail: ' + email + '\n4. Gib deinen Patientencode ein: ' + code + '\n\nBAO ist ein Tagebuch, kein Medizinprodukt. Im Notfall wähle die 112.' });
+Object.assign(I18N.fr, { 'inv.steps': ['Écris l’e-mail du patient et appuie sur « Créer le code ».', 'Envoie le code : par e-mail, par message, ou copie-le. Le texte est prêt.', 'Le patient ouvre BAO, touche « Pas encore de compte ? Crée-en un », choisit « Patient·e » et utilise le même e-mail et le code.'], 'inv.after': 'Envoie-le au patient : le message explique déjà quoi faire.', 'inv.mail': 'Envoyer par e-mail', 'inv.share': 'Partager', 'inv.subject': 'Ton code pour BAO',
+  'inv.body': (code, email, url, pro) => 'Bonjour,\n\n' + (pro || 'La personne qui te suit') + ' t’invite à tenir un journal avec BAO, pour parler de comment tu vas lors des prochaines séances.\n\n1. Ouvre ' + url + ' (ou l’app BAO sur iPhone)\n2. Touche « Pas encore de compte ? Crée-en un » et choisis « Patient·e »\n3. Utilise cet e-mail : ' + email + '\n4. Saisis ton code patient : ' + code + '\n\nBAO est un journal, pas un dispositif médical. En cas d’urgence, appelle le 112.' });
+Object.assign(I18N.es, { 'inv.steps': ['Escribe el correo del paciente y pulsa «Crear código».', 'Envía el código: por correo, por mensaje o cópialo. El texto ya está listo.', 'El paciente abre BAO, toca «¿Aún no tienes cuenta? Crea una», elige «Paciente» y usa el mismo correo y el código.'], 'inv.after': 'Envíaselo al paciente: el mensaje ya explica qué hacer.', 'inv.mail': 'Enviar por correo', 'inv.share': 'Compartir', 'inv.subject': 'Tu código para BAO',
+  'inv.body': (code, email, url, pro) => 'Hola:\n\n' + (pro || 'Quien te acompaña') + ' te invita a llevar un diario con BAO, para hablar de cómo estás en las próximas sesiones.\n\n1. Abre ' + url + ' (o la app BAO en iPhone)\n2. Toca «¿Aún no tienes cuenta? Crea una» y elige «Paciente»\n3. Usa este correo: ' + email + '\n4. Escribe tu código de paciente: ' + code + '\n\nBAO es un diario, no un dispositivo médico. En una emergencia, llama al 112.' });
+Object.assign(I18N.pt, { 'inv.steps': ['Escreva o e-mail do paciente e toque em “Criar código”.', 'Envie o código: por e-mail, por mensagem ou copie. O texto já está pronto.', 'O paciente abre o BAO, toca em “Ainda não tem conta? Crie uma”, escolhe “Paciente” e usa o mesmo e-mail e o código.'], 'inv.after': 'Envie ao paciente: a mensagem já explica o que fazer.', 'inv.mail': 'Enviar por e-mail', 'inv.share': 'Compartilhar', 'inv.subject': 'Seu código para o BAO',
+  'inv.body': (code, email, url, pro) => 'Olá,\n\n' + (pro || 'Quem acompanha você') + ' convida você a manter um diário com o BAO, para conversarem sobre como você está nas próximas sessões.\n\n1. Abra ' + url + ' (ou o app BAO no iPhone)\n2. Toque em “Ainda não tem conta? Crie uma” e escolha “Paciente”\n3. Use este e-mail: ' + email + '\n4. Digite seu código de paciente: ' + code + '\n\nO BAO é um diário, não um dispositivo médico. Em uma emergência, ligue para o número de emergência.' });
+Object.assign(I18N.nl, { 'inv.steps': ['Schrijf het e-mailadres van je patiënt en tik op “Code maken”.', 'Stuur de code: per e-mail, per bericht of kopieer hem. De tekst staat al klaar.', 'Je patiënt opent BAO, tikt op “Nog geen account? Maak er een”, kiest “Patiënt” en gebruikt hetzelfde e-mailadres en de code.'], 'inv.after': 'Stuur hem naar je patiënt: het bericht legt al uit wat te doen.', 'inv.mail': 'Per e-mail sturen', 'inv.share': 'Delen', 'inv.subject': 'Je code voor BAO',
+  'inv.body': (code, email, url, pro) => 'Hallo,\n\n' + (pro || 'Je behandelaar') + ' nodigt je uit om een dagboek bij te houden met BAO, zodat jullie in de volgende sessies kunnen praten over hoe het met je gaat.\n\n1. Open ' + url + ' (of de BAO-app op iPhone)\n2. Tik op “Nog geen account? Maak er een” en kies “Patiënt”\n3. Gebruik dit e-mailadres: ' + email + '\n4. Vul je patiëntcode in: ' + code + '\n\nBAO is een dagboek, geen medisch hulpmiddel. Bel in een noodgeval 112.' });
 
 Object.assign(I18N.en, {
   'role.label':'I am…','role.patient':'Patient','role.therapist':'Therapist / Doctor','role.doctor':'Doctor',
@@ -7826,6 +8147,7 @@ if (!('chat.yes' in I18N.en)) I18N.en['chat.yes'] = 'Yes';
 if (!('chat.no' in I18N.en)) I18N.en['chat.no'] = 'No';
 Object.assign(I18N.en, {
   'rate.word0':'Not noticeable','rate.word1':'Mild','rate.word2':'Moderate','rate.word3':'Strong','rate.word4':'Very strong',
+  'rate.feel0':'Not bothered','rate.feel1':'Mildly bothered','rate.feel2':'Moderately bothered','rate.feel3':'Very bothered','rate.feel4':'Extremely bothered',
   'q.kind': n => 'Would you say “' + n + '” is more of a physical or a psychological symptom?','ans.body':'🫀 Physical','ans.mind':'🧠 Psychological',
   'type.body':'physical','type.mind':'psychological',
   'q.day':'How was your day, overall?',
@@ -7835,6 +8157,7 @@ Object.assign(I18N.en, {
 });
 Object.assign(I18N.it, {
   'rate.word0':'Non si sente','rate.word1':'Lieve','rate.word2':'Moderato','rate.word3':'Forte','rate.word4':'Molto forte',
+  'rate.feel0':'Nessun fastidio','rate.feel1':'Fastidio lieve','rate.feel2':'Fastidio moderato','rate.feel3':'Molto fastidio','rate.feel4':'Fastidio estremo',
   'q.kind': n => 'Diresti che “' + n + '” è più un sintomo fisico o psicologico?','ans.body':'🫀 Fisico','ans.mind':'🧠 Psicologico',
   'type.body':'fisico','type.mind':'psicologico',
   'q.day':'Com’è andata la giornata, nel complesso?',
@@ -7844,6 +8167,7 @@ Object.assign(I18N.it, {
 });
 Object.assign(I18N.de, {
   'rate.word0':'Nicht spürbar','rate.word1':'Leicht','rate.word2':'Mittel','rate.word3':'Stark','rate.word4':'Sehr stark',
+  'rate.feel0':'Gar nicht belastet','rate.feel1':'Leicht belastet','rate.feel2':'Mäßig belastet','rate.feel3':'Stark belastet','rate.feel4':'Extrem belastet',
   'q.kind': n => 'Ist „' + n + '“ für dich eher ein körperliches oder ein psychisches Symptom?','ans.body':'🫀 Körperlich','ans.mind':'🧠 Psychisch',
   'type.body':'körperlich','type.mind':'psychisch',
   'q.day':'Wie war dein Tag insgesamt?',
@@ -7855,6 +8179,7 @@ Object.assign(I18N.de, {
 });
 Object.assign(I18N.fr, {
   'rate.word0':'Imperceptible','rate.word1':'Léger','rate.word2':'Modéré','rate.word3':'Fort','rate.word4':'Très fort',
+  'rate.feel0':'Aucune gêne','rate.feel1':'Gêne légère','rate.feel2':'Gêne modérée','rate.feel3':'Forte gêne','rate.feel4':'Gêne extrême',
   'q.kind': n => 'Dirais-tu que « ' + n + ' » est plutôt un symptôme physique ou psychologique ?','ans.body':'🫀 Physique','ans.mind':'🧠 Psychologique',
   'type.body':'physique','type.mind':'psychologique',
   'q.day':'Comment s’est passée ta journée, dans l’ensemble ?',
@@ -7864,6 +8189,7 @@ Object.assign(I18N.fr, {
 });
 Object.assign(I18N.es, {
   'rate.word0':'No se nota','rate.word1':'Leve','rate.word2':'Moderado','rate.word3':'Fuerte','rate.word4':'Muy fuerte',
+  'rate.feel0':'Sin molestia','rate.feel1':'Molestia leve','rate.feel2':'Molestia moderada','rate.feel3':'Mucha molestia','rate.feel4':'Molestia extrema',
   'q.kind': n => '¿Dirías que «' + n + '» es más un síntoma físico o psicológico?','ans.body':'🫀 Físico','ans.mind':'🧠 Psicológico',
   'type.body':'físico','type.mind':'psicológico',
   'q.day':'¿Qué tal tu día, en general?',
@@ -7873,6 +8199,7 @@ Object.assign(I18N.es, {
 });
 Object.assign(I18N.pt, {
   'rate.word0':'Imperceptível','rate.word1':'Leve','rate.word2':'Moderado','rate.word3':'Forte','rate.word4':'Muito forte',
+  'rate.feel0':'Sem incômodo','rate.feel1':'Incômodo leve','rate.feel2':'Incômodo moderado','rate.feel3':'Muito incômodo','rate.feel4':'Incômodo extremo',
   'q.kind': n => 'Você diria que “' + n + '” é mais um sintoma físico ou psicológico?','ans.body':'🫀 Físico','ans.mind':'🧠 Psicológico',
   'type.body':'físico','type.mind':'psicológico',
   'q.day':'Como foi o seu dia, no geral?',
@@ -7882,6 +8209,7 @@ Object.assign(I18N.pt, {
 });
 Object.assign(I18N.nl, {
   'rate.word0':'Niet merkbaar','rate.word1':'Licht','rate.word2':'Matig','rate.word3':'Sterk','rate.word4':'Heel sterk',
+  'rate.feel0':'Geen last','rate.feel1':'Een beetje last','rate.feel2':'Redelijk wat last','rate.feel3':'Veel last','rate.feel4':'Extreem veel last',
   'q.kind': n => 'Is „' + n + '” voor jou meer een lichamelijke of een psychische klacht?','ans.body':'🫀 Lichamelijk','ans.mind':'🧠 Psychisch',
   'type.body':'lichamelijk','type.mind':'psychisch',
   'q.day':'Hoe was je dag, alles bij elkaar?',
@@ -8509,35 +8837,56 @@ async function crisisCard(){
 async function crisisCheck(text){
   if (feltNow.has('crisis')) return;
   if (isCrisis(text)) return crisisCard();
-  if (hairInDistress(text)) await hairCheck();
+  if (feltNow.has('gentle')) return;                 // the gentle question is asked once per check-in
+  if (softSign(text)) return gentleCheck('soft');
+  if (hairInDistress(text)) return gentleCheck('hair');
+}
+// Indirect warning signs: hopelessness, feeling a burden or trapped, "nobody would miss me", goodbyes.
+// They are not explicit, so Bao asks gently whether there are thoughts of self-harm instead of showing the numbers at once.
+const SOFT_SIGNS = /(non ce la faccio pi[uù]|non reggo pi[uù]|non ne posso pi[uù]|sono stanc[oa] di (?:tutto|vivere|esistere|lottare)|(?:sono|mi sento) (?:solo )?un peso|nessuno (?:sentirebbe|sentir[aà]) la mia mancanza|nessuno se ne accorgerebbe|nessuno si accorgerebbe|a nessuno (?:importa|importerebbe|frega) (?:di me|se)|non c['’][eè] (?:pi[uù] )?(?:via d(?:['’]|i )uscita|speranza|soluzione)|non vedo (?:una )?(?:via d(?:['’]|i )uscita|futuro|un futuro|speranza|soluzione|una soluzione)|(?:mi sento|sono) in trappola|(?:[eè]|sembra) tutto inutile|niente ha (?:pi[uù] )?senso|(?:voglio|vorrei) (?:solo )?dormire per sempre|(?:voglio|vorrei) (?:solo )?che (?:tutto )?(?:finisca|finisse)|(?:ho regalato|sto regalando|ho dato via) (?:le mie cose|tutto)|non ci sar[oò] pi[uù]|non mi vedrete pi[uù]|addio a tutti|ho messo in ordine le mie cose|odio la mia vita|odio me stess[oa]|(?<!\p{L})mi odio|non valgo niente|sono un fallimento|sarebbe pi[uù] facile se non ci fossi|mi sono (?:fatt[oa] male|ferit[oa]) (?:apposta|di proposito|da sol[oa])|(?:mi faccio|farmi|ferirmi|mi ferisco) male|ferirmi|can['’]?t (?:go on|take (?:it|this) any ?more|do this any ?more|cope any ?more)|(?<!\p{L})i give up|(?:i['’]?m|i am|feel like) (?:just )?a burden|everyone would be better off|no(?:body| one) would (?:miss me|notice|care)|no(?:body| one) cares (?:about me|if)|no way out|there['’]?s no (?:hope|point|future)|hopeless|(?:i['’]?m|i feel|feel) trapped(?! nerve)|nothing matters|what['’]?s the point|sleep forever|want (?:it all|everything|it) to (?:end|stop)|tired of (?:living|life|everything|fighting|being alive)|gave away my (?:stuff|things)|giving away my (?:stuff|things)|won['’]?t be (?:here|around) (?:much longer|anymore|tomorrow)|this is goodbye|hate myself|i['’]?m worthless|i am worthless|hate my life|hurt myself on purpose|ich kann nicht mehr|ich halte (?:es|das) nicht mehr aus|(?:ich bin|bin) (?:nur )?eine last|allen zur last|ohne mich (?:besser|wären)|niemand würde mich vermissen|keinen ausweg|keine hoffnung|hoffnungslos|(?:alles ist|ist alles) sinnlos|hat alles keinen sinn|für immer schlafen|dass (?:es|alles) aufhört|müde vom leben|ich hasse mich|ich bin nichts wert|meine sachen verschenkt|mich (?:absichtlich )?verletzt|verletze mich|je n['’]en peux plus|je ne tiens plus|je suis un (?:fardeau|poids)|mieux sans moi|personne ne (?:remarquerait|me regretterait)|pas d['’]issue|aucun espoir|sans espoir|plus rien n['’]a de sens|dormir pour toujours|que tout s['’]arrête|fatigu[ée]+ de vivre|je me déteste|je ne vaux rien|pris(?:e)? au piège|j['’]ai donné mes affaires|no puedo más|ya no aguanto|soy una carga|mejor sin mí|nadie me echar[ií]a de menos|nadie lo notar[ií]a|no hay salida|sin esperanza|no hay esperanza|nada tiene sentido|dormir para siempre|que todo (?:termine|acabe)|cansad[oa] de vivir|(?<!\p{L})me odio|no valgo nada|me siento atrapad[oa]|regalé mis cosas|me lastim[oé]|não aguento mais|não consigo mais|sou um peso|melhor sem mim|ninguém sentiria (?:a )?minha falta|ninguém ia perceber|sem saída|não tem saída|sem esperança|nada faz sentido|dormir para sempre|que tudo acabe|cansad[oa] de viver|me odeio|não valho nada|me sinto pres[oa]|dei minhas coisas|me machu(?:co|quei)|ik kan niet meer|ik houd het niet meer vol|ik ben een last|beter af zonder mij|niemand zou me missen|geen uitweg|geen hoop|hopeloos|niets heeft (?:nog )?zin|voor altijd slapen|dat alles stopt|moe van het leven|ik haat mezelf|ik ben niets waard|mijn spullen weggegeven)/iu;
+function softSign(text){
+  text = String(text || '');
+  for (const m of text.matchAll(new RegExp(SOFT_SIGNS.source, 'giu'))){
+    // "non mi sento un peso", "I don't feel hopeless": a negation just before does not count
+    const before = text.slice(0, m.index).split(/[.!?;,]/).pop().trim().split(/\\s+/).slice(-3).join(' ');
+    if (!NEGATION.test(before)) return true;
+  }
+  return false;
 }
 // Cutting one's own hair is not a crisis by itself, but together with sadness or anger it can be
 // a sign of a hard moment: Bao asks once, gently, and shows the help numbers if the answer is yes.
 const HAIR_CUT = /(tagli\p{L}*|taglio|tagliat[oa]|tagliare)\s+(?:(?:i|dei|tutti i|un po['’] di)\s+)?capelli|capelli\s+(?:tagliat|cort)|cut(?:ting)?\s+(?:off\s+)?(?:all\s+)?(?:my|the)\s+hair|haare?\s+(?:ab)?(?:ge)?schn[ie]tt|(?:me\s+)?couper\s+les\s+cheveux|coup[ée]+\s+les\s+cheveux|cort(?:ar|ando|é|arme|ándome)\s+(?:el|mi)\s+pelo|cort(?:ar|ando|ei)\s+(?:o|meu)\s+cabelo|haar\s+(?:af)?(?:ge)?knip/iu;
 function hairInDistress(text){
   text = String(text || '');
-  if (feltNow.has('hair') || !HAIR_CUT.test(text)) return false;
+  if (!HAIR_CUT.test(text)) return false;
   const tags = (entry && entry.emotionTags) || [];
   return feelingsIn(text).length > 0 || feltNow.has('sad') || feltNow.has('angry') ||
     tags.some(k => ['sad', 'anger'].includes(k.split('.')[0]));
 }
-async function hairCheck(){
-  feltNow.add('hair');
-  const hurt = await askYesNo(t('hair.q'), 'listening');
+async function gentleCheck(kind){
+  feltNow.add('gentle');
+  const hurt = await askYesNo(t(kind + '.q'), 'listening');
   if (hurt === 'yes') return crisisCard();
-  await baoSay(t('hair.no'), '', 'listening', 700);
+  await baoSay(t(kind + '.no'), '', 'listening', 700);
 }
 // ogni risposta scritta passa dal controllo, non solo alcune domande
 const _waitText0 = waitText;
 waitText = function(){ return _waitText0().then(async v => { await crisisCheck(v); return v; }); };
 
 I18N.en['aria.sleeping'] = 'Bao the panda, sleeping';
+Object.assign(I18N.en, { 'soft.q':'Thank you for telling me this. When things feel like this, sometimes thoughts of hurting yourself or of not being here any more come up. Have you had thoughts like that?', 'soft.no':'Thank you for answering. It still sounds like a heavy moment: if you can, talk about it with someone you trust. The help numbers are always one tap away in BAO.' });
 Object.assign(I18N.en, { 'hair.q':'Thank you for telling me. Sometimes, when we feel really bad, we do something sudden to our body, like cutting our hair. Did you hurt yourself, or think about hurting yourself?', 'hair.no':'Okay. Thank you for answering. If it ever gets too heavy, the help numbers are always one tap away in BAO.' });
+Object.assign(I18N.it, { 'soft.q':'Grazie di avermelo detto. Quando ci si sente così, a volte arrivano pensieri di farsi del male o di non esserci più. Ti è capitato di pensarlo?', 'soft.no':'Grazie di avermi risposto. Sembra comunque un momento pesante: se puoi, parlane con una persona di cui ti fidi. I numeri di aiuto sono sempre a un tocco in BAO.' });
 Object.assign(I18N.it, { 'hair.q':'Grazie di avermelo detto. A volte, quando si sta molto male, si fa qualcosa di improvviso al proprio corpo, come tagliarsi i capelli. È successo che ti facessi del male, o ci hai pensato?', 'hair.no':'Va bene. Grazie di avermi risposto. Se diventa troppo pesante, i numeri di aiuto sono sempre a un tocco in BAO.' });
+Object.assign(I18N.de, { 'soft.q':'Danke, dass du mir das erzählst. Wenn es sich so anfühlt, kommen manchmal Gedanken, sich etwas anzutun oder nicht mehr da zu sein. Hattest du solche Gedanken?', 'soft.no':'Danke für deine Antwort. Es klingt trotzdem nach einem schweren Moment: Wenn du kannst, sprich mit jemandem, dem du vertraust. Die Hilfenummern sind in BAO immer nur einen Tipp entfernt.' });
 Object.assign(I18N.de, { 'hair.q':'Danke, dass du es mir erzählst. Manchmal, wenn es uns sehr schlecht geht, tun wir unserem Körper etwas Plötzliches an, zum Beispiel die Haare abschneiden. Hast du dir wehgetan oder daran gedacht, dir wehzutun?', 'hair.no':'Okay. Danke für deine Antwort. Wenn es zu schwer wird, sind die Hilfenummern in BAO immer nur einen Tipp entfernt.' });
+Object.assign(I18N.fr, { 'soft.q':'Merci de me le dire. Quand on se sent comme ça, il arrive d’avoir des pensées de se faire du mal ou de ne plus être là. As-tu eu ce genre de pensées ?', 'soft.no':'Merci de m’avoir répondu. Ça ressemble quand même à un moment lourd : si tu peux, parles-en à quelqu’un de confiance. Les numéros d’aide sont toujours à portée de main dans BAO.' });
 Object.assign(I18N.fr, { 'hair.q':'Merci de me l’avoir dit. Parfois, quand on va très mal, on fait quelque chose de soudain à son corps, comme se couper les cheveux. Est-ce que tu t’es fait du mal, ou as-tu pensé à te faire du mal ?', 'hair.no':'D’accord. Merci de m’avoir répondu. Si ça devient trop lourd, les numéros d’aide sont toujours à portée de main dans BAO.' });
+Object.assign(I18N.es, { 'soft.q':'Gracias por contármelo. Cuando uno se siente así, a veces aparecen pensamientos de hacerse daño o de no estar. ¿Has tenido pensamientos así?', 'soft.no':'Gracias por responder. Aun así parece un momento pesado: si puedes, háblalo con alguien de confianza. Los números de ayuda están siempre a un toque en BAO.' });
 Object.assign(I18N.es, { 'hair.q':'Gracias por contármelo. A veces, cuando estamos muy mal, hacemos algo repentino a nuestro cuerpo, como cortarnos el pelo. ¿Te hiciste daño o pensaste en hacerte daño?', 'hair.no':'Vale. Gracias por responder. Si se vuelve demasiado pesado, los números de ayuda están siempre a un toque en BAO.' });
+Object.assign(I18N.pt, { 'soft.q':'Obrigado por me contar. Quando a gente se sente assim, às vezes vêm pensamentos de se machucar ou de não estar mais aqui. Você teve pensamentos assim?', 'soft.no':'Obrigado por responder. Mesmo assim parece um momento pesado: se puder, converse com alguém de confiança. Os números de ajuda estão sempre a um toque no BAO.' });
 Object.assign(I18N.pt, { 'hair.q':'Obrigado por me contar. Às vezes, quando estamos muito mal, fazemos algo repentino com o nosso corpo, como cortar o cabelo. Você se machucou ou pensou em se machucar?', 'hair.no':'Tudo bem. Obrigado por responder. Se ficar pesado demais, os números de ajuda estão sempre a um toque no BAO.' });
+Object.assign(I18N.nl, { 'soft.q':'Dank je dat je het me vertelt. Als het zo voelt, komen er soms gedachten om jezelf pijn te doen of er niet meer te zijn. Heb je zulke gedachten gehad?', 'soft.no':'Dank je voor je antwoord. Het klinkt toch als een zwaar moment: praat er als het kan over met iemand die je vertrouwt. De hulpnummers zijn in BAO altijd één tik weg.' });
 Object.assign(I18N.nl, { 'hair.q':'Dank je dat je het me vertelt. Soms, als we ons heel slecht voelen, doen we iets plotselings met ons lichaam, zoals ons haar afknippen. Heb je jezelf pijn gedaan, of eraan gedacht?', 'hair.no':'Oké. Dank je voor je antwoord. Als het te zwaar wordt, zijn de hulpnummers in BAO altijd één tik weg.' });
 Object.assign(I18N.en, {
   'crisis.msg':'Thank you for telling me. What you feel matters, and you don’t have to go through it on your own. I’m only a little panda and I can’t help in an emergency, but these people can. Tap a number to call:',
